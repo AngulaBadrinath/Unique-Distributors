@@ -12,21 +12,25 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     /* Quantum Blue #2457FF */
+    --brand: 226 100% 57%;
+    --brand-foreground: 0 0% 100%;
+
+    /* Ice Glass #DFF7FF */
+    --brand-surface: 195 100% 94%;
+    --brand-surface-foreground: 226 100% 32%;
+
+    /* Semantic Primary & Ring */
     --primary: 226 100% 57%;
     --primary-foreground: 0 0% 100%;
 
-    /* Ice Glass #DFF7FF */
-    --brand-surface: 194 100% 94%;
-    --brand-surface-foreground: 226 100% 40%;
-
-    --secondary: 194 100% 95%;
+    --secondary: 195 100% 95%;
     --secondary-foreground: 226 90% 32%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 194 100% 94%;
-    --accent-foreground: 226 100% 40%;
+    --accent: 195 100% 94%;
+    --accent-foreground: 226 100% 32%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -55,21 +59,24 @@
     --popover-foreground: 210 40% 98%;
 
     /* Quantum Blue for Dark Mode */
-    --primary: 226 100% 65%;
-    --primary-foreground: 0 0% 100%;
+    --brand: 226 100% 65%;
+    --brand-foreground: 0 0% 100%;
 
     /* Ice Glass dark tone */
     --brand-surface: 226 60% 16%;
-    --brand-surface-foreground: 194 100% 92%;
+    --brand-surface-foreground: 195 100% 92%;
+
+    --primary: 226 100% 65%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 226 40% 16%;
-    --secondary-foreground: 194 100% 92%;
+    --secondary-foreground: 195 100% 92%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 226 45% 18%;
-    --accent-foreground: 194 100% 92%;
+    --accent-foreground: 195 100% 92%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
