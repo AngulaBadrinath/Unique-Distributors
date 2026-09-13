@@ -98,11 +98,11 @@ export default function SalesmanReport({ report, filters }: Props) {
                 </div>
 
                 {/* Commission Policy Notice */}
-                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 flex items-start gap-3">
-                    <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                <div className="rounded-xl border border-brand-surface-foreground/20 bg-brand-surface/60 p-4 flex items-start gap-3">
+                    <Info className="h-5 w-5 text-brand-surface-foreground shrink-0 mt-0.5" />
                     <div className="text-xs space-y-1">
-                        <div className="font-semibold text-blue-900 dark:text-blue-300">Commission Policy Notice</div>
-                        <div className="text-blue-800/80 dark:text-blue-400/80">
+                        <div className="font-semibold text-brand-surface-foreground">Commission Policy Notice</div>
+                        <div className="text-brand-surface-foreground/85">
                             Automatic commission calculations are not prescribed in V1 specifications. Operational performance, sales volumes, and override frequencies are reported authoritatively above for administrative evaluation.
                         </div>
                     </div>

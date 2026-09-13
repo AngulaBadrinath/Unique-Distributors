@@ -230,16 +230,22 @@
 
 ## 12. DESIGN SYSTEM & USER INTERFACES
 
-- [x] `UI-001`: Design Tokens Implementation (Inter font, Tailwind 4, HSL palette)
-- [x] `UI-002`: Core shadcn/ui Component Library Tailoring
-- [x] `UI-003`: Admin Portal Shell (Desktop-first control center, collapsable sidebar)
-- [x] `UI-004`: Salesman Portal Shell (Mobile-first workspace, bottom navigation)
-- [x] `UI-005`: Delivery Partner Portal Shell (Mobile-first driver workspace)
-- [x] `UI-006`: Responsive Table System (Desktop dense table, mobile stacked cards)
-- [x] `UI-007`: Unified Form State System (Default, loading skeleton, error, empty)
-- [x] `UI-008`: Payment Evidence Upload & Preview UI Component
-- [x] `UI-009`: Order Creation Mobile/Tablet Flow (Flagship 3-step mobile wizard, desktop split workspace with sticky summary panel, tablet 2-col adaptive layout, draft persistence, server authority preview)
-- [x] `UI-010`: Responsive QA Width Matrix Verification (320px to 1920px audit across Admin, Salesman, Delivery, Notifications, and Payments; non-production ManualTestingSeeder & QA docs)
+### Historical Foundation (SUPERSEDED / RETIRED)
+- [x] `UI-001`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Design Tokens Implementation (Legacy foundation retired)
+- [x] `UI-002`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Core shadcn/ui Component Library Tailoring (Rebuilt with semantic token primitives)
+- [x] `UI-003`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Admin Portal Shell (Rebuilt with Zero Black anchor & Ghost Green active navigation)
+- [x] `UI-004`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Salesman Portal Shell (Rebuilt with Zero Black dock & Ghost Green active states)
+- [x] `UI-005`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Delivery Partner Portal Shell (Rebuilt with Zero Black shell & Ghost Green indicators)
+- [x] `UI-006`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Responsive Table System (Rebuilt with structured neutral canvas & Ghost Green selection)
+- [x] `UI-007`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Unified Form State System (Rebuilt with Quantum Blue focus rings & semantic validation)
+- [x] `UI-008`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Payment Evidence Upload & Preview UI Component (Migrated to unified visual system)
+- [x] `UI-009`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Order Creation Mobile/Tablet Flow (Migrated to unified visual system)
+- [x] `UI-010`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Responsive QA Width Matrix Verification (Preserved across 320px–1920px under new visual system)
+
+### Authoritative Unified Design System Foundation (ACTIVE)
+- [x] `UI-FOUND-V2`: Ground-Up Presentation Rebuild (Level 1: Zero Black `#050505`, Level 2: Ghost Green `#D7FFE0` / `#063312`, Level 3: Selective Quantum Blue `#2457FF`, Level 4: Structured Neutral Canvas `#F8F9FA`, Invariant Business Semantic Statuses)
+- [x] `UI-SHELL-V2`: Unified Multi-Portal Shell Architecture (Admin, Salesman, Delivery, Warehouse, Accountant, Super Admin)
+- [x] `UI-PRIMITIVES-V2`: Semantic Component Library (Buttons, Badges, Cards, Inputs, Tables, Modals, Badges, Tabs)
 
 ---
 

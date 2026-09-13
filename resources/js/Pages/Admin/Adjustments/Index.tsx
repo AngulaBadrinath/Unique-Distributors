@@ -173,7 +173,7 @@ export default function AdjustmentsIndex({
 
         if (adj.status === 'APPLIED') {
             return (
-                <Badge variant="default" className="text-[11px] font-medium bg-blue-600 hover:bg-blue-600">
+                <Badge variant="action" className="text-[11px] font-medium">
                     Applied
                 </Badge>
             );

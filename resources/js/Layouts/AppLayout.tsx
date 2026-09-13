@@ -171,7 +171,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         <button
                             type="button"
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden rounded-lg p-1.5 text-slate-400 hover:bg-[#151515] hover:text-white cursor-pointer"
+                            className="lg:hidden rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer"
                             aria-label="Close navigation"
                         >
                             <X className="h-5 w-5" />

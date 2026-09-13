@@ -269,7 +269,7 @@ export default function Show({ creditNote }: Props) {
                                 {creditNote.return_request ? (
                                     <Link
                                         href={`/admin/returns/${creditNote.return_request.id}`}
-                                        className="font-mono font-semibold text-blue-600 hover:underline"
+                                        className="font-mono font-semibold text-action-accent hover:underline"
                                     >
                                         {creditNote.return_request.return_number}
                                     </Link>
@@ -282,7 +282,7 @@ export default function Show({ creditNote }: Props) {
                                 {creditNote.order ? (
                                     <Link
                                         href={`/admin/orders/${creditNote.order.id}`}
-                                        className="font-mono font-semibold text-blue-600 hover:underline"
+                                        className="font-mono font-semibold text-action-accent hover:underline"
                                     >
                                         {creditNote.order.order_number}
                                     </Link>
@@ -367,7 +367,7 @@ export default function Show({ creditNote }: Props) {
                                     <div className="flex items-center gap-3">
                                         <Link
                                             href={`/admin/refunds/${ref.id}`}
-                                            className="font-mono font-bold text-blue-600 hover:underline"
+                                            className="font-mono font-bold text-action-accent hover:underline"
                                         >
                                             {ref.refund_number}
                                         </Link>

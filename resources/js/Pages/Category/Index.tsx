@@ -200,7 +200,7 @@ export default function CategoryIndex({
                                     {activeCount}
                                 </p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                            <div className="h-9 w-9 rounded-lg bg-action-accent/10 flex items-center justify-center text-action-accent">
                                 <CheckCircle2 className="h-5 w-5" />
                             </div>
                         </CardContent>

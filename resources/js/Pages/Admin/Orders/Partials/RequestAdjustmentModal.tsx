@@ -436,7 +436,7 @@ export default function RequestAdjustmentModal({
                         </div>
 
                         <div className="flex items-start gap-2 text-[11px] text-muted-foreground bg-background/60 p-2.5 rounded-lg border">
-                            <Info className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+                            <Info className="h-4 w-4 text-action-accent shrink-0 mt-0.5" />
                             <span>
                                 Financial projections and Case A/B indicators are informational snapshots. Baseline order totals, historical tax records, and warehouse inventory reservations remain strictly unmutated until an administrative review approves and applies the adjustment.
                             </span>

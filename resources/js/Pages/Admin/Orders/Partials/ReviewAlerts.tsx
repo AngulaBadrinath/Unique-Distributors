@@ -31,7 +31,7 @@ export default function ReviewAlerts({ warnings }: ReviewAlertsProps) {
                                     ? 'bg-destructive/10 border-destructive/30 text-destructive dark:bg-destructive/15'
                                     : isWarning
                                     ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200'
-                                    : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200'
+                                    : 'bg-brand-surface/40 dark:bg-brand-surface/20 border-brand-surface-foreground/20 text-brand-surface-foreground'
                             }`}
                         >
                             <div className="shrink-0 mt-0.5">
@@ -40,7 +40,7 @@ export default function ReviewAlerts({ warnings }: ReviewAlertsProps) {
                                 ) : isWarning ? (
                                     <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                                 ) : (
-                                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                    <Info className="h-4 w-4 text-brand-surface-foreground" />
                                 )}
                             </div>
 
@@ -55,7 +55,7 @@ export default function ReviewAlerts({ warnings }: ReviewAlertsProps) {
                                                 ? 'bg-destructive/20 text-destructive'
                                                 : isWarning
                                                 ? 'bg-amber-200/60 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300'
-                                                : 'bg-blue-200/60 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300'
+                                                : 'bg-brand-surface text-brand-surface-foreground font-semibold'
                                         }`}
                                     >
                                         {warning.severity}

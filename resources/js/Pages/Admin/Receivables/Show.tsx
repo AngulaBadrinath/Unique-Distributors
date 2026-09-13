@@ -138,7 +138,7 @@ export default function ReceivablesShow({
     const getTypeBadge = (type: string) => {
         switch (type) {
             case 'INVOICE_CHARGE':
-                return <Badge variant="default" className="bg-blue-600">Invoice Charge</Badge>;
+                return <Badge variant="action">Invoice Charge</Badge>;
             case 'PAYMENT':
                 return <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Payment</Badge>;
             case 'PAYMENT_REVERSAL':

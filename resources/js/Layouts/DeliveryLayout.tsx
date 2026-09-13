@@ -76,7 +76,7 @@ export default function DeliveryLayout({
                     <button
                         onClick={handleLogout}
                         title="Sign Out"
-                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#141414] hover:bg-rose-950/40 hover:text-rose-300 text-slate-300 transition-colors cursor-pointer"
+                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-neutral-900 hover:bg-rose-950/40 hover:text-rose-300 text-slate-300 transition-colors cursor-pointer"
                         aria-label="Sign Out"
                     >
                         <LogOut className="w-4 h-4" />

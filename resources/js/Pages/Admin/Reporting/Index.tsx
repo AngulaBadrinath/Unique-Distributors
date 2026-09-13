@@ -86,7 +86,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                     <div className="rounded-xl border border-border bg-card p-5 shadow-xs transition-all hover:border-primary/40">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Average Order Value</span>
-                            <div className="rounded-md bg-blue-500/10 p-2 text-blue-600">
+                            <div className="rounded-md bg-action-accent/10 p-2 text-action-accent">
                                 <TrendingUp className="h-4 w-4" />
                             </div>
                         </div>

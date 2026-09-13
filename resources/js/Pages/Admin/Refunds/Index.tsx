@@ -296,7 +296,7 @@ export default function Index({ refundRequests, filters, statuses = [] }: Props)
                                                 {req.credit_note ? (
                                                     <Link
                                                         href={`/admin/credits/${req.credit_note.id}`}
-                                                        className="text-blue-600 hover:underline font-semibold"
+                                                        className="text-action-accent hover:underline font-semibold"
                                                     >
                                                         {req.credit_note.credit_number}
                                                     </Link>

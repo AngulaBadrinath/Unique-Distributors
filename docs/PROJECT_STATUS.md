@@ -38,8 +38,8 @@ $$\text{Progress} = \left( \frac{\text{Completed Verified Implementation Tickets
   2. `TECH-FOUND-002`: Database & Migration Foundation (PostgreSQL 18)
   3. `TECH-FOUND-003`: Global Error & Logging Foundation (/health & sanitization)
   4. `TECH-FOUND-004`: Queue & Cache Foundation (Redis 7)
-  5. `UI-001`: Design Tokens (Typography, Colors, Spacing, Breakpoints)
-  6. `UI-002`: Core Component Library (shadcn/ui tailoring: button, card, input, badge, label)
+  5. `UI-001`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Design Tokens (Rebuilt under UI-FOUND-V2)
+  6. `UI-002`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Core Component Library (Rebuilt under UI-PRIMITIVES-V2)
   7. `DEPLOY-003`: GitHub Actions CI Pipeline Foundation (`.github/workflows/ci.yml`)
   8. `FEAT-AUTH-001`: Centralized Multi-Portal Login & Throttling
   9. `FEAT-AUTH-002`: Logout & Session Revocation

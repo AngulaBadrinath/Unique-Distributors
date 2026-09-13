@@ -205,10 +205,10 @@ export default function InventoryIndex({
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                                 Physical On-Hand
                             </span>
-                            <Boxes className="h-4 w-4 text-blue-500" />
+                            <Boxes className="h-4 w-4 text-action-accent" />
                         </div>
                         <div className="mt-1.5 flex items-baseline gap-1.5">
-                            <span className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                            <span className="text-xl font-bold text-foreground">
                                 {metrics.total_on_hand_units.toLocaleString()}
                             </span>
                             <span className="text-[10px] text-muted-foreground">units</span>

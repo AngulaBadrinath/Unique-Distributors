@@ -187,7 +187,7 @@ export default function CustomerReport({ report, filters }: Props) {
                     <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Customers in Scope</span>
-                            <div className="rounded-md bg-blue-500/10 p-2 text-blue-600">
+                            <div className="rounded-md bg-action-accent/10 p-2 text-action-accent">
                                 <Building2 className="h-4 w-4" />
                             </div>
                         </div>

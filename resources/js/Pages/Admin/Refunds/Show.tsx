@@ -528,7 +528,7 @@ export default function Show({ refundRequest }: Props) {
                             </div>
                             <Link
                                 href={`/admin/credits/${refundRequest.credit_note.id}`}
-                                className="text-xs font-semibold text-blue-600 hover:underline"
+                                className="text-xs font-semibold text-action-accent hover:underline"
                             >
                                 View Full Credit Note →
                             </Link>
