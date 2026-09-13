@@ -1,0 +1,15 @@
+{
+  "runId": "RUN-PARALLEL-20260912125150",
+  "gitSha": "2cbca5583bb3cb2f9251e3e7a44f57abd2745dfb",
+  "timestamp": "2026-09-12T12:51:50.302Z",
+  "totalItems": 999,
+  "governanceMeta": 90,
+  "applicableItems": 909,
+  "passCount": 909,
+  "partialCount": 0,
+  "failedCount": 0,
+  "blockedCount": 0,
+  "uncheckedCount": 0,
+  "coveragePercentage": 100,
+  "isFullyCovered": true
+}

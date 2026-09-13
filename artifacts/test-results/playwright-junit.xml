@@ -1,0 +1,949 @@
+<testsuites id="" name="" tests="35" failures="0" skipped="0" errors="19" time="705.477771">
+<testsuite name="audit\01_auth_shell_roles.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="7" failures="0" skipped="0" time="334.024" errors="7">
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.1 Invalid login and suspended account rejection" classname="audit\01_auth_shell_roles.spec.ts" time="50.14">
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:9:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.1 Invalid login and suspended account rejection 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-0\traces\ae0a1dc1e5e05fb2aee8-fbb49865233cb5f9e53d-recording1.network' -> 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-0\traces\ae0a1dc1e5e05fb2aee8-fbb49865233cb5f9e53d-recording1-pwnetcopy-1.network'
+
+    Error: browserContext._wrapApiCall: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-0\traces\ae0a1dc1e5e05fb2aee8-fbb49865233cb5f9e53d.network'
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+      - navigating to "http://localhost:8000/login", waiting until "load"
+
+
+      22 |
+      23 |         // 2. Suspended account
+    > 24 |         await page.goto('/login');
+         |                    ^
+      25 |         await page.fill('input[type="email"]', QA_USER_CREDENTIALS.SUSPENDED.email);
+      26 |         await page.fill('input[type="password"]', QA_USER_CREDENTIALS.SUSPENDED.password);
+      27 |         await page.click('button[type="submit"]');
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:24:20
+
+    Error: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-0\54a51b4fa5bc89352dacdb67d49aaa55.zip'
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.2 Salesman login and operational shell" classname="audit\01_auth_shell_roles.spec.ts" time="45.09">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--d3c2e-login-and-operational-shell-audit-e2e\test-failed-1.png]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:33:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.2 Salesman login and operational shell 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-2\traces\ae0a1dc1e5e05fb2aee8-51644cfbb31b3bf94946-recording1.network' -> 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-2\traces\ae0a1dc1e5e05fb2aee8-51644cfbb31b3bf94946-recording1-pwnetcopy-1.network'
+
+    Error: browserContext._wrapApiCall: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-2\traces\ae0a1dc1e5e05fb2aee8-51644cfbb31b3bf94946.network'
+
+    Error: locator.waitFor: Test ended.
+    Call log:
+      - waiting for locator('input[type="email"], input[name="email"]') to be visible
+
+
+       at helpers\auth.ts:117
+
+      115 |             gotoAttempts++;
+      116 |             if (gotoAttempts >= 4) throw err;
+    > 117 |             await page.waitForTimeout(1000);
+          |                                                                        ^
+      118 |         }
+      119 |     }
+      120 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:117:72)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:35:9
+
+    Error: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-2\cbed3a7f1357e0a31c9d4c7b0493f1b5.zip'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--d3c2e-login-and-operational-shell-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.3 Warehouse Manager login and inventory shell" classname="audit\01_auth_shell_roles.spec.ts" time="47.885">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--2d078-r-login-and-inventory-shell-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--2d078-r-login-and-inventory-shell-audit-e2e\error-context.md]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:48:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.3 Warehouse Manager login and inventory shell 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.click: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        17 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:50:9
+
+    Error: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-4\b0208e71b6f22dc5c7e47c8373772ecc.zip'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--2d078-r-login-and-inventory-shell-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--2d078-r-login-and-inventory-shell-audit-e2e\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.4 Delivery Partner login and delivery shell" classname="audit\01_auth_shell_roles.spec.ts" time="47.33">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:61:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.4 Delivery Partner login and delivery shell 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: page.waitForTimeout: Target page, context or browser has been closed
+
+       at helpers\auth.ts:151
+
+      149 |                 throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${page.url()}. Page alert: "${alertText?.trim()}"`);
+      150 |             }
+    > 151 |             await page.waitForTimeout(1000);
+          |                        ^
+      152 |         }
+      153 |     }
+      154 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:151:24)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:62:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--653e0-er-login-and-delivery-shell-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.5 Accountant login and financial shell" classname="audit\01_auth_shell_roles.spec.ts" time="48.453">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="[AuthHelper] Login failed for ACCOUNTANT (accountant.qa@example.test). Still on http://localhost:8000/login/mfa" type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:69:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.5 Accountant login and financial shell 
+
+    Error: [AuthHelper] Login failed for ACCOUNTANT (accountant.qa@example.test). Still on http://localhost:8000/login/mfa
+
+       at helpers\auth.ts:216
+
+      214 |     const finalUrl = page.url();
+      215 |     if (finalUrl.includes('/login')) {
+    > 216 |         throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${finalUrl}`);
+          |               ^
+      217 |     }
+      218 | }
+      219 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:216:15)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:70:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--a3537-t-login-and-financial-shell-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.6 Admin login and operations shell" classname="audit\01_auth_shell_roles.spec.ts" time="46.983">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:82:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.6 Admin login and operations shell 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: page.waitForTimeout: Target page, context or browser has been closed
+
+       at helpers\auth.ts:151
+
+      149 |                 throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${page.url()}. Page alert: "${alertText?.trim()}"`);
+      150 |             }
+    > 151 |             await page.waitForTimeout(1000);
+          |                        ^
+      152 |         }
+      153 |     }
+      154 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:151:24)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:83:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--0823a--login-and-operations-shell-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.7 Field roles blocked from unauthorized administrative workspaces" classname="audit\01_auth_shell_roles.spec.ts" time="48.143">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\test-failed-1.png]]
+]]>
+</system-out>
+<system-err>
+<![CDATA[
+Warning: attachment ..\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\error-context.md is missing
+Warning: attachment ..\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\trace.zip is missing]]>
+</system-err>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\01_auth_shell_roles.spec.ts:96:5 › Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries › 1.7 Field roles blocked from unauthorized administrative workspaces 
+
+    Test timeout of 45000ms exceeded.
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        25 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\01_auth_shell_roles.spec.ts:97:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-01_auth_shell_roles--7f9a8-d-administrative-workspaces-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\02_customers_and_scoping.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="96.944" errors="2">
+<testcase name="Audit Phase 3: Customer Domain &amp; Salesman Scoping › 3.1 Admin customer listing, search, and details view" classname="audit\02_customers_and_scoping.spec.ts" time="51.861">
+<system-err>
+<![CDATA[
+Warning: attachment ..\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\test-failed-1.png is missing
+Warning: attachment ..\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\error-context.md is missing
+Warning: attachment ..\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\trace.zip is missing]]>
+</system-err>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\02_customers_and_scoping.spec.ts:9:5 › Audit Phase 3: Customer Domain & Salesman Scoping › 3.1 Admin customer listing, search, and details view 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: page.waitForTimeout: Target page, context or browser has been closed
+
+       at helpers\auth.ts:198
+
+      196 |                 try {
+      197 |                     await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 10000 });
+    > 198 |                     mfaSuccess = true;
+          |                                    ^
+      199 |                     break;
+      200 |                 } catch {
+      201 |                     // Check if error message appeared or still on /login/mfa
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:198:36)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\02_customers_and_scoping.spec.ts:11:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-02_customers_and_sco-81cba-ing-search-and-details-view-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 3: Customer Domain &amp; Salesman Scoping › 3.2 Salesman customer scoping and cross-salesman anti-IDOR enforcement" classname="audit\02_customers_and_scoping.spec.ts" time="45.083">
+<system-err>
+<![CDATA[
+Warning: attachment ..\browser\test-results\audit-02_customers_and_sco-6543f-esman-anti-IDOR-enforcement-audit-e2e\test-failed-1.png is missing]]>
+</system-err>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\02_customers_and_scoping.spec.ts:44:5 › Audit Phase 3: Customer Domain & Salesman Scoping › 3.2 Salesman customer scoping and cross-salesman anti-IDOR enforcement 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-3\traces\1c42d0b924785b5663bf-fe267a8a80f94acaba10-recording1.network' -> 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-3\traces\1c42d0b924785b5663bf-fe267a8a80f94acaba10-recording1-pwnetcopy-1.network'
+
+    Error: browserContext._wrapApiCall: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-3\traces\1c42d0b924785b5663bf-fe267a8a80f94acaba10.network'
+
+    Error: locator.waitFor: Test ended.
+    Call log:
+      - waiting for locator('input[type="email"], input[name="email"]') to be visible
+
+
+       at helpers\auth.ts:117
+
+      115 |             gotoAttempts++;
+      116 |             if (gotoAttempts >= 4) throw err;
+    > 117 |             await page.waitForTimeout(1000);
+          |                                                                        ^
+      118 |         }
+      119 |     }
+      120 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:117:72)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\02_customers_and_scoping.spec.ts:48:9
+
+    Error: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-3\5a107e7afb13cb296f845c0b3db2fc22.zip'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-02_customers_and_sco-6543f-esman-anti-IDOR-enforcement-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\03_products_pricing_tax.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="81.104" errors="2">
+<testcase name="Audit Phase 4: Product Master, Categories, Pricing &amp; Tax Invariants › 4.1 Categories management and product catalogue browsing" classname="audit\03_products_pricing_tax.spec.ts" time="35.445">
+<system-err>
+<![CDATA[
+Warning: attachment ..\browser\test-results\audit-03_products_pricing_-d772a--product-catalogue-browsing-audit-e2e\test-failed-1.png is missing
+Warning: attachment ..\browser\test-results\audit-03_products_pricing_-d772a--product-catalogue-browsing-audit-e2e\error-context.md is missing]]>
+</system-err>
+<error message="locator.waitFor: Timeout 15000ms exceeded." type="TimeoutError">
+<![CDATA[  [audit-e2e] › audit\03_products_pricing_tax.spec.ts:9:5 › Audit Phase 4: Product Master, Categories, Pricing & Tax Invariants › 4.1 Categories management and product catalogue browsing 
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('input[type="email"], input[name="email"]') to be visible
+
+
+       at helpers\auth.ts:122
+
+      120 |
+      121 |     for (let attempt = 1; attempt <= 3; attempt++) {
+    > 122 |         await page.locator('input[type="email"], input[name="email"]').waitFor({ state: 'visible', timeout: 15000 });
+          |                                                                        ^
+      123 |         await page.waitForTimeout(200);
+      124 |
+      125 |         const emailInput = page.locator('input#email, input[name="email"], input[type="email"]').first();
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:122:72)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\03_products_pricing_tax.spec.ts:11:9
+
+    Error: ENOENT: no such file or directory, open 'F:\Wholesale Distribution Management System\artifacts\browser\test-results\.playwright-artifacts-5\22ecc7c940d26fdc10ec005e00cb2da4.zip'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-03_products_pricing_-d772a--product-catalogue-browsing-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-03_products_pricing_-d772a--product-catalogue-browsing-audit-e2e\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 4: Product Master, Categories, Pricing &amp; Tax Invariants › 4.2 Field roles catalog read-only and price edit restrictions" classname="audit\03_products_pricing_tax.spec.ts" time="45.659">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\03_products_pricing_tax.spec.ts:44:5 › Audit Phase 4: Product Master, Categories, Pricing & Tax Invariants › 4.2 Field roles catalog read-only and price edit restrictions 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: page.waitForTimeout: Target page, context or browser has been closed
+
+       at helpers\auth.ts:151
+
+      149 |                 throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${page.url()}. Page alert: "${alertText?.trim()}"`);
+      150 |             }
+    > 151 |             await page.waitForTimeout(1000);
+          |                        ^
+      152 |         }
+      153 |     }
+      154 |
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:151:24)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\03_products_pricing_tax.spec.ts:46:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-03_products_pricing_-65505-and-price-edit-restrictions-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\04_salesman_new_order.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="103.958" errors="2">
+<testcase name="Audit Phase 5: Flagship — Salesman New Sales Order &amp; Drafts › 5.1 Salesman New Order UI, customer scoping, and review calculation stability" classname="audit\04_salesman_new_order.spec.ts" time="57.529">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\04_salesman_new_order.spec.ts:9:5 › Audit Phase 5: Flagship — Salesman New Sales Order & Drafts › 5.1 Salesman New Order UI, customer scoping, and review calculation stability 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.click: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        18 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\04_salesman_new_order.spec.ts:11:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-d4dd7-eview-calculation-stability-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 5: Flagship — Salesman New Sales Order &amp; Drafts › 5.2 Cross-Salesman Order IDOR is strictly rejected" classname="audit\04_salesman_new_order.spec.ts" time="46.429">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\04_salesman_new_order.spec.ts:36:5 › Audit Phase 5: Flagship — Salesman New Sales Order & Drafts › 5.2 Cross-Salesman Order IDOR is strictly rejected 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.click: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        8 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\04_salesman_new_order.spec.ts:38:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-04_salesman_new_orde-daaf6-r-IDOR-is-strictly-rejected-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\05_admin_orders_adjustments_inventory.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="46.422" errors="1">
+<testcase name="Audit Phase 6: Admin Order Operations, Adjustments, and Inventory › 6.1 Admin Order Queue and Review Workspace" classname="audit\05_admin_orders_adjustments_inventory.spec.ts" time="46.422">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="locator.click: Timeout 15000ms exceeded." type="TimeoutError">
+<![CDATA[  [audit-e2e] › audit\05_admin_orders_adjustments_inventory.spec.ts:9:5 › Audit Phase 6: Admin Order Operations, Adjustments, and Inventory › 6.1 Admin Order Queue and Review Workspace 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        26 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\05_admin_orders_adjustments_inventory.spec.ts:11:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-05_admin_orders_adju-8b96d--Queue-and-Review-Workspace-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\06_payments_verification.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="67.865" errors="1">
+<testcase name="Audit Phase 7: Payment Lifecycle &amp; Verification › 7.1 Admin / Accountant Payment Verification Workspace" classname="audit\06_payments_verification.spec.ts" time="42.375">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="locator.click: Timeout 15000ms exceeded." type="TimeoutError">
+<![CDATA[  [audit-e2e] › audit\06_payments_verification.spec.ts:9:5 › Audit Phase 7: Payment Lifecycle & Verification › 7.1 Admin / Accountant Payment Verification Workspace 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('button[type="submit"]')
+        - locator resolved to <button disabled type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full text-xs font-semibold h-10 mt-2">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        22 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+       at helpers\auth.ts:141
+
+      139 |
+      140 |         const submitBtn = page.locator('button[type="submit"]');
+    > 141 |         await submitBtn.click();
+          |                         ^
+      142 |
+      143 |         try {
+      144 |             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:141:25)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\06_payments_verification.spec.ts:11:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-06_payments_verifica-0ff7a-ment-Verification-Workspace-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 7: Payment Lifecycle &amp; Verification › 7.2 Salesman payment verification access restriction" classname="audit\06_payments_verification.spec.ts" time="25.49">
+</testcase>
+</testsuite>
+<testsuite name="audit\07_accounts_receivable.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="46.586" errors="1">
+<testcase name="Audit Phase 8: Accounts Receivable (Deepest Section) › 8.1 AR Overview Dashboard loads with 200, valid aging, and no transaction aborts" classname="audit\07_accounts_receivable.spec.ts" time="46.586">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\07_accounts_receivable.spec.ts:9:5 › Audit Phase 8: Accounts Receivable (Deepest Section) › 8.1 AR Overview Dashboard loads with 200, valid aging, and no transaction aborts 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: page.waitForTimeout: Target page, context or browser has been closed
+
+       at helpers\auth.ts:203
+
+      201 |                     // Check if error message appeared or still on /login/mfa
+      202 |                     if (page.url().includes('/login')) {
+    > 203 |                         await page.waitForTimeout(1500);
+          |                                    ^
+      204 |                     } else {
+      205 |                         mfaSuccess = true;
+      206 |                         break;
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:203:36)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\07_accounts_receivable.spec.ts:11:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-07_accounts_receivab-502a2-g-and-no-transaction-aborts-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\08_ap_and_accounting.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="64.166" errors="0">
+<testcase name="Audit Phase 9: Accounts Payable and General Ledger Accounting › 9.1 Accounts Payable workspace and supplier liabilities" classname="audit\08_ap_and_accounting.spec.ts" time="26.247">
+</testcase>
+<testcase name="Audit Phase 9: Accounts Payable and General Ledger Accounting › 9.2 General Ledger, Trial Balance, Chart of Accounts, and Financial Statements" classname="audit\08_ap_and_accounting.spec.ts" time="37.919">
+</testcase>
+</testsuite>
+<testsuite name="audit\09_delivery_returns_credits.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="49.769" errors="0">
+<testcase name="Audit Phase 10: Delivery, Returns, Credits &amp; Refunds › 10.1 Delivery Partner operations and touch-ready dashboard" classname="audit\09_delivery_returns_credits.spec.ts" time="24.081">
+</testcase>
+<testcase name="Audit Phase 10: Delivery, Returns, Credits &amp; Refunds › 10.2 Admin returns management, credits, and refunds queues" classname="audit\09_delivery_returns_credits.spec.ts" time="25.688">
+</testcase>
+</testsuite>
+<testsuite name="audit\10_invoices_reports_notifications.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="64.491" errors="1">
+<testcase name="Audit Phase 11: Invoices, Reports, and Notifications › 11.1 Invoice presentation and strict zero-product-image invariant" classname="audit\10_invoices_reports_notifications.spec.ts" time="17.235">
+</testcase>
+<testcase name="Audit Phase 11: Invoices, Reports, and Notifications › 11.2 Reporting modules and role access boundaries" classname="audit\10_invoices_reports_notifications.spec.ts" time="47.256">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\10_invoices_reports_notifications.spec.ts:34:5 › Audit Phase 11: Invoices, Reports, and Notifications › 11.2 Reporting modules and role access boundaries 
+
+    Test timeout of 45000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-10_invoices_reports_-bf9a5--and-role-access-boundaries-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\11_security_idor_matrix.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="62.945" errors="1">
+<testcase name="Audit Phase 12: Security, Authorization &amp; Anti-IDOR Abuse Matrix › 12.1 Unauthenticated guests redirected to login on protected routes" classname="audit\11_security_idor_matrix.spec.ts" time="26.488">
+</testcase>
+<testcase name="Audit Phase 12: Security, Authorization &amp; Anti-IDOR Abuse Matrix › 12.2 Privilege separation across specialized roles" classname="audit\11_security_idor_matrix.spec.ts" time="36.457">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="locator.click: Timeout 15000ms exceeded." type="TimeoutError">
+<![CDATA[  [audit-e2e] › audit\11_security_idor_matrix.spec.ts:25:5 › Audit Phase 12: Security, Authorization & Anti-IDOR Abuse Matrix › 12.2 Privilege separation across specialized roles 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('input#password, input[name="password"], input[type="password"]').first()
+
+
+       at helpers\auth.ts:134
+
+      132 |         await page.waitForTimeout(100);
+      133 |
+    > 134 |         await passwordInput.click();
+          |                             ^
+      135 |         await passwordInput.fill(creds.password);
+      136 |         await passwordInput.dispatchEvent('input');
+      137 |         await passwordInput.dispatchEvent('change');
+        at loginAs (F:\Wholesale Distribution Management System\tests\browser\helpers\auth.ts:134:29)
+        at F:\Wholesale Distribution Management System\tests\browser\audit\11_security_idor_matrix.spec.ts:28:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-11_security_idor_mat-948cc-on-across-specialized-roles-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="audit\12_responsive_and_a11y.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="51.487" errors="1">
+<testcase name="Audit Phase 13: Responsive Breakpoints Matrix &amp; Accessibility › 13.1 Systematic 11-breakpoint responsive rendering on core workspaces" classname="audit\12_responsive_and_a11y.spec.ts" time="47.448">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\test-failed-1.png]]
+
+[[ATTACHMENT|..\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\error-context.md]]
+
+[[ATTACHMENT|..\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\trace.zip]]
+]]>
+</system-out>
+<error message="Test timeout of 45000ms exceeded." type="Error">
+<![CDATA[  [audit-e2e] › audit\12_responsive_and_a11y.spec.ts:10:5 › Audit Phase 13: Responsive Breakpoints Matrix & Accessibility › 13.1 Systematic 11-breakpoint responsive rendering on core workspaces 
+
+    Test timeout of 45000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\artifacts\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\artifacts\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\artifacts\browser\test-results\audit-12_responsive_and_a1-20e10-endering-on-core-workspaces-audit-e2e\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</error>
+</testcase>
+<testcase name="Audit Phase 13: Responsive Breakpoints Matrix &amp; Accessibility › 13.2 Keyboard accessibility (Tab navigation and Escape dismiss)" classname="audit\12_responsive_and_a11y.spec.ts" time="4.039">
+</testcase>
+</testsuite>
+<testsuite name="audit\13_regression_e2e_financial.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="36.926" errors="0">
+<testcase name="Audit Phase 14: Recent-Fix Regression &amp; Cross-Module Financial Verification › 14.1 Re-verifying recent fixes across Salesman, AR, and Adjustments" classname="audit\13_regression_e2e_financial.spec.ts" time="36.926">
+</testcase>
+</testsuite>
+<testsuite name="responsive\keyboard-a11y.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="responsive" tests="1" failures="0" skipped="0" time="5.461" errors="0">
+<testcase name="Accessibility &amp; Keyboard Navigation › Verifies Tab focus sequence and visible interactive elements" classname="responsive\keyboard-a11y.spec.ts" time="5.461">
+</testcase>
+</testsuite>
+<testsuite name="responsive\network-console-check.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="responsive" tests="1" failures="0" skipped="0" time="28.271" errors="0">
+<testcase name="Runtime Console and Network Health Check › Verifies no uncaught errors or 500 status on critical admin &amp; salesman routes" classname="responsive\network-console-check.spec.ts" time="28.271">
+</testcase>
+</testsuite>
+<testsuite name="responsive\viewport-matrix.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="responsive" tests="1" failures="0" skipped="0" time="44.975" errors="0">
+<testcase name="Responsive Viewport Matrix Verification › Verifies no horizontal overflow across 11 breakpoints" classname="responsive\viewport-matrix.spec.ts" time="44.975">
+</testcase>
+</testsuite>
+<testsuite name="security\idor-matrix.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="security" tests="2" failures="0" skipped="0" time="30.616" errors="0">
+<testcase name="E2E Security &amp; Anti-IDOR Matrix › Unauthenticated guest cannot access protected administrative workspaces" classname="security\idor-matrix.spec.ts" time="13.12">
+</testcase>
+<testcase name="E2E Security &amp; Anti-IDOR Matrix › Specialized role boundary enforcement" classname="security\idor-matrix.spec.ts" time="17.496">
+</testcase>
+</testsuite>
+<testsuite name="visual\visual-baselines.spec.ts" timestamp="2026-09-12T12:45:51.130Z" hostname="visual" tests="2" failures="0" skipped="0" time="19.475" errors="0">
+<testcase name="Visual Regression Baseline Capture › Captures login page visual snapshot" classname="visual\visual-baselines.spec.ts" time="5.938">
+</testcase>
+<testcase name="Visual Regression Baseline Capture › Captures admin dashboard visual snapshot" classname="visual\visual-baselines.spec.ts" time="13.537">
+</testcase>
+</testsuite>
+</testsuites>

@@ -16,7 +16,12 @@
         "browser:qa": "node tests/browser/interactive/cli.ts",
         "browser:open": "node --no-warnings tests/browser/interactive/launch-chrome.ts",
         "browser:mcp": "node --no-warnings tests/browser/interactive/mcp-server.ts",
-        "test:mcp": "node --no-warnings tests/browser/interactive/mcp-test.ts"
+        "test:mcp": "node --no-warnings tests/browser/interactive/mcp-test.ts",
+        "test:parallel": "node scripts/run-parallel-tests.js",
+        "test:coverage": "node scripts/validate-coverage-gate.js",
+        "test:failed": "node scripts/rerun-failed-tests.js",
+        "test:report": "node scripts/generate-dashboard-report.js",
+        "test:release": "node scripts/run-release-gate.js"
     },
     "devDependencies": {
         "@modelcontextprotocol/sdk": "^1.30.0",

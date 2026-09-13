@@ -70,14 +70,19 @@ export const QA_USER_CREDENTIALS: Record<UserRole, UserCredential> = {
     },
 };
 
+const mfaSecretCache: Record<string, string> = {};
+
 /**
  * Retrieve the TOTP secret for a user if already enrolled in the local database.
  */
 function getStoredUserMfaSecret(email: string): string {
+    if (mfaSecretCache[email]) return mfaSecretCache[email];
     try {
         const cmd = `php artisan tinker --execute="echo \\App\\Models\\User::where('email', '${email}')->value('two_factor_secret');"`;
         const output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
-        return output.trim().replace(/[^A-Za-z0-9]/g, '');
+        const secret = output.trim().replace(/[^A-Za-z0-9]/g, '');
+        if (secret) mfaSecretCache[email] = secret;
+        return secret;
     } catch {
         return '';
     }

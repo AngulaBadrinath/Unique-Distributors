@@ -22,10 +22,12 @@ export default defineConfig({
     },
     fullyParallel: false,
     retries: process.env.CI ? 1 : 0,
-    workers: 1,
+    workers: process.env.CI ? 2 : (process.env.WORKERS ? parseInt(process.env.WORKERS) : 2),
     reporter: [
         ['list'],
         ['html', { outputFolder: 'artifacts/browser/playwright-report', open: 'never' }],
+        ['json', { outputFile: 'artifacts/test-results/playwright-results.json' }],
+        ['junit', { outputFile: 'artifacts/test-results/playwright-junit.xml' }],
     ],
     outputDir: 'artifacts/browser/test-results',
     use: {
@@ -50,7 +52,29 @@ export default defineConfig({
     },
     projects: [
         {
-            name: 'Local Chromium / Chrome',
+            name: 'audit-e2e',
+            testMatch: /tests\/browser\/audit\/.*\.spec\.ts/,
+            use: {
+                viewport: { width: 1440, height: 900 },
+            },
+        },
+        {
+            name: 'responsive',
+            testMatch: /tests\/browser\/responsive\/.*\.spec\.ts/,
+            use: {
+                viewport: { width: 1440, height: 900 },
+            },
+        },
+        {
+            name: 'security',
+            testMatch: /tests\/browser\/security\/.*\.spec\.ts/,
+            use: {
+                viewport: { width: 1440, height: 900 },
+            },
+        },
+        {
+            name: 'visual',
+            testMatch: /tests\/browser\/visual\/.*\.spec\.ts/,
             use: {
                 viewport: { width: 1440, height: 900 },
             },

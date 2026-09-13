@@ -1,0 +1,26 @@
+{
+  "runId": "RUN-PARALLEL-20260912125150",
+  "gitSha": "2cbca5583bb3cb2f9251e3e7a44f57abd2745dfb",
+  "timestamp": "2026-09-12T12:51:50.302Z",
+  "totalExecutionTimeSeconds": 38.4,
+  "workerExecutionTimes": {
+    "worker-1": 14.2,
+    "worker-2": 12.8,
+    "worker-3": 15.6,
+    "worker-4": 11.3
+  },
+  "slowestSuites": [
+    {
+      "suite": "Playwright Audit E2E (Shard 3)",
+      "durationSeconds": 15.6
+    },
+    {
+      "suite": "Playwright Audit E2E (Shard 1)",
+      "durationSeconds": 14.2
+    },
+    {
+      "suite": "PHPUnit Feature Workflows",
+      "durationSeconds": 8.5
+    }
+  ]
+}

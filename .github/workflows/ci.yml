@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Parallel CI & Quality Gate Pipeline
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   backend-tests:
-    name: Backend Tests (PHP 8.5 & Laravel 13)
+    name: Backend Tests (PHP 8.5 & PostgreSQL 18)
     runs-on: ubuntu-latest
 
     services:
@@ -84,7 +84,7 @@ jobs:
       - name: Execute Full PHPUnit Suite
         run: php artisan test
 
-  frontend-checks:
+  frontend-build:
     name: Frontend Type Check & Build
     runs-on: ubuntu-latest
 
@@ -106,3 +106,104 @@ jobs:
 
       - name: Vite Production Build
         run: npm run build
+
+  playwright-parallel-shards:
+    name: Playwright Shard (${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-build]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: wdms_test
+          POSTGRES_USER: wdms_user
+          POSTGRES_PASSWORD: wdms_secret
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP & Node.js
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo, pdo_pgsql, pgsql, zip, bcmath, intl
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install PHP & Node Dependencies
+        run: |
+          composer install --prefer-dist --no-interaction
+          npm ci
+
+      - name: Install Playwright Browsers (CI Headless Chromium)
+        run: npx playwright install chromium --with-deps
+
+      - name: Start Application Server
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: wdms_test
+          DB_USERNAME: wdms_user
+          DB_PASSWORD: wdms_secret
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan migrate --seed --force
+          npm run build
+          php artisan serve --host=127.0.0.1 --port=8000 &
+
+      - name: Execute Playwright Shard
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8000
+          HEADLESS: 'true'
+        run: npx playwright test --shard=${{ matrix.shard }}
+
+      - name: Upload Shard Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-shard-${{ strategy.job-index }}
+          path: artifacts/test-results/
+          retention-days: 7
+
+  release-coverage-gate:
+    name: Central Aggregation & 909/909 Gate
+    runs-on: ubuntu-latest
+    needs: [playwright-parallel-shards]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Aggregate Parallel Results
+        run: node scripts/aggregate-parallel-results.js
+
+      - name: Execute Master Checklist Coverage Gate
+        run: node scripts/validate-coverage-gate.js
+
+      - name: AI Diagnostic Health Verification
+        run: node scripts/ai-failure-triage.js
