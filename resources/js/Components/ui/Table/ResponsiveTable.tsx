@@ -218,14 +218,14 @@ export function ResponsiveTable<T>({
     return (
         <div className={cn('space-y-3', containerClassName)}>
             {/* Desktop and Tablet Data Table (>= 768px) */}
-            <div className="hidden md:block rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+            <div className="hidden md:block rounded-2xl border border-white/8 bg-dark-surface shadow-neu-dark overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className={cn('w-full text-sm text-left border-collapse', className)}>
                         {/* Table Header */}
                         <thead
                             className={cn(
-                                'text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-muted/40 border-b border-border',
-                                stickyHeader ? 'sticky top-0 z-10 backdrop-blur-md bg-muted/90' : ''
+                                'text-[11px] font-semibold text-muted-foreground uppercase tracking-wider bg-dark-surface-elevated/90 border-b border-white/8',
+                                stickyHeader ? 'sticky top-0 z-10 backdrop-blur-md bg-dark-surface-elevated/95' : ''
                             )}
                         >
                             <tr>
@@ -238,7 +238,7 @@ export function ResponsiveTable<T>({
                                                 if (el) el.indeterminate = someSelected;
                                             }}
                                             onChange={(e) => handleSelectAll(e.target.checked)}
-                                            className="h-4 w-4 rounded border-input text-primary focus:ring-primary/20 cursor-pointer"
+                                            className="h-4 w-4 rounded border-white/20 bg-dark-canvas text-action-accent focus:ring-action-accent/30 cursor-pointer"
                                             aria-label="Select all rows"
                                         />
                                     </th>
@@ -254,10 +254,10 @@ export function ResponsiveTable<T>({
                                             scope="col"
                                             onClick={() => handleHeaderClick(col)}
                                             className={cn(
-                                                'px-4 py-3 text-xs select-none',
+                                                'px-4 py-3 text-[11px] select-none font-semibold text-muted-foreground/90 font-mono tracking-wider',
                                                 col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left',
                                                 col.hiddenOnTablet ? 'hidden lg:table-cell' : '',
-                                                col.sortable ? 'cursor-pointer hover:text-foreground hover:bg-muted/70 transition-colors' : '',
+                                                col.sortable ? 'cursor-pointer hover:text-white hover:bg-white/5 transition-colors' : '',
                                                 col.className
                                             )}
                                         >
@@ -272,9 +272,9 @@ export function ResponsiveTable<T>({
                                                     <span className="text-muted-foreground/60">
                                                         {isSorted ? (
                                                             sortDirection === 'asc' ? (
-                                                                <ArrowUp className="w-3.5 h-3.5 text-primary" />
+                                                                <ArrowUp className="w-3.5 h-3.5 text-action-accent" />
                                                             ) : (
-                                                                <ArrowDown className="w-3.5 h-3.5 text-primary" />
+                                                                <ArrowDown className="w-3.5 h-3.5 text-action-accent" />
                                                             )
                                                         ) : (
                                                             <ArrowUpDown className="w-3.5 h-3.5 opacity-40 hover:opacity-100" />
@@ -287,7 +287,7 @@ export function ResponsiveTable<T>({
                                 })}
 
                                 {renderRowActions && (
-                                    <th scope="col" className="px-4 py-3 text-right w-24">
+                                    <th scope="col" className="px-4 py-3 text-right w-24 text-[11px] font-semibold text-muted-foreground/90">
                                         Actions
                                     </th>
                                 )}
@@ -295,7 +295,7 @@ export function ResponsiveTable<T>({
                         </thead>
 
                         {/* Table Body */}
-                        <tbody className="divide-y divide-border bg-card">
+                        <tbody className="divide-y divide-white/5 bg-dark-surface">
                             {data.map((item, rowIdx) => {
                                 const key = keyExtractor(item);
                                 const isSelected = selectedKeys.includes(key);
@@ -305,8 +305,8 @@ export function ResponsiveTable<T>({
                                         key={key}
                                         onClick={onRowClick ? () => onRowClick(item) : undefined}
                                         className={cn(
-                                            'transition-colors hover:bg-muted/40',
-                                            isSelected ? 'bg-primary/5 dark:bg-primary/10' : '',
+                                            'transition-colors hover:bg-white/4',
+                                            isSelected ? 'bg-cyan-500/10 text-cyan-300 font-medium' : '',
                                             onRowClick ? 'cursor-pointer' : ''
                                         )}
                                     >

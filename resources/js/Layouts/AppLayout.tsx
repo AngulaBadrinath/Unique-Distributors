@@ -119,13 +119,13 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 href={href}
                 onClick={() => setSidebarOpen(false)}
                 title={sidebarCollapsed ? label : undefined}
-                className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
+                className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-150 ${
                     active
-                        ? 'bg-primary/10 text-primary font-semibold'
-                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                        ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
+                        : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
                 } ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
             >
-                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
+                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-action-accent' : 'text-brand-muted group-hover:text-brand-foreground'}`}>
                     {icon}
                 </div>
                 {!sidebarCollapsed && <span className="truncate">{label}</span>}
@@ -147,22 +147,22 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             <div className="flex flex-1 w-full min-w-0">
                 {/* Sidebar Navigation */}
                 <aside
-                    className={`fixed inset-y-0 left-0 z-50 border-r border-border bg-card flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-50 border-r border-brand-border bg-brand text-brand-foreground flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'
                     } ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}`}
                 >
                     {/* Brand header */}
-                    <div className="h-16 flex items-center justify-between px-4 border-b border-border bg-card">
+                    <div className="h-16 flex items-center justify-between px-4 border-b border-brand-border bg-brand">
                         <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-semibold text-sm tracking-tight shadow-xs">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-action-accent text-white font-semibold text-sm tracking-tight shadow-neu">
                                 {initials}
                             </div>
                             {!sidebarCollapsed && (
                                 <div className="flex flex-col min-w-0">
-                                    <span className="font-semibold text-xs leading-tight truncate text-foreground">
+                                    <span className="font-semibold text-xs leading-tight truncate text-brand-foreground">
                                         {displayName}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground font-mono truncate">
+                                    <span className="text-[10px] text-brand-muted font-mono truncate">
                                         {displayCompany}
                                     </span>
                                 </div>
@@ -171,7 +171,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         <button
                             type="button"
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+                            className="lg:hidden rounded-lg p-1.5 text-brand-muted hover:bg-brand-hover hover:text-brand-foreground cursor-pointer"
                             aria-label="Close navigation"
                         >
                             <X className="h-5 w-5" />
@@ -189,7 +189,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasInvoiceView) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
                                         Sales & Operations
                                     </div>
                                 )}
@@ -208,7 +208,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasCustomerView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
                                         Customer Accounts
                                     </div>
                                 )}
@@ -223,7 +223,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasProductView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
                                         Product Master
                                     </div>
                                 )}
@@ -239,7 +239,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasInventoryView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
                                         Warehouse Inventory
                                     </div>
                                 )}
@@ -254,7 +254,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasPaymentVerify || hasCreditView || hasReceivableView || hasPayableView) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
                                         Payments & Subledgers
                                     </div>
                                 )}
@@ -355,18 +355,18 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </div>
 
                     {/* Sidebar Footer with Collapse Toggle */}
-                    <div className="p-3 border-t border-border bg-muted/20 flex items-center justify-between text-xs">
+                    <div className="p-3 border-t border-white/6 bg-dark-canvas/50 flex items-center justify-between text-xs">
                         {!sidebarCollapsed && (
-                            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span>Platform Operational</span>
+                            <div className="flex items-center gap-1.5 text-emerald-400 font-medium text-[11px]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse glow-cyan-subtle" />
+                                <span className="text-slate-300">Platform Operational</span>
                             </div>
                         )}
                         <button
                             type="button"
                             onClick={toggleSidebarCollapse}
                             title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors ${
+                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-xl border border-white/10 bg-dark-surface-elevated hover:bg-white/10 text-muted-foreground hover:text-white transition-colors cursor-pointer ${
                                 sidebarCollapsed ? 'mx-auto' : ''
                             }`}
                         >
@@ -376,14 +376,14 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 </aside>
 
                 {/* Main Content Area */}
-                <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+                <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden bg-dark-canvas">
                     {/* Top App Header */}
-                    <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+                    <header className="h-16 border-b border-white/7 glass-header-dark px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-neu-dark">
                         <div className="flex items-center gap-3 min-w-0">
                             <button
                                 type="button"
                                 onClick={() => setSidebarOpen(true)}
-                                className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                className="lg:hidden rounded-xl p-1.5 text-muted-foreground hover:bg-white/10 hover:text-white"
                                 aria-label="Open navigation"
                             >
                                 <Menu className="h-5 w-5" />
@@ -394,20 +394,20 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                                     <nav className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
                                         {breadcrumbs.map((b, idx) => (
                                             <React.Fragment key={idx}>
-                                                {idx > 0 && <span className="opacity-50">/</span>}
+                                                {idx > 0 && <span className="opacity-40">/</span>}
                                                 {b.href ? (
-                                                    <Link href={b.href} className="hover:text-foreground truncate max-w-[150px]">
+                                                    <Link href={b.href} className="hover:text-cyan-300 transition-colors truncate max-w-[150px]">
                                                         {b.label}
                                                     </Link>
                                                 ) : (
-                                                    <span className="text-foreground truncate max-w-[150px]">{b.label}</span>
+                                                    <span className="text-slate-300 truncate max-w-[150px]">{b.label}</span>
                                                 )}
                                             </React.Fragment>
                                         ))}
                                     </nav>
                                 )}
-                                <h1 className="text-sm sm:text-base font-semibold text-foreground tracking-tight truncate">
-                                    {title || 'Command Center'}
+                                <h1 className="text-sm sm:text-base font-semibold text-white tracking-tight truncate font-sans">
+                                    {title || 'Executive Command Center'}
                                 </h1>
                             </div>
                         </div>
@@ -416,9 +416,9 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         <div className="flex items-center gap-3">
                             {auth?.user && <NotificationBell />}
 
-                            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border bg-secondary/50 font-mono text-[10px] text-muted-foreground">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                                <span>ENV: local</span>
+                            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 bg-dark-surface-elevated font-mono text-[10px] text-slate-300">
+                                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                <span>SYSTEM: ACTIVE</span>
                             </div>
 
                             {/* User Profile Dropdown / Trigger */}
@@ -427,7 +427,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                                     <button
                                         type="button"
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center gap-2 p-1 rounded-full hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-primary transition-colors cursor-pointer"
+                                        className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-action-accent transition-colors cursor-pointer"
                                         aria-expanded={userMenuOpen}
                                     >
                                         <div className="h-8 w-8 rounded-full bg-primary/20 text-primary font-semibold text-xs flex items-center justify-center border border-primary/30">

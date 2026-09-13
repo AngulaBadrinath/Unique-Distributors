@@ -1,87 +1,249 @@
 @import 'tailwindcss';
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+
+  --color-dark-base: var(--dark-base);
+  --color-dark-canvas: var(--dark-canvas);
+  --color-dark-surface: var(--dark-surface);
+  --color-dark-surface-elevated: var(--dark-surface-elevated);
+  --color-dark-rail: var(--dark-rail);
+
+  --color-light-base: var(--light-base);
+  --color-light-canvas: var(--light-canvas);
+  --color-light-surface: var(--light-surface);
+  --color-light-surface-muted: var(--light-surface-muted);
+
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-border: var(--brand-border);
+
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-surface-foreground: var(--brand-surface-foreground);
+  --color-brand-surface-border: var(--brand-surface-border);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-action-accent: var(--action-accent);
+  --color-action-accent-foreground: var(--action-accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* 1. Dark Executive Foundation (Global Identity - 60% Neo-Dark Glass) */
+    --dark-base: #07090E;
+    --dark-canvas: #0A0E17;
+    --dark-surface: #0F1626;
+    --dark-surface-elevated: #131B2E;
+    --dark-rail: #0A0E1A;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* 2. Light Data Foundation (Dual-surface system for Invoices, Print, and dense tabular data) */
+    --light-base: #FFFFFF;
+    --light-canvas: #F5F7FA;
+    --light-surface: #FFFFFF;
+    --light-surface-muted: #EEF2F6;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* 3. Primary Application Shell Variables (Default to Dark Executive Identity) */
+    --background: #07090E;
+    --canvas: #0A0E17;
+    --foreground: #F8FAFC;
+    --muted-foreground: #94A3B8;
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --surface: #0F1626;
+    --surface-subtle: #131B2E;
+    --surface-muted: #1E2738;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --card: #0F1626;
+    --card-foreground: #F8FAFC;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --popover: #131B2E;
+    --popover-foreground: #F8FAFC;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Subtle translucent structural rim borders */
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.12);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Left Navigation Rail & Brand Anchors */
+    --brand: #0A0E1A;
+    --brand-foreground: #F8FAFC;
+    --brand-muted: #8E98AB;
+    --brand-border: rgba(255, 255, 255, 0.06);
 
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 355.7 100% 97.3%;
+    /* Primary & Secondary Buttons */
+    --primary: #131B2E;
+    --primary-foreground: #F8FAFC;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
+    --secondary: #1E2738;
+    --secondary-foreground: #F8FAFC;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --muted: #131B2E;
 
-    --radius: 0.5rem;
-  }
+    /* Action Accent (Luminous Electric Blue / Cyan Family) */
+    --action-accent: #06B6D4;
+    --action-accent-foreground: #FFFFFF;
+    --ring: #06B6D4;
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Brand Surface & Soft Tint Glow */
+    --brand-surface: rgba(6, 182, 212, 0.12);
+    --brand-surface-foreground: #67E8F9;
+    --brand-surface-border: rgba(6, 182, 212, 0.28);
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --accent: rgba(37, 99, 235, 0.15);
+    --accent-foreground: #93C5FD;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Invariant Semantic Colors */
+    --success: #10B981;
+    --success-foreground: #FFFFFF;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --warning: #F59E0B;
+    --warning-foreground: #FFFFFF;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --destructive: #EF4444;
+    --destructive-foreground: #FFFFFF;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --success: 142.1 70.6% 45.3%;
-    --success-foreground: 144.9 80.4% 10%;
-
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --radius: 0.875rem;
   }
 
   * {
-    border-color: hsl(var(--border));
+    border-color: var(--border);
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: var(--canvas);
+    color: var(--foreground);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
   }
+}
+
+@layer utilities {
+  /* 1. Subtle Dark Neumorphic Depth System (25% Soft Extruded / Inset Tactility) */
+  .shadow-neu-dark {
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+      0 4px 16px -2px rgba(0, 0, 0, 0.5),
+      0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .shadow-neu-dark-hover {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .shadow-neu-dark-hover:hover {
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+      0 8px 24px -4px rgba(0, 0, 0, 0.7),
+      0 0 20px -3px rgba(6, 182, 212, 0.15);
+    transform: translateY(-1.5px);
+  }
+
+  .shadow-neu-dark-active:active {
+    box-shadow: 
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
+      inset 0 1px 2px 0 rgba(0, 0, 0, 0.8);
+    transform: translateY(0);
+  }
+
+  /* Inset tactile wells for inputs and recessed badges */
+  .shadow-neu-inset {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4), inset 0 0 1px 0 rgba(0, 0, 0, 0.6);
+  }
+
+  /* 2. Frosted Dark Glassmorphic System (60% Neo-Dark Executive Glass) */
+  .glass-dark {
+    background: linear-gradient(135deg, rgba(15, 22, 38, 0.85) 0%, rgba(10, 14, 23, 0.92) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-header-dark {
+    background: rgba(7, 9, 14, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .glass-rail {
+    background: rgba(10, 14, 26, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* 3. Luminous Accent Glows (Cyan & Electric Blue) */
+  .glow-cyan {
+    box-shadow: 0 0 24px -4px rgba(6, 182, 212, 0.35);
+  }
+  .glow-cyan-subtle {
+    box-shadow: 0 0 14px -2px rgba(6, 182, 212, 0.18);
+  }
+  .glow-blue {
+    box-shadow: 0 0 24px -4px rgba(37, 99, 235, 0.35);
+  }
+
+  /* 4. Swiss Data Discipline Utility Bridges */
+  .data-grid-border {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Explicit semantic utility bridges for JSX */
+  .bg-dark-base { background-color: var(--dark-base); }
+  .bg-dark-canvas { background-color: var(--dark-canvas); }
+  .bg-dark-surface { background-color: var(--dark-surface); }
+  .bg-dark-surface-elevated { background-color: var(--dark-surface-elevated); }
+  .bg-dark-rail { background-color: var(--dark-rail); }
+
+  .bg-canvas { background-color: var(--canvas); }
+  .bg-surface { background-color: var(--surface); }
+  .bg-surface-subtle { background-color: var(--surface-subtle); }
+  .bg-surface-muted { background-color: var(--surface-muted); }
+  .bg-brand { background-color: var(--brand); }
+  .text-brand-foreground { color: var(--brand-foreground); }
+  .text-brand-muted { color: var(--brand-muted); }
+  .border-brand-border { border-color: var(--brand-border); }
+
+  .bg-brand-surface { background-color: var(--brand-surface); }
+  .text-brand-surface-foreground { color: var(--brand-surface-foreground); }
+  .border-brand-surface-border { border-color: var(--brand-surface-border); }
+
+  .bg-action-accent { background-color: var(--action-accent); }
+  .text-action-accent { color: var(--action-accent); }
+  .text-action-accent-foreground { color: var(--action-accent-foreground); }
+  .border-action-accent { border-color: var(--action-accent); }
 }

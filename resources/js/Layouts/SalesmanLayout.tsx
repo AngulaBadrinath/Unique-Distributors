@@ -48,31 +48,31 @@ export default function SalesmanLayout({
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary pb-20 sm:pb-0">
+        <div className="min-h-screen bg-dark-canvas text-white flex flex-col antialiased selection:bg-action-accent/30 selection:text-white pb-20 sm:pb-0">
             {/* Top Fixed Header */}
-            <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between shadow-2xs">
+            <header className="sticky top-0 z-40 glass-header-dark border-b border-white/7 px-4 py-3 flex items-center justify-between shadow-neu-dark">
                 <div className="flex items-center gap-3">
                     {showBackButton ? (
                         <Link
                             href={backUrl}
-                            className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                            className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-white/10 bg-dark-surface hover:bg-white/10 text-muted-foreground hover:text-white transition-colors cursor-pointer"
                             aria-label="Go back"
                         >
                             <ChevronLeft className="h-5 w-5" />
                         </Link>
                     ) : (
                         <Link href="/dashboard" className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-xs">
+                            <div className="h-8 w-8 rounded-xl bg-action-accent text-white flex items-center justify-center font-bold text-xs shadow-neu-dark glow-cyan-subtle">
                                 SW
                             </div>
                             <div className="hidden sm:block">
-                                <span className="font-semibold text-xs text-foreground block leading-tight">Sales Workspace</span>
+                                <span className="font-semibold text-xs text-white block leading-tight">Sales Workspace</span>
                                 <span className="text-[10px] text-muted-foreground font-mono">{company?.display_name || identity?.company_name || 'Wholesale Portal'}</span>
                             </div>
                         </Link>
                     )}
 
-                    <h1 className="text-sm sm:text-base font-semibold text-foreground tracking-tight truncate max-w-[200px] sm:max-w-xs">
+                    <h1 className="text-sm sm:text-base font-semibold text-white tracking-tight truncate max-w-[200px] sm:max-w-xs font-sans">
                         {title}
                     </h1>
                 </div>
@@ -81,32 +81,32 @@ export default function SalesmanLayout({
                 <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
                     <Link
                         href="/dashboard"
-                        className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/dashboard') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
                         }`}
                     >
                         Home
                     </Link>
                     <Link
                         href="/customers"
-                        className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/customers') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/customers') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
                         }`}
                     >
                         My Customers
                     </Link>
                     <Link
                         href="/orders"
-                        className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/orders') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/orders') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
                         }`}
                     >
                         Order History
                     </Link>
                     <Link
                         href="/products"
-                        className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/products') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/products') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
                         }`}
                     >
                         Catalogue
@@ -117,7 +117,7 @@ export default function SalesmanLayout({
                     {/* Primary New Order CTA on desktop */}
                     <Link
                         href="/orders/create"
-                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shadow-xs"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-action-accent text-white text-xs font-semibold hover:bg-action-accent/90 transition-all shadow-neu-dark glow-cyan-subtle hover:glow-cyan"
                     >
                         <PlusCircle className="h-4 w-4" />
                         <span>New Order</span>
@@ -131,10 +131,10 @@ export default function SalesmanLayout({
                             <button
                                 type="button"
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-1.5 p-1 rounded-full hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-primary transition-colors cursor-pointer"
+                                className="flex items-center gap-1.5 p-1 rounded-full hover:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-action-accent transition-colors cursor-pointer"
                                 aria-label="User profile menu"
                             >
-                                <div className="h-8 w-8 rounded-full bg-primary/20 text-primary font-semibold text-xs flex items-center justify-center border border-primary/30">
+                                <div className="h-8 w-8 rounded-full bg-cyan-500/20 text-cyan-300 font-semibold text-xs flex items-center justify-center border border-cyan-500/30">
                                     {auth.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()}
                                 </div>
                             </button>
@@ -205,13 +205,13 @@ export default function SalesmanLayout({
             </main>
 
             {/* Mobile Bottom Navigation Bar (Fixed for thumb reachability, >=44px touch targets) */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md border-t border-border px-2 py-1.5 sm:hidden shadow-lg">
+            <nav className="fixed bottom-0 inset-x-0 z-40 glass-header-dark border-t border-white/8 px-2 py-1.5 sm:hidden shadow-neu-dark">
                 <div className="grid grid-cols-5 gap-1 items-center">
                     {/* Home */}
                     <Link
                         href="/dashboard"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/dashboard') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <Home className="h-5 w-5 mb-0.5" />
@@ -222,7 +222,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/customers') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <Users className="h-5 w-5 mb-0.5" />
@@ -233,7 +233,7 @@ export default function SalesmanLayout({
                     <div className="flex items-center justify-center -mt-4">
                         <Link
                             href="/orders/create"
-                            className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform"
+                            className="flex items-center justify-center h-12 w-12 rounded-full bg-action-accent text-white shadow-neu-dark glow-cyan hover:scale-105 active:scale-95 transition-transform"
                             aria-label="Create New Sales Order"
                         >
                             <PlusCircle className="h-6 w-6" />
@@ -244,7 +244,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/orders') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <ShoppingBag className="h-5 w-5 mb-0.5" />
@@ -255,7 +255,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/products') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/products') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <Package className="h-5 w-5 mb-0.5" />

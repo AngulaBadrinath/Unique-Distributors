@@ -19,7 +19,9 @@ import {
     ChevronRight,
     PackagePlus,
     FileSpreadsheet,
-    DollarSign
+    DollarSign,
+    Activity,
+    Compass
 } from 'lucide-react';
 
 interface OperationalMetrics {
@@ -69,123 +71,201 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
     };
 
     return (
-        <AppLayout title="Operational Command Center">
+        <AppLayout title="Executive Command Center">
             <Head title="Executive Dashboard" />
 
             <div className="space-y-6">
                 {/* Header Welcome Bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/8 pb-5">
                     <div>
-                        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                            Operational Overview
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse glow-cyan" />
+                            <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-semibold">Live Enterprise Operations</span>
+                        </div>
+                        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
+                            Executive Overview
                         </h2>
                         <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                            Real-time transaction status, fulfillment queues, and risk exceptions.
+                            Real-time transaction flow, live fulfillment queues, and liquidity balances.
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                         <Link href="/admin/orders">
-                            <Button size="sm" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                            <Button size="sm" variant="action" className="text-xs flex items-center gap-1.5 cursor-pointer shadow-neu-dark">
                                 <Layers className="h-3.5 w-3.5" />
-                                <span>Review Orders</span>
+                                <span>Review Orders ({metrics.pending_approval_orders})</span>
                             </Button>
                         </Link>
                     </div>
                 </div>
 
-                {/* Top Metrics Cards Grid */}
+                {/* Featured Executive Showcase: Master Revenue Card with Glowing Sparkline (Reference 01) */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    {/* Featured Large Dark Glass Card */}
+                    <Card variant="executive" className="lg:col-span-2 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+                                    Wholesale Sales Volume
+                                </span>
+                                <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono mt-1 tracking-tight">
+                                    {formatCurrency(metrics.today_sales_volume)}
+                                </div>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+                                        <TrendingUp className="h-3 w-3" /> +19.4% Today
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {metrics.today_orders_count} orders processed in current cycle
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="h-10 w-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300 glow-cyan-subtle">
+                                <DollarSign className="h-5 w-5" />
+                            </div>
+                        </div>
+
+                        {/* Luminous Glowing Sparkline Wave (Inspired by Reference 01) */}
+                        <div className="mt-8 pt-4 border-t border-white/8">
+                            <div className="flex items-center justify-between text-xs text-muted-foreground font-mono mb-2">
+                                <span>Cycle Trajectory</span>
+                                <span className="text-cyan-400 font-semibold">98.4% Fulfillment Rate</span>
+                            </div>
+                            <div className="h-16 w-full flex items-end gap-1 sm:gap-2">
+                                {[40, 55, 38, 65, 48, 80, 72, 90, 85, 95, 78, 92, 100].map((val, i) => (
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
+                                        <div 
+                                            className="w-full bg-gradient-to-t from-cyan-600/40 via-cyan-400/80 to-cyan-300 rounded-t-sm transition-all duration-300 group-hover:from-cyan-500 group-hover:to-cyan-200"
+                                            style={{ height: `${val}%` }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* Operational Progress Ring & Health Card */}
+                    <Card variant="default" className="p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+                                    Warehouse Health
+                                </span>
+                                <Badge variant="brand" className="text-[10px]">Optimal</Badge>
+                            </div>
+
+                            {/* Dual-tone Progress Ring (Inspired by Reference 01 & 02) */}
+                            <div className="flex items-center justify-center my-6">
+                                <div className="relative flex items-center justify-center">
+                                    <div className="h-32 w-32 rounded-full border-8 border-white/5 border-t-cyan-400 border-r-indigo-500 animate-spin-slow glow-cyan-subtle flex items-center justify-center">
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold font-mono text-white">91%</div>
+                                            <div className="text-[10px] text-muted-foreground uppercase font-mono">Capacity</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 pt-3 border-t border-white/8 text-xs font-mono">
+                            <div className="flex justify-between text-muted-foreground">
+                                <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-cyan-400" /> Active Customers</span>
+                                <span className="text-white font-semibold">{metrics.active_customers_count}</span>
+                            </div>
+                            <div className="flex justify-between text-muted-foreground">
+                                <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-indigo-400" /> Dispatched Shipments</span>
+                                <span className="text-white font-semibold">{metrics.active_deliveries_count}</span>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Top Supporting KPI Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Card 1: Pending Approvals */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                    <Card variant="interactive" className="p-5 rounded-2xl">
+                        <div className="flex items-center justify-between pb-2">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
                                 Pending Approval
-                            </CardTitle>
-                            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                            </span>
+                            <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
                                 <Clock className="h-4 w-4" />
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
-                                {metrics.pending_approval_orders}
-                            </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                                <span>Action required queue</span>
-                                <Link href="/admin/orders" className="text-primary hover:underline font-medium flex items-center gap-0.5">
-                                    Review <ChevronRight className="h-3 w-3" />
-                                </Link>
-                            </div>
-                        </CardContent>
+                        </div>
+                        <div className="text-2xl font-bold font-mono text-white mt-1">
+                            {metrics.pending_approval_orders}
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/8 text-[11px] text-muted-foreground">
+                            <span>Order intake queue</span>
+                            <Link href="/admin/orders" className="text-cyan-400 hover:underline font-medium flex items-center gap-0.5">
+                                Review <ChevronRight className="h-3 w-3" />
+                            </Link>
+                        </div>
                     </Card>
 
-                    {/* Card 2: Today's Orders / Sales */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
-                                Today's Sales
-                            </CardTitle>
-                            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                                <TrendingUp className="h-4 w-4" />
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
-                                {formatCurrency(metrics.today_sales_volume)}
-                            </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                                <span>{metrics.today_orders_count} orders submitted today</span>
-                                <Link href="/admin/reports/sales" className="text-primary hover:underline font-medium flex items-center gap-0.5">
-                                    Analytics <ChevronRight className="h-3 w-3" />
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Card 3: Inventory Low Stock Alerts */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
-                                Low Stock SKUs
-                            </CardTitle>
-                            <div className="p-2 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                    {/* Card 2: Low Stock SKUs */}
+                    <Card variant="interactive" className="p-5 rounded-2xl">
+                        <div className="flex items-center justify-between pb-2">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                                Low Stock Alerts
+                            </span>
+                            <div className="p-2 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/30">
                                 <Boxes className="h-4 w-4" />
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
-                                {metrics.low_stock_items_count}
-                            </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                                <span>Critical reorder balance</span>
-                                <Link href="/admin/inventory" className="text-primary hover:underline font-medium flex items-center gap-0.5">
-                                    Stock <ChevronRight className="h-3 w-3" />
-                                </Link>
-                            </div>
-                        </CardContent>
+                        </div>
+                        <div className="text-2xl font-bold font-mono text-white mt-1">
+                            {metrics.low_stock_items_count}
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/8 text-[11px] text-muted-foreground">
+                            <span>Reorder thresholds breached</span>
+                            <Link href="/admin/inventory" className="text-cyan-400 hover:underline font-medium flex items-center gap-0.5">
+                                Stock <ChevronRight className="h-3 w-3" />
+                            </Link>
+                        </div>
                     </Card>
 
-                    {/* Card 4: Active Logistics & In-Transit */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
-                                Active In-Transit
-                            </CardTitle>
-                            <div className="p-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                    {/* Card 3: In-Transit Deliveries */}
+                    <Card variant="interactive" className="p-5 rounded-2xl">
+                        <div className="flex items-center justify-between pb-2">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                                In-Transit Fleets
+                            </span>
+                            <div className="p-2 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                                 <Truck className="h-4 w-4" />
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
-                                {metrics.active_deliveries_count}
+                        </div>
+                        <div className="text-2xl font-bold font-mono text-white mt-1">
+                            {metrics.active_deliveries_count}
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/8 text-[11px] text-muted-foreground">
+                            <span>Live dispatch routes</span>
+                            <Link href="/admin/deliveries" className="text-cyan-400 hover:underline font-medium flex items-center gap-0.5">
+                                Logistics <ChevronRight className="h-3 w-3" />
+                            </Link>
+                        </div>
+                    </Card>
+
+                    {/* Card 4: Cheque & Transfer Verifications */}
+                    <Card variant="interactive" className="p-5 rounded-2xl">
+                        <div className="flex items-center justify-between pb-2">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                                Unverified Payments
+                            </span>
+                            <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                                <CreditCard className="h-4 w-4" />
                             </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                                <span>Logistics out for delivery</span>
-                                <Link href="/admin/deliveries" className="text-primary hover:underline font-medium flex items-center gap-0.5">
-                                    Dispatch <ChevronRight className="h-3 w-3" />
-                                </Link>
-                            </div>
-                        </CardContent>
+                        </div>
+                        <div className="text-2xl font-bold font-mono text-white mt-1">
+                            {metrics.pending_payments_count}
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/8 text-[11px] text-muted-foreground">
+                            <span>Cheque/transfer review</span>
+                            <Link href="/admin/payments" className="text-cyan-400 hover:underline font-medium flex items-center gap-0.5">
+                                Verify <ChevronRight className="h-3 w-3" />
+                            </Link>
+                        </div>
                     </Card>
                 </div>
 
@@ -194,19 +274,19 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                     {/* Left 2 Cols: Recent Order Submissions */}
                     <div className="lg:col-span-2 space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-semibold text-foreground tracking-tight flex items-center gap-2">
-                                <Layers className="h-4 w-4 text-primary" />
+                            <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2 font-sans">
+                                <Layers className="h-4 w-4 text-cyan-400" />
                                 <span>Recent Sales Orders</span>
                             </h3>
-                            <Link href="/admin/orders" className="text-xs text-primary hover:underline font-medium">
+                            <Link href="/admin/orders" className="text-xs text-cyan-400 hover:underline font-medium">
                                 View all orders &rarr;
                             </Link>
                         </div>
 
-                        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
+                        <div className="rounded-2xl border border-white/8 bg-dark-surface overflow-hidden shadow-neu-dark">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-xs text-left">
-                                    <thead className="border-b border-border bg-muted/40 font-mono text-muted-foreground uppercase text-[10px]">
+                                    <thead className="border-b border-white/8 bg-dark-surface-elevated/90 font-mono text-muted-foreground uppercase text-[10px]">
                                         <tr>
                                             <th className="px-4 py-3 font-medium">Order Number</th>
                                             <th className="px-4 py-3 font-medium">Customer</th>
@@ -215,7 +295,7 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                                             <th className="px-4 py-3 font-medium text-center">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-border">
+                                    <tbody className="divide-y divide-white/5">
                                         {recentOrders.length === 0 ? (
                                             <tr>
                                                 <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
@@ -224,19 +304,19 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                                             </tr>
                                         ) : (
                                             recentOrders.map((order) => (
-                                                <tr key={order.id} className="hover:bg-muted/30 transition-colors">
-                                                    <td className="px-4 py-3 font-mono font-medium text-foreground">
-                                                        <Link href={`/admin/orders/${order.id}`} className="hover:text-primary hover:underline">
+                                                <tr key={order.id} className="hover:bg-white/4 transition-colors">
+                                                    <td className="px-4 py-3 font-mono font-medium text-white">
+                                                        <Link href={`/admin/orders/${order.id}`} className="hover:text-cyan-300 hover:underline">
                                                             {order.order_number}
                                                         </Link>
                                                     </td>
-                                                    <td className="px-4 py-3 text-foreground font-medium truncate max-w-[140px]">
+                                                    <td className="px-4 py-3 text-white font-medium truncate max-w-[140px]">
                                                         {order.customer_name}
                                                     </td>
                                                     <td className="px-4 py-3 text-muted-foreground truncate max-w-[120px]">
                                                         {order.salesman_name}
                                                     </td>
-                                                    <td className="px-4 py-3 font-mono font-semibold text-right text-foreground">
+                                                    <td className="px-4 py-3 font-mono font-semibold text-right text-white">
                                                         {formatCurrency(order.grand_total)}
                                                     </td>
                                                     <td className="px-4 py-3 text-center">
@@ -253,16 +333,16 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
 
                     {/* Right 1 Col: Operational Shortcuts & Risk Snapshot */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-semibold text-foreground tracking-tight flex items-center gap-2">
-                            <CreditCard className="h-4 w-4 text-primary" />
-                            <span>Operational Queues</span>
+                        <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2 font-sans">
+                            <CreditCard className="h-4 w-4 text-cyan-400" />
+                            <span>Executive Queues</span>
                         </h3>
 
                         <div className="space-y-3">
                             {/* Queue 1: Payment Verification */}
-                            <div className="p-4 rounded-xl border border-border bg-card shadow-2xs flex items-center justify-between">
+                            <div className="p-4 rounded-2xl border border-white/8 bg-dark-surface shadow-neu-dark flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <span className="text-xs font-semibold text-foreground block">
+                                    <span className="text-xs font-semibold text-white block">
                                         Payment Verification
                                     </span>
                                     <span className="text-[11px] text-muted-foreground block">
@@ -277,9 +357,9 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                             </div>
 
                             {/* Queue 2: Customer Accounts */}
-                            <div className="p-4 rounded-xl border border-border bg-card shadow-2xs flex items-center justify-between">
+                            <div className="p-4 rounded-2xl border border-white/8 bg-dark-surface shadow-neu-dark flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <span className="text-xs font-semibold text-foreground block">
+                                    <span className="text-xs font-semibold text-white block">
                                         Customer Master
                                     </span>
                                     <span className="text-[11px] text-muted-foreground block">
@@ -294,9 +374,9 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                             </div>
 
                             {/* Queue 3: Receivables & Subledger */}
-                            <div className="p-4 rounded-xl border border-border bg-card shadow-2xs flex items-center justify-between">
+                            <div className="p-4 rounded-2xl border border-white/8 bg-dark-surface shadow-neu-dark flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <span className="text-xs font-semibold text-foreground block">
+                                    <span className="text-xs font-semibold text-white block">
                                         Accounts Receivable
                                     </span>
                                     <span className="text-[11px] text-muted-foreground block">
@@ -311,9 +391,9 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                             </div>
 
                             {/* Queue 4: General Ledger Reports */}
-                            <div className="p-4 rounded-xl border border-border bg-card shadow-2xs flex items-center justify-between">
+                            <div className="p-4 rounded-2xl border border-white/8 bg-dark-surface shadow-neu-dark flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <span className="text-xs font-semibold text-foreground block">
+                                    <span className="text-xs font-semibold text-white block">
                                         Financial Reporting
                                     </span>
                                     <span className="text-[11px] text-muted-foreground block">

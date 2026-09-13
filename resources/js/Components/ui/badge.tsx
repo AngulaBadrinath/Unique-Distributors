@@ -3,23 +3,30 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const badgeVariants = cva(
-    'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+    'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 select-none',
     {
         variants: {
             variant: {
                 default:
-                    'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+                    'border-white/10 bg-dark-surface-elevated text-white shadow-neu-dark',
                 secondary:
-                    'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                destructive:
-                    'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
-                outline: 'text-foreground',
+                    'border-white/8 bg-white/5 text-muted-foreground',
+                brand:
+                    'border-cyan-500/30 bg-cyan-500/15 text-cyan-300 font-semibold',
+                action:
+                    'border-transparent bg-action-accent text-white font-medium glow-cyan-subtle',
+                outline:
+                    'border-white/20 text-white bg-transparent',
+                neutral:
+                    'border-white/8 bg-white/5 text-muted-foreground',
                 success:
-                    'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+                    'border-emerald-500/30 bg-emerald-500/15 text-emerald-400 font-medium',
                 warning:
-                    'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300',
+                    'border-amber-500/30 bg-amber-500/15 text-amber-300 font-medium',
+                destructive:
+                    'border-rose-500/30 bg-rose-500/15 text-rose-300 font-medium',
                 info:
-                    'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-300',
+                    'border-blue-500/30 bg-blue-500/15 text-blue-300 font-medium',
             },
         },
         defaultVariants: {

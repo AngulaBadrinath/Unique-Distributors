@@ -42,9 +42,9 @@ export function MobileListCard({
     return (
         <div
             className={cn(
-                'rounded-xl border border-border bg-card p-4 transition-all duration-200 shadow-xs relative overflow-hidden',
-                onClick ? 'cursor-pointer active:scale-[0.99] hover:border-border/80' : '',
-                isSelected ? 'border-primary ring-1 ring-primary bg-primary/5' : '',
+                'rounded-2xl border border-white/8 bg-dark-surface p-4 transition-all duration-200 shadow-neu-dark relative overflow-hidden',
+                onClick ? 'cursor-pointer active:scale-[0.99] hover:border-white/15 hover:shadow-neu-dark-hover' : '',
+                isSelected ? 'border-action-accent ring-1 ring-action-accent bg-cyan-500/10' : '',
                 className
             )}
             onClick={onClick}
@@ -61,7 +61,7 @@ export function MobileListCard({
                                     e.stopPropagation();
                                     onSelect(e.target.checked);
                                 }}
-                                className="h-4 w-4 rounded border-input text-primary focus:ring-primary/20 cursor-pointer"
+                                className="h-4 w-4 rounded border-white/20 bg-dark-canvas text-action-accent focus:ring-action-accent/30 cursor-pointer"
                                 aria-label="Select row"
                             />
                         )}
