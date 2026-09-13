@@ -215,11 +215,22 @@ export async function launchDedicatedChrome(config: LaunchChromeConfig = {}): Pr
     try {
         const out = execSync(
             `powershell -NoProfile -ExecutionPolicy Bypass -File "${helperPath}" -Action launch -Port ${port} -TargetUrl "${targetUrl}"`,
-            { encoding: 'utf8', timeout: 15000 }
+            { encoding: 'utf8', timeout: 5000 }
         );
         console.log(`[QA Chrome] Launch result: ${out.trim()}`);
-    } catch (err: any) {
-        throw new Error(`[QA Chrome] Failed to launch Chrome on interactive desktop: ${err.message}`);
+    } catch {
+        console.log(`[QA Chrome] Direct spawn fallback activating for Chrome...`);
+        const chromeArgs = [
+            `--remote-debugging-port=${port}`,
+            `--user-data-dir=${profileDir}`,
+            '--no-first-run',
+            '--no-default-browser-check',
+            `--window-position=${placement.x},${placement.y}`,
+            `--window-size=${placement.width},${placement.height}`,
+            targetUrl,
+        ];
+        const child = spawn(resolved.executablePath, chromeArgs, { detached: true, stdio: 'ignore' });
+        child.unref();
     }
 
     // 5. Poll CDP endpoint until ready

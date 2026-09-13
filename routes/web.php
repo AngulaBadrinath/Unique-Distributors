@@ -51,6 +51,15 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     Route::redirect('/products-create', '/products/create', 301);
     Route::redirect('/categories-create', '/categories/create', 301);
     Route::redirect('/tax-profiles-create', '/tax-profiles/create', 301);
+    Route::redirect('/admin/customers', '/customers', 301);
+    Route::redirect('/admin/products', '/products', 301);
+    Route::redirect('/admin/categories', '/categories', 301);
+    Route::redirect('/admin/payments/verification', '/admin/payments', 301);
+    Route::redirect('/admin/accounting/receivables', '/admin/receivables', 301);
+    Route::redirect('/admin/accounting/payables', '/admin/payables', 301);
+    Route::redirect('/admin/accounting/chart-of-accounts', '/admin/accounting/accounts', 301);
+    Route::redirect('/admin/audit-logs', '/admin/audit/timeline', 301);
+    Route::get('/admin/accounting/statements/{id}', fn($id) => redirect("/admin/receivables/{$id}/statement", 301));
 
     // Active session tracking and revocation
     Route::get('/security/sessions', [SessionManagementController::class, 'index'])->name('sessions.index');
