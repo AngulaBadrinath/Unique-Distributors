@@ -190,10 +190,10 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                         <span className="text-xs text-muted-foreground">Critical overdue</span>
                     </div>
 
-                    <div className="bg-card border rounded-lg p-4 shadow-sm space-y-1 col-span-2 sm:col-span-3 lg:col-span-1 bg-muted/20">
+                    <div className="bg-card border border-border rounded-xl p-4 shadow-2xs space-y-1 col-span-2 sm:col-span-3 lg:col-span-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Credit Balance</span>
-                            <CreditCard className="h-4 w-4 text-indigo-500" />
+                            <span className="text-xs font-semibold text-action-accent uppercase tracking-wider">Credit Balance</span>
+                            <CreditCard className="h-4 w-4 text-action-accent" />
                         </div>
                         <p className="text-lg font-bold text-foreground">
                             {formatCurrency(summary.total_available_credit)}
@@ -252,7 +252,7 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                                             <th scope="col" className="px-4 py-3 text-right">61–90 Days</th>
                                             <th scope="col" className="px-4 py-3 text-right">91+ Days</th>
                                             <th scope="col" className="px-4 py-3 text-right font-bold text-foreground">Total AR</th>
-                                            <th scope="col" className="px-4 py-3 text-right text-indigo-600 dark:text-indigo-400">Available Credit</th>
+                                            <th scope="col" className="px-4 py-3 text-right">Available Credit</th>
                                             <th scope="col" className="px-4 py-3 text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -274,28 +274,28 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-mono text-muted-foreground">
                                                     {parseFloat(row.days_1_30) > 0 ? (
-                                                        <span className="text-blue-600 dark:text-blue-400 font-semibold">{formatCurrency(row.days_1_30)}</span>
+                                                        <span className="text-foreground">{formatCurrency(row.days_1_30)}</span>
                                                     ) : (
                                                         '—'
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-mono text-muted-foreground">
                                                     {parseFloat(row.days_31_60) > 0 ? (
-                                                        <span className="text-amber-600 dark:text-amber-400 font-semibold">{formatCurrency(row.days_31_60)}</span>
+                                                        <span className="text-foreground">{formatCurrency(row.days_31_60)}</span>
                                                     ) : (
                                                         '—'
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-mono text-muted-foreground">
                                                     {parseFloat(row.days_61_90) > 0 ? (
-                                                        <span className="text-orange-600 dark:text-orange-400 font-semibold">{formatCurrency(row.days_61_90)}</span>
+                                                        <span className="text-foreground">{formatCurrency(row.days_61_90)}</span>
                                                     ) : (
                                                         '—'
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-mono text-muted-foreground">
                                                     {parseFloat(row.days_91_plus) > 0 ? (
-                                                        <span className="text-rose-600 dark:text-rose-400 font-bold">{formatCurrency(row.days_91_plus)}</span>
+                                                        <span className="text-rose-600 dark:text-rose-400 font-semibold">{formatCurrency(row.days_91_plus)}</span>
                                                     ) : (
                                                         '—'
                                                     )}
@@ -305,7 +305,7 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-mono">
                                                     {parseFloat(row.available_credit) > 0 ? (
-                                                        <Badge variant="outline" className="text-indigo-600 border-indigo-300 dark:text-indigo-400 font-mono">
+                                                        <Badge variant="brand" className="font-mono">
                                                             {formatCurrency(row.available_credit)}
                                                         </Badge>
                                                     ) : (
@@ -373,9 +373,9 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                                                 <span className="text-[10px] text-rose-600 dark:text-rose-400 block">91+d</span>
                                                 <span className="font-mono font-semibold text-rose-600 dark:text-rose-400">{formatCurrency(row.days_91_plus)}</span>
                                             </div>
-                                            <div className="p-2 rounded bg-indigo-500/10 border border-indigo-500/20">
-                                                <span className="text-[10px] text-indigo-600 dark:text-indigo-400 block">Credit</span>
-                                                <span className="font-mono font-medium text-indigo-600 dark:text-indigo-400">{formatCurrency(row.available_credit)}</span>
+                                            <div className="p-2 rounded bg-secondary/30 border border-[#063312]/20">
+                                                <span className="text-[10px] text-secondary-foreground font-semibold block">Credit</span>
+                                                <span className="font-mono font-medium text-secondary-foreground">{formatCurrency(row.available_credit)}</span>
                                             </div>
                                         </div>
 

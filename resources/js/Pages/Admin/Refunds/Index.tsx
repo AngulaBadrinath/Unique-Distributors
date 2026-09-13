@@ -123,13 +123,13 @@ export default function Index({ refundRequests, filters, statuses = [] }: Props)
                 );
             case 'APPROVED':
                 return (
-                    <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 gap-1">
+                    <Badge variant="brand" className="gap-1">
                         <CheckCircle2 className="w-3 h-3" /> APPROVED
                     </Badge>
                 );
             case 'PROCESSING':
                 return (
-                    <Badge className="bg-purple-50 text-purple-700 border-purple-200 gap-1">
+                    <Badge variant="action" className="gap-1">
                         <RefreshCw className="w-3 h-3 animate-spin" /> PROCESSING
                     </Badge>
                 );

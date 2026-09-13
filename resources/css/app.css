@@ -52,68 +52,64 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: hsl(222.2 84% 4.9%);
+    /* Workspace Canvas: Subtle light neutral preventing white-on-white washed out look */
+    --background: #F8F9FA;
+    --foreground: #09090B;
 
-    --card: #ffffff;
-    --card-foreground: hsl(222.2 84% 4.9%);
+    /* Crisp elevated Card surface */
+    --card: #FFFFFF;
+    --card-foreground: #09090B;
 
-    --popover: #ffffff;
-    --popover-foreground: hsl(222.2 84% 4.9%);
+    --popover: #FFFFFF;
+    --popover-foreground: #09090B;
 
-    /* Zero Black: Primary Brand & Action Anchor */
+    /* LEVEL 1 — Zero Black: Primary Brand Anchor & High-Priority Controls */
     --brand: #050505;
     --brand-foreground: #FFFFFF;
-
-    /* Ghost Green: Primary Light Brand Surface */
-    --brand-surface: #D7FFE0;
-    --brand-surface-foreground: #063312;
-
-    /* Primary CTA & Shell Controls: Zero Black */
     --primary: #050505;
     --primary-foreground: #FFFFFF;
 
-    /* Secondary Surface: Ghost Green */
+    /* LEVEL 2 — Ghost Green: Primary Light Brand Surface & Active Navigation */
+    --brand-surface: #D7FFE0;
+    --brand-surface-foreground: #063312;
     --secondary: #D7FFE0;
     --secondary-foreground: #063312;
-
-    --muted: hsl(210 40% 96.1%);
-    --muted-foreground: hsl(215.4 16.3% 46.9%);
-
-    /* Active / Selected Brand Surface: Ghost Green */
     --accent: #D7FFE0;
     --accent-foreground: #063312;
 
-    /* Quantum Blue: Selective Action Accent */
+    /* LEVEL 3 — Quantum Blue: Selective Action Accent & Interactive Focus */
     --action-accent: #2457FF;
     --action-accent-foreground: #FFFFFF;
+    --ring: #2457FF;
+
+    /* LEVEL 4 — Structured Neutrals */
+    --muted: #F1F5F9;
+    --muted-foreground: #64748B;
+    --border: #E2E8F0;
+    --input: #E2E8F0;
 
     /* Semantic Status Invariants */
     --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(210 40% 98%);
+    --destructive-foreground: #FFFFFF;
 
     --success: hsl(142.1 76.2% 36.3%);
-    --success-foreground: hsl(355.7 100% 97.3%);
+    --success-foreground: #FFFFFF;
 
     --warning: hsl(38 92% 50%);
-    --warning-foreground: hsl(48 96% 89%);
-
-    --border: hsl(214.3 31.8% 91.4%);
-    --input: hsl(214.3 31.8% 91.4%);
-    --ring: #2457FF;
+    --warning-foreground: #FFFFFF;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: hsl(222.2 84% 4.9%);
-    --foreground: hsl(210 40% 98%);
+    --background: #09090B;
+    --foreground: #F8FAFC;
 
-    --card: hsl(222.2 84% 4.9%);
-    --card-foreground: hsl(210 40% 98%);
+    --card: #121215;
+    --card-foreground: #F8FAFC;
 
-    --popover: hsl(222.2 84% 4.9%);
-    --popover-foreground: hsl(210 40% 98%);
+    --popover: #121215;
+    --popover-foreground: #F8FAFC;
 
     /* Zero Black in Dark Mode */
     --brand: #050505;
@@ -123,25 +119,23 @@
     --brand-surface: hsl(150 40% 15%);
     --brand-surface-foreground: #D7FFE0;
 
-    /* Primary in Dark Mode */
     --primary: #F8FAFC;
     --primary-foreground: #050505;
 
     --secondary: hsl(150 35% 18%);
     --secondary-foreground: #D7FFE0;
 
-    --muted: hsl(217.2 32.6% 17.5%);
-    --muted-foreground: hsl(215 20.2% 65.1%);
+    --muted: #1E293B;
+    --muted-foreground: #94A3B8;
 
     --accent: hsl(150 35% 18%);
     --accent-foreground: #D7FFE0;
 
-    /* Quantum Blue Action Accent in Dark Mode */
     --action-accent: #3B82F6;
     --action-accent-foreground: #FFFFFF;
 
     --destructive: hsl(0 62.8% 30.6%);
-    --destructive-foreground: hsl(210 40% 98%);
+    --destructive-foreground: #F8FAFC;
 
     --success: hsl(142.1 70.6% 45.3%);
     --success-foreground: hsl(144.9 80.4% 10%);
@@ -149,8 +143,8 @@
     --warning: hsl(38 92% 50%);
     --warning-foreground: hsl(48 96% 89%);
 
-    --border: hsl(217.2 32.6% 17.5%);
-    --input: hsl(217.2 32.6% 17.5%);
+    --border: #1E293B;
+    --input: #1E293B;
     --ring: #3B82F6;
   }
 
@@ -178,6 +172,9 @@
   .text-brand-surface-foreground {
     color: var(--brand-surface-foreground);
   }
+  .border-brand-surface {
+    border-color: var(--brand-surface-foreground);
+  }
   .bg-action-accent {
     background-color: var(--action-accent);
   }
@@ -186,5 +183,32 @@
   }
   .text-action-accent-foreground {
     color: var(--action-accent-foreground);
+  }
+  .border-action-accent {
+    border-color: var(--action-accent);
+  }
+
+  /* Surface Primitives */
+  .surface-canvas {
+    background-color: var(--background);
+  }
+  .surface-card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+  }
+  .surface-brand {
+    background-color: #D7FFE0;
+    color: #063312;
+    border: 1px solid rgba(6, 51, 18, 0.2);
+  }
+  .surface-anchor {
+    background-color: #050505;
+    color: #FFFFFF;
+    border: 1px solid #1a1a1a;
+  }
+  .surface-action {
+    background-color: rgba(36, 87, 255, 0.08);
+    color: #2457FF;
+    border: 1px solid rgba(36, 87, 255, 0.25);
   }
 }

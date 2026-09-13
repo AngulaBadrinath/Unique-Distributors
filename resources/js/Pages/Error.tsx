@@ -39,7 +39,7 @@ export default function ErrorPage({ status = 500, message }: ErrorPageProps) {
         503: {
             title: 'Service Maintenance',
             defaultMessage: 'The system is temporarily unavailable due to routine maintenance or updates. Please try again shortly.',
-            icon: <Wrench className="h-12 w-12 text-indigo-500" />,
+            icon: <Wrench className="h-12 w-12 text-primary" />,
             badge: '503 Service Unavailable',
         },
     };

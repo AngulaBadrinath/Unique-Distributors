@@ -231,10 +231,10 @@ export default function BalanceSheetPage({ report, filters }: Props) {
                         {/* Equity Card */}
                         <div className="rounded-xl border bg-card shadow-xs p-6 space-y-4 text-xs">
                             <div className="border-b pb-2 flex items-center justify-between">
-                                <h2 className="text-base font-bold uppercase tracking-wider text-indigo-600">
+                                <h2 className="text-base font-bold uppercase tracking-wider text-foreground">
                                     Owner's Equity
                                 </h2>
-                                <span className="font-mono text-base font-bold text-indigo-600">
+                                <span className="font-mono text-base font-bold text-foreground">
                                     ${report.equity.total_equity}
                                 </span>
                             </div>
@@ -254,7 +254,7 @@ export default function BalanceSheetPage({ report, filters }: Props) {
 
                                 <div className="flex justify-between pt-1 font-semibold text-xs border-t">
                                     <span>TOTAL EQUITY:</span>
-                                    <span className="font-mono text-sm text-indigo-600">${report.equity.total_equity}</span>
+                                    <span className="font-mono text-sm text-foreground">${report.equity.total_equity}</span>
                                 </div>
                             </div>
 

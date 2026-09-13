@@ -8,12 +8,9 @@ import {
     Clock, 
     MapPin, 
     Package, 
-    Phone, 
-    AlertCircle,
     ChevronRight,
-    ArrowRight,
-    Calendar
 } from 'lucide-react';
+import { Badge } from '@/Components/ui/badge';
 
 interface DeliveryItem {
     id: number;
@@ -80,50 +77,39 @@ const getStatusBadge = (status: string) => {
         case 'ASSIGNED':
             return {
                 label: 'Assigned (Pickup Pending)',
-                bg: 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300',
-                dot: 'bg-indigo-400'
+                bg: 'bg-muted border-border text-muted-foreground',
+                dot: 'bg-muted-foreground'
             };
         case 'PICKED_UP':
             return {
                 label: 'Picked Up (Ready)',
-                bg: 'bg-amber-500/15 border-amber-500/30 text-amber-300',
-                dot: 'bg-amber-400'
+                bg: 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300',
+                dot: 'bg-amber-500'
             };
         case 'OUT_FOR_DELIVERY':
             return {
                 label: 'Out for Delivery',
-                bg: 'bg-blue-500/15 border-blue-500/30 text-blue-300',
-                dot: 'bg-blue-400 animate-pulse'
+                bg: 'bg-action-accent/10 border-action-accent/30 text-action-accent',
+                dot: 'bg-action-accent animate-pulse'
             };
         case 'DELIVERED':
             return {
                 label: 'Delivered',
-                bg: 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300',
-                dot: 'bg-emerald-400'
+                bg: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300',
+                dot: 'bg-emerald-500'
             };
-        case 'FAILED':
+        case 'FAILED_ATTEMPT':
+        case 'CANCELLED':
             return {
-                label: 'Delivery Failed',
-                bg: 'bg-rose-500/15 border-rose-500/30 text-rose-300',
-                dot: 'bg-rose-400'
-            };
-        case 'RESCHEDULED':
-            return {
-                label: 'Rescheduled',
-                bg: 'bg-purple-500/15 border-purple-500/30 text-purple-300',
-                dot: 'bg-purple-400'
-            };
-        case 'RETURNED_TO_WAREHOUSE':
-            return {
-                label: 'Returned to Warehouse',
-                bg: 'bg-slate-500/15 border-slate-500/30 text-slate-300',
-                dot: 'bg-slate-400'
+                label: status === 'CANCELLED' ? 'Cancelled' : 'Failed Attempt',
+                bg: 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300',
+                dot: 'bg-rose-500'
             };
         default:
             return {
                 label: status,
-                bg: 'bg-slate-800 border-slate-700 text-slate-300',
-                dot: 'bg-slate-400'
+                bg: 'bg-muted border-border text-muted-foreground',
+                dot: 'bg-muted-foreground'
             };
     }
 };
@@ -142,78 +128,78 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     <button
                         onClick={() => handleTabChange('today')}
-                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'today'
-                                ? 'bg-indigo-600/20 border-indigo-500/50 shadow-xs ring-1 ring-indigo-500/30'
-                                : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-850'
+                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
-                        <div className="flex items-center justify-between text-slate-400 mb-1">
-                            <span className="text-xs font-medium uppercase tracking-wider">Today</span>
-                            <Clock className="w-4 h-4 text-indigo-400" />
+                        <div className="flex items-center justify-between opacity-80 mb-1">
+                            <span className="text-xs font-semibold uppercase tracking-wider">Today</span>
+                            <Clock className="w-4 h-4" />
                         </div>
-                        <div className="text-2xl font-bold text-white tracking-tight">{counts.today}</div>
-                        <span className="text-[11px] text-slate-400">Scheduled</span>
+                        <div className="text-2xl font-bold tracking-tight">{counts.today}</div>
+                        <span className="text-[11px] opacity-75">Scheduled</span>
                     </button>
 
                     <button
                         onClick={() => handleTabChange('active')}
-                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'active'
-                                ? 'bg-blue-600/20 border-blue-500/50 shadow-xs ring-1 ring-blue-500/30'
-                                : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-850'
+                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
-                        <div className="flex items-center justify-between text-slate-400 mb-1">
-                            <span className="text-xs font-medium uppercase tracking-wider">In Transit</span>
-                            <Navigation className="w-4 h-4 text-blue-400" />
+                        <div className="flex items-center justify-between opacity-80 mb-1">
+                            <span className="text-xs font-semibold uppercase tracking-wider">In Transit</span>
+                            <Navigation className="w-4 h-4" />
                         </div>
-                        <div className="text-2xl font-bold text-white tracking-tight">{counts.active}</div>
-                        <span className="text-[11px] text-slate-400">En Route</span>
+                        <div className="text-2xl font-bold tracking-tight">{counts.active}</div>
+                        <span className="text-[11px] opacity-75">En Route</span>
                     </button>
 
                     <button
                         onClick={() => handleTabChange('pending')}
-                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'pending'
-                                ? 'bg-amber-600/20 border-amber-500/50 shadow-xs ring-1 ring-amber-500/30'
-                                : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-850'
+                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
-                        <div className="flex items-center justify-between text-slate-400 mb-1">
-                            <span className="text-xs font-medium uppercase tracking-wider">Pickup</span>
-                            <Package className="w-4 h-4 text-amber-400" />
+                        <div className="flex items-center justify-between opacity-80 mb-1">
+                            <span className="text-xs font-semibold uppercase tracking-wider">Pickup</span>
+                            <Package className="w-4 h-4" />
                         </div>
-                        <div className="text-2xl font-bold text-white tracking-tight">{counts.pending}</div>
-                        <span className="text-[11px] text-slate-400">At Warehouse</span>
+                        <div className="text-2xl font-bold tracking-tight">{counts.pending}</div>
+                        <span className="text-[11px] opacity-75">At Warehouse</span>
                     </button>
 
                     <button
                         onClick={() => handleTabChange('completed')}
-                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'completed'
-                                ? 'bg-emerald-600/20 border-emerald-500/50 shadow-xs ring-1 ring-emerald-500/30'
-                                : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-850'
+                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
-                        <div className="flex items-center justify-between text-slate-400 mb-1">
-                            <span className="text-xs font-medium uppercase tracking-wider">Delivered</span>
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <div className="flex items-center justify-between opacity-80 mb-1">
+                            <span className="text-xs font-semibold uppercase tracking-wider">Delivered</span>
+                            <CheckCircle2 className="w-4 h-4" />
                         </div>
-                        <div className="text-2xl font-bold text-white tracking-tight">{counts.completed}</div>
-                        <span className="text-[11px] text-slate-400">Success</span>
+                        <div className="text-2xl font-bold tracking-tight">{counts.completed}</div>
+                        <span className="text-[11px] opacity-75">Success</span>
                     </button>
                 </div>
 
                 {/* Delivery List */}
                 <div className="space-y-3">
                     {deliveries.data.length === 0 ? (
-                        <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800/80 text-center">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-800/80 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                        <div className="p-8 rounded-2xl bg-card border border-border text-center shadow-2xs">
+                            <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3 text-muted-foreground">
                                 <Truck className="w-6 h-6" />
                             </div>
-                            <h3 className="text-base font-semibold text-white mb-1">No deliveries found</h3>
-                            <p className="text-sm text-slate-400 max-w-sm mx-auto">
+                            <h3 className="text-base font-semibold text-foreground mb-1">No deliveries found</h3>
+                            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                                 There are no delivery missions currently in this queue. Check back or change tabs.
                             </p>
                         </div>
@@ -226,19 +212,19 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                                 <Link
                                     key={del.id}
                                     href={`/delivery/${del.id}`}
-                                    className="block p-4 rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-slate-700/80 hover:bg-slate-850/80 active:scale-[0.99] transition-all shadow-xs"
+                                    className="block p-4 rounded-2xl bg-card border border-border hover:border-border/80 active:scale-[0.99] transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
                                 >
                                     <div className="flex items-start justify-between gap-3 mb-2.5">
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-xs font-mono font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">
+                                                <span className="text-xs font-mono font-semibold text-white bg-primary px-2 py-0.5 rounded-md">
                                                     {del.delivery_number}
                                                 </span>
-                                                <span className="text-xs font-medium text-slate-400">
+                                                <span className="text-xs font-medium text-muted-foreground">
                                                     Order {del.order?.order_number}
                                                 </span>
                                             </div>
-                                            <h2 className="text-base font-bold text-white tracking-tight">
+                                            <h2 className="text-base font-bold text-foreground tracking-tight group-hover:text-action-accent transition-colors">
                                                 {del.customer?.name || 'Customer'}
                                             </h2>
                                         </div>
@@ -250,29 +236,29 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                                     </div>
 
                                     {/* Address & Items Snapshot */}
-                                    <div className="space-y-1.5 pt-2 border-t border-slate-800/50 text-xs text-slate-300">
+                                    <div className="space-y-1.5 pt-2.5 border-t border-border/60 text-xs text-muted-foreground">
                                         <div className="flex items-start gap-2">
-                                            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                                            <span className="line-clamp-1">
+                                            <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                                            <span className="line-clamp-1 text-foreground/90">
                                                 {del.delivery_address_line1}, {del.delivery_city}, {del.delivery_state} {del.delivery_postal_code}
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center justify-between text-slate-400 pt-1">
+                                        <div className="flex items-center justify-between pt-1">
                                             <div className="flex items-center gap-3">
                                                 <span className="flex items-center gap-1">
-                                                    <Package className="w-3.5 h-3.5 text-slate-400" />
+                                                    <Package className="w-3.5 h-3.5" />
                                                     {totalQty} units ({del.items?.length || 0} items)
                                                 </span>
                                                 {del.delivery_window && (
                                                     <span className="flex items-center gap-1">
-                                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                        <Clock className="w-3.5 h-3.5" />
                                                         {del.delivery_window}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-1 text-indigo-400 font-semibold text-xs">
+                                            <div className="flex items-center gap-1 text-action-accent font-semibold text-xs group-hover:translate-x-0.5 transition-transform">
                                                 <span>View mission</span>
                                                 <ChevronRight className="w-3.5 h-3.5" />
                                             </div>

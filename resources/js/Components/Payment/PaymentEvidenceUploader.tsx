@@ -162,18 +162,18 @@ export function PaymentEvidenceUploader({
                     role="button"
                     tabIndex={disabled ? -1 : 0}
                     aria-disabled={disabled}
-                    className={`relative flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-150 min-h-[140px] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                    className={`relative flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-150 min-h-[140px] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
                         isDragging
-                            ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30'
+                            ? 'border-action-accent bg-action-accent/5'
                             : 'border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-100/60 dark:hover:bg-slate-900/80'
                     } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
                 >
                     <div className="flex flex-col items-center text-center space-y-2">
-                        <div className="p-3 bg-indigo-100 dark:bg-indigo-900/60 rounded-full text-indigo-600 dark:text-indigo-400">
+                        <div className="p-3 bg-action-accent/10 rounded-full text-action-accent">
                             <Upload className="h-6 w-6" />
                         </div>
                         <div className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                            <span className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2">
+                            <span className="text-action-accent underline underline-offset-2">
                                 Click to browse
                             </span>{' '}
                             or drag and drop instrument photo

@@ -232,7 +232,7 @@ export default function Create({
                     {/* Step 1: Select Delivered Order */}
                     <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
                         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                            <PackageCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            <PackageCheck className="w-4 h-4 text-primary" />
                             1. Select Delivered Order
                         </h2>
 
@@ -243,7 +243,7 @@ export default function Create({
                                     id="order_select"
                                     value={selectedOrderId}
                                     onChange={e => handleOrderSelect(e.target.value)}
-                                    className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-ring"
                                     required
                                 >
                                     <option value="">-- Choose delivered order --</option>
@@ -263,7 +263,7 @@ export default function Create({
                                         id="warehouse_select"
                                         value={data.warehouse_id}
                                         onChange={e => setData('warehouse_id', parseInt(e.target.value, 10))}
-                                        className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-ring"
                                         required
                                     >
                                         {warehouses.map(w => (
@@ -282,7 +282,7 @@ export default function Create({
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                    <RotateCcw className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                                    <RotateCcw className="w-4 h-4 text-primary" />
                                     2. Returnable Line Items ({selectedOrder.order_number})
                                 </h2>
                                 <span className="text-xs text-slate-500">
@@ -308,7 +308,7 @@ export default function Create({
                                                 <div className="flex items-center gap-3 text-xs">
                                                     <span className="text-slate-500 dark:text-slate-400">Delivered: <strong className="text-slate-700 dark:text-slate-200">{item.delivered_quantity}</strong></span>
                                                     <span className="text-slate-500 dark:text-slate-400">Already Returned: <strong className="text-slate-700 dark:text-slate-200">{item.returned_quantity}</strong></span>
-                                                    <Badge variant="outline" className={isEligible ? 'border-indigo-300 text-indigo-700 dark:text-indigo-400 font-bold' : 'text-slate-400'}>
+                                                    <Badge variant="outline" className={isEligible ? 'border-[#063312]/20 bg-[#D7FFE0] text-[#063312] font-semibold' : 'text-slate-400'}>
                                                         Returnable: {item.returnable_quantity} units
                                                     </Badge>
                                                 </div>
@@ -339,7 +339,7 @@ export default function Create({
                                                             id={`reason-${item.order_item_id}`}
                                                             value={formItem?.reason_code || (reasons[0]?.value ?? 'DEFECTIVE')}
                                                             onChange={e => handleItemReasonChange(item.order_item_id, e.target.value)}
-                                                            className="w-full h-9 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-2 py-1 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                            className="w-full h-9 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-2 py-1 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-ring"
                                                         >
                                                             {reasons.map(r => (
                                                                 <option key={r.value} value={r.value}>
@@ -384,7 +384,7 @@ export default function Create({
                                     placeholder="State the reason for return, authorization details, or customer feedback..."
                                     value={data.notes}
                                     onChange={e => setData('notes', e.target.value)}
-                                    className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-ring"
                                 />
                             </div>
 
@@ -392,7 +392,7 @@ export default function Create({
                             <div className="p-4 bg-slate-900 text-white rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <span className="text-xs text-slate-400 block">Total Units to Return</span>
-                                    <span className="text-xl font-bold text-indigo-300">{totalUnitsRequested} units</span>
+                                    <span className="text-xl font-bold text-white font-mono">{totalUnitsRequested} units</span>
                                 </div>
                                 <div className="flex gap-6 text-right">
                                     <div>

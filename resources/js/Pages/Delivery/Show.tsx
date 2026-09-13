@@ -13,17 +13,15 @@ import {
     MapPin, 
     Package, 
     Phone, 
-    AlertCircle, 
-    ArrowRight,
-    ExternalLink,
-    Calendar,
-    RotateCcw,
-    XCircle,
-    FileText,
-    History,
-    Shield,
-    AlertTriangle
+    ExternalLink, 
+    Calendar, 
+    RotateCcw, 
+    XCircle, 
+    History, 
+    AlertTriangle 
 } from 'lucide-react';
+import { Badge } from '@/Components/ui/badge';
+import { Button } from '@/Components/ui/button';
 
 interface DeliveryItem {
     id: number;
@@ -102,27 +100,23 @@ interface DeliveryDetail {
         customer_code: string;
         phone: string;
     };
-    driver?: {
-        id: number;
-        name: string;
-        email: string;
-    };
     items: DeliveryItem[];
     events: DeliveryEvent[];
-    failures: DeliveryFailure[];
+    failures?: DeliveryFailure[];
+}
+
+interface DeliveryCapabilities {
+    can_pickup: boolean;
+    can_start_route: boolean;
+    can_complete: boolean;
+    can_fail: boolean;
+    can_reschedule: boolean;
+    can_return_warehouse: boolean;
 }
 
 interface DeliveryShowProps {
     delivery: DeliveryDetail;
-    capabilities: {
-        can_pickup: boolean;
-        can_start_route: boolean;
-        can_complete: boolean;
-        can_fail: boolean;
-        can_reschedule: boolean;
-        can_return_warehouse: boolean;
-        is_assigned_driver: boolean;
-    };
+    capabilities: DeliveryCapabilities;
 }
 
 export default function DeliveryShow({ delivery, capabilities }: DeliveryShowProps) {
@@ -137,7 +131,6 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
     const phoneToCall = delivery.delivery_contact_phone || delivery.customer?.phone;
 
     const handlePickup = () => {
-        if (!confirm('Confirm picking up goods for this delivery from the warehouse?')) return;
         setSubmittingAction('pickup');
         router.post(`/delivery/${delivery.id}/pickup`, {}, {
             onFinish: () => setSubmittingAction(null),
@@ -145,7 +138,6 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
     };
 
     const handleStartRoute = () => {
-        if (!confirm('Start route to customer? Status will change to OUT FOR DELIVERY.')) return;
         setSubmittingAction('start_route');
         router.post(`/delivery/${delivery.id}/start-route`, {}, {
             onFinish: () => setSubmittingAction(null),
@@ -156,42 +148,41 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
         <DeliveryLayout title={`Mission #${delivery.delivery_number}`} showBackButton={true}>
             <Head title={`Delivery ${delivery.delivery_number}`} />
 
-            <div className="space-y-4 pb-24">
+            <div className="space-y-4 pb-28">
                 {/* Status Hero Card */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-sm">
+                <div className="p-5 rounded-2xl bg-card border border-border shadow-2xs">
                     <div className="flex items-center justify-between gap-3 mb-3">
-                        <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">
+                        <span className="text-xs font-mono font-bold text-white bg-primary px-2.5 py-1 rounded-lg">
                             {delivery.delivery_number}
                         </span>
 
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                        <Badge variant="brand">
                             {delivery.status.replace(/_/g, ' ')}
-                        </div>
+                        </Badge>
                     </div>
 
                     <div className="space-y-1">
-                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Customer</span>
-                        <h2 className="text-lg font-bold text-white tracking-tight">
+                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Customer Destination</span>
+                        <h2 className="text-xl font-bold text-foreground tracking-tight">
                             {delivery.customer?.name}
                         </h2>
-                        <p className="text-xs text-slate-400 font-medium">
+                        <p className="text-xs text-muted-foreground font-medium">
                             Order #{delivery.order?.order_number}
                         </p>
                     </div>
 
                     {/* Operational Action Shortcuts */}
-                    <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-800">
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-border/60">
                         {phoneToCall ? (
                             <a
                                 href={`tel:${phoneToCall}`}
-                                className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold active:scale-95 transition-all"
+                                className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-semibold active:scale-95 transition-all border border-border cursor-pointer"
                             >
-                                <Phone className="w-4 h-4 text-emerald-400" />
+                                <Phone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                 <span>Call Customer</span>
                             </a>
                         ) : (
-                            <div className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-slate-800/40 text-slate-500 text-xs font-medium">
+                            <div className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-muted/40 text-muted-foreground text-xs font-medium border border-border/40 select-none">
                                 <Phone className="w-4 h-4" />
                                 <span>No Phone</span>
                             </div>
@@ -201,48 +192,48 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                             href={mapUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold active:scale-95 transition-all"
+                            className="flex items-center justify-center gap-2 min-h-[44px] rounded-xl bg-action-accent/10 hover:bg-action-accent/15 text-action-accent text-xs font-semibold active:scale-95 transition-all border border-action-accent/30 cursor-pointer"
                         >
-                            <ExternalLink className="w-4 h-4 text-blue-400" />
+                            <ExternalLink className="w-4 h-4 text-action-accent" />
                             <span>Navigate (Map)</span>
                         </a>
                     </div>
                 </div>
 
                 {/* Delivery Location & Schedule Card */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-sm space-y-3">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-indigo-400" />
+                <div className="p-5 rounded-2xl bg-card border border-border shadow-2xs space-y-3">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <MapPin className="w-4 h-4 text-primary" />
                         Delivery Destination
                     </h3>
 
-                    <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-sm text-slate-200">
-                        <p className="font-semibold text-white">{delivery.delivery_contact_name || delivery.customer?.name}</p>
-                        <p>{delivery.delivery_address_line1}</p>
-                        {delivery.delivery_address_line2 && <p>{delivery.delivery_address_line2}</p>}
-                        <p>{delivery.delivery_city}, {delivery.delivery_state} {delivery.delivery_postal_code}</p>
+                    <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 text-sm text-foreground">
+                        <p className="font-semibold text-foreground">{delivery.delivery_contact_name || delivery.customer?.name}</p>
+                        <p className="text-muted-foreground text-xs mt-0.5">{delivery.delivery_address_line1}</p>
+                        {delivery.delivery_address_line2 && <p className="text-muted-foreground text-xs">{delivery.delivery_address_line2}</p>}
+                        <p className="text-muted-foreground text-xs">{delivery.delivery_city}, {delivery.delivery_state} {delivery.delivery_postal_code}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="p-2.5 rounded-xl bg-slate-950/40 border border-slate-800/60">
-                            <span className="text-slate-400 flex items-center gap-1 mb-1">
-                                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                            <span className="text-muted-foreground flex items-center gap-1 mb-1 text-[11px]">
+                                <Calendar className="w-3.5 h-3.5" />
                                 Scheduled Date
                             </span>
-                            <span className="font-semibold text-white">{delivery.scheduled_date}</span>
+                            <span className="font-semibold text-foreground">{delivery.scheduled_date}</span>
                         </div>
 
-                        <div className="p-2.5 rounded-xl bg-slate-950/40 border border-slate-800/60">
-                            <span className="text-slate-400 flex items-center gap-1 mb-1">
-                                <Clock className="w-3.5 h-3.5 text-slate-400" />
+                        <div className="p-3 rounded-xl bg-muted/30 border border-border/60">
+                            <span className="text-muted-foreground flex items-center gap-1 mb-1 text-[11px]">
+                                <Clock className="w-3.5 h-3.5" />
                                 Delivery Window
                             </span>
-                            <span className="font-semibold text-white">{delivery.delivery_window || 'Standard'}</span>
+                            <span className="font-semibold text-foreground">{delivery.delivery_window || 'Standard'}</span>
                         </div>
                     </div>
 
                     {delivery.driver_instructions && (
-                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
+                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-800 dark:text-amber-300">
                             <span className="font-semibold block mb-0.5">Driver Instructions:</span>
                             {delivery.driver_instructions}
                         </div>
@@ -251,23 +242,23 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
 
                 {/* Failures / Exceptions Card */}
                 {delivery.failures && delivery.failures.length > 0 && (
-                    <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-900/50 shadow-sm space-y-3">
-                        <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-300 flex items-center gap-1.5">
-                            <AlertTriangle className="w-4 h-4 text-rose-400" />
+                    <div className="p-5 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/50 shadow-2xs space-y-3">
+                        <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-700 dark:text-rose-400 flex items-center gap-1.5">
+                            <AlertTriangle className="w-4 h-4 text-rose-500" />
                             Delivery Exceptions & Issues ({delivery.failures.length})
                         </h3>
 
                         <div className="space-y-2">
                             {delivery.failures.map((fail) => (
-                                <div key={fail.id} className="p-3 rounded-xl bg-slate-900/80 border border-rose-900/40 text-xs space-y-1">
+                                <div key={fail.id} className="p-3 rounded-xl bg-card border border-rose-200 dark:border-rose-900/40 text-xs space-y-1">
                                     <div className="flex items-center justify-between">
-                                        <span className="font-bold text-rose-300">
+                                        <span className="font-bold text-rose-700 dark:text-rose-400">
                                             {fail.failure_reason.replace(/_/g, ' ')}
                                         </span>
-                                        <span className="text-slate-400 text-[11px]">{fail.reported_at}</span>
+                                        <span className="text-muted-foreground text-[11px]">{fail.reported_at}</span>
                                     </div>
-                                    <p className="text-slate-200">{fail.driver_notes}</p>
-                                    <p className="text-[10px] text-slate-400">Reported by {fail.reporter?.name || 'Driver'}</p>
+                                    <p className="text-foreground">{fail.driver_notes}</p>
+                                    <p className="text-[10px] text-muted-foreground">Reported by {fail.reporter?.name || 'Driver'}</p>
                                 </div>
                             ))}
                         </div>
@@ -275,30 +266,30 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 )}
 
                 {/* Items Manifest */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-sm space-y-3">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <Package className="w-4 h-4 text-indigo-400" />
+                <div className="p-5 rounded-2xl bg-card border border-border shadow-2xs space-y-3">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <Package className="w-4 h-4 text-primary" />
                         Items Manifest ({delivery.items.length})
                     </h3>
 
-                    <div className="divide-y divide-slate-800/80">
+                    <div className="divide-y divide-border/60">
                         {delivery.items.map((item) => (
                             <div key={item.id} className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-xs">
                                 <div>
-                                    <p className="font-semibold text-white">
+                                    <p className="font-semibold text-foreground">
                                         {item.product_name_snapshot || item.product?.name}
                                     </p>
-                                    <p className="text-slate-400 font-mono text-[11px]">
+                                    <p className="text-muted-foreground font-mono text-[11px]">
                                         SKU: {item.sku_snapshot || item.product?.sku}
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <span className="font-bold text-white text-sm">
+                                    <span className="font-bold text-foreground text-sm">
                                         {item.deliverable_quantity}
                                     </span>
-                                    <span className="text-slate-400 ml-1">units</span>
+                                    <span className="text-muted-foreground ml-1">units</span>
                                     {item.delivered_quantity > 0 && (
-                                        <p className="text-emerald-400 text-[11px] font-medium">
+                                        <p className="text-emerald-600 dark:text-emerald-400 text-[11px] font-medium">
                                             Delivered: {item.delivered_quantity}
                                         </p>
                                     )}
@@ -309,30 +300,30 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 </div>
 
                 {/* Timeline / Audit Summary */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-sm space-y-3">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <History className="w-4 h-4 text-indigo-400" />
+                <div className="p-5 rounded-2xl bg-card border border-border shadow-2xs space-y-3">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <History className="w-4 h-4 text-primary" />
                         Mission Timeline
                     </h3>
 
                     <div className="space-y-2">
                         {delivery.events.map((evt) => (
-                            <div key={evt.id} className="p-2.5 rounded-xl bg-slate-950/40 border border-slate-800/60 text-xs">
-                                <div className="flex items-center justify-between text-slate-400 mb-0.5">
-                                    <span className="font-semibold text-indigo-300">
+                            <div key={evt.id} className="p-2.5 rounded-xl bg-muted/40 border border-border/60 text-xs">
+                                <div className="flex items-center justify-between text-muted-foreground mb-0.5">
+                                    <span className="font-semibold text-foreground">
                                         {evt.event_type.replace(/_/g, ' ')}
                                     </span>
                                     <span>{evt.created_at}</span>
                                 </div>
-                                {evt.notes && <p className="text-slate-300">{evt.notes}</p>}
-                                <p className="text-[11px] text-slate-400 mt-0.5">By {evt.actor?.name || 'System'}</p>
+                                {evt.notes && <p className="text-muted-foreground text-xs">{evt.notes}</p>}
+                                <p className="text-[10px] text-muted-foreground mt-0.5">By {evt.actor?.name || 'System'}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* Complete Delivery Modal */}
+            {/* Modals */}
             <DeliveryCompleteModal
                 isOpen={isCompleteModalOpen}
                 onClose={() => setIsCompleteModalOpen(false)}
@@ -341,7 +332,6 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 defaultRecipientName={delivery.delivery_contact_name || delivery.customer?.name || ''}
             />
 
-            {/* Delivery Failure Modal */}
             <DeliveryFailureModal
                 isOpen={isFailureModalOpen}
                 onClose={() => setIsFailureModalOpen(false)}
@@ -349,7 +339,6 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 deliveryNumber={delivery.delivery_number}
             />
 
-            {/* Delivery Reschedule Modal */}
             <DeliveryRescheduleModal
                 isOpen={isRescheduleModalOpen}
                 onClose={() => setIsRescheduleModalOpen(false)}
@@ -358,7 +347,6 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 currentScheduledDate={delivery.scheduled_date}
             />
 
-            {/* Delivery Return Modal */}
             <DeliveryReturnModal
                 isOpen={isReturnModalOpen}
                 onClose={() => setIsReturnModalOpen(false)}
@@ -366,13 +354,13 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 deliveryNumber={delivery.delivery_number}
             />
 
-            {/* Bottom Sticky Action Bar */}
-            <div className="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3 flex gap-2 max-w-3xl mx-auto shadow-2xl">
+            {/* Bottom Sticky Action Bar - Zero Black Anchor Surface */}
+            <div className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] border-t border-[#1a1a1a] p-3 flex gap-2 max-w-4xl mx-auto shadow-2xl">
                 {capabilities.can_pickup && (
                     <button
                         onClick={handlePickup}
                         disabled={submittingAction !== null}
-                        className="flex-1 min-h-[48px] rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-lg shadow-indigo-600/20 disabled:opacity-50"
+                        className="flex-1 min-h-[48px] rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-[#333] shadow-xs disabled:opacity-50 cursor-pointer"
                     >
                         <Package className="w-5 h-5" />
                         <span>Confirm Warehouse Pickup</span>
@@ -383,7 +371,7 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                     <button
                         onClick={handleStartRoute}
                         disabled={submittingAction !== null}
-                        className="flex-1 min-h-[48px] rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
+                        className="flex-1 min-h-[48px] rounded-xl bg-action-accent hover:bg-action-accent/90 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                     >
                         <Navigation className="w-5 h-5" />
                         <span>Start Route (Out for Delivery)</span>
@@ -393,7 +381,7 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 {capabilities.can_complete && (
                     <button
                         onClick={() => setIsCompleteModalOpen(true)}
-                        className="flex-1 min-h-[48px] rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-lg shadow-emerald-600/20"
+                        className="flex-1 min-h-[48px] rounded-xl bg-[#D7FFE0] hover:bg-[#c2f7cd] text-[#063312] font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-[#063312]/30 shadow-xs cursor-pointer"
                     >
                         <CheckCircle2 className="w-5 h-5" />
                         <span>Complete Delivery & POD</span>
@@ -403,7 +391,7 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 {capabilities.can_fail && (
                     <button
                         onClick={() => setIsFailureModalOpen(true)}
-                        className="min-h-[48px] px-4 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all"
+                        className="min-h-[48px] px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
                     >
                         <XCircle className="w-5 h-5 text-rose-400" />
                         <span>Report Issue</span>
@@ -413,7 +401,7 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 {capabilities.can_reschedule && !capabilities.can_start_route && !capabilities.can_pickup && (
                     <button
                         onClick={() => setIsRescheduleModalOpen(true)}
-                        className="flex-1 min-h-[48px] rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-lg shadow-amber-600/20"
+                        className="flex-1 min-h-[48px] rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all shadow-xs cursor-pointer"
                     >
                         <Calendar className="w-5 h-5" />
                         <span>Reschedule</span>
@@ -423,9 +411,9 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 {capabilities.can_return_warehouse && (
                     <button
                         onClick={() => setIsReturnModalOpen(true)}
-                        className="min-h-[48px] px-4 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all"
+                        className="min-h-[48px] px-4 rounded-xl bg-muted hover:bg-muted/80 border border-border text-foreground font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
                     >
-                        <RotateCcw className="w-5 h-5 text-purple-400" />
+                        <RotateCcw className="w-5 h-5 text-muted-foreground" />
                         <span>Return to Hub</span>
                     </button>
                 )}
@@ -433,4 +421,3 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
         </DeliveryLayout>
     );
 }
-

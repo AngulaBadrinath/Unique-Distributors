@@ -513,14 +513,14 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     )}
 
                     {/* Page Content */}
-                    <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 min-w-0">
+                    <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 min-w-0 pb-24 lg:pb-8">
                         <div className="max-w-7xl mx-auto w-full min-w-0">
                             {children}
                         </div>
                     </main>
 
                     {/* Subdued Footer */}
-                    <footer className="border-t border-border py-3 px-4 sm:px-6 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2 bg-card/40">
+                    <footer className="border-t border-border py-3 px-4 sm:px-6 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2 bg-card/40 pb-20 lg:pb-3">
                         <div className="font-mono text-[11px]">
                             {identity?.footer_text || displayName} &bull; Enterprise Distribution Platform
                         </div>
@@ -534,6 +534,64 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </footer>
                 </div>
             </div>
+
+            {/* Mobile Bottom Navigation Bar - Zero Black Anchor & Ghost Green Active Navigation */}
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] text-slate-400 border-t border-[#1a1a1a] px-2 py-1.5 lg:hidden shadow-lg">
+                <div className="grid grid-cols-5 gap-1 items-center">
+                    <Link
+                        href="/dashboard"
+                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
+                            isLinkActive('/dashboard') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                        }`}
+                    >
+                        <Home className="h-5 w-5 mb-0.5" />
+                        <span>Home</span>
+                    </Link>
+
+                    <Link
+                        href={auth?.user?.role === 'SALESMAN' ? '/salesman/orders' : '/admin/orders'}
+                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
+                            isLinkActive('/orders') || isLinkActive('/admin/orders') || isLinkActive('/salesman/orders') 
+                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' 
+                                : 'text-slate-400 hover:text-white'
+                        }`}
+                    >
+                        <Receipt className="h-5 w-5 mb-0.5" />
+                        <span>Orders</span>
+                    </Link>
+
+                    {/* Prominent Center Action - Quantum Blue Accent */}
+                    <div className="flex items-center justify-center -mt-4">
+                        <Link
+                            href={hasOrderCreate ? '/salesman/orders/create' : '/dashboard'}
+                            className="flex items-center justify-center h-12 w-12 rounded-full bg-action-accent text-white shadow-lg shadow-action-accent/40 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                            aria-label="Create New Order"
+                        >
+                            <PlusCircle className="h-6 w-6" />
+                        </Link>
+                    </div>
+
+                    <Link
+                        href="/customers"
+                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
+                            isLinkActive('/customers') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                        }`}
+                    >
+                        <Users className="h-5 w-5 mb-0.5" />
+                        <span>Customers</span>
+                    </Link>
+
+                    <button
+                        type="button"
+                        onClick={() => setSidebarOpen(true)}
+                        className="flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium text-slate-400 hover:text-white cursor-pointer"
+                        aria-label="Open Navigation Menu"
+                    >
+                        <Menu className="h-5 w-5 mb-0.5" />
+                        <span>Menu</span>
+                    </button>
+                </div>
+            </nav>
         </div>
     );
 }

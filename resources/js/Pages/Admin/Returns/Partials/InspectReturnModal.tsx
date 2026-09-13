@@ -137,7 +137,7 @@ export default function InspectReturnModal({ isOpen, onClose, returnRequest }: P
             <div className="w-full max-w-3xl my-8 p-6 bg-card border rounded-2xl shadow-xl space-y-5 text-foreground">
                 <div className="flex items-start justify-between gap-4 border-b pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-indigo-500/10 text-indigo-600 rounded-xl">
+                        <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
                             <PackageCheck className="h-6 w-6" />
                         </div>
                         <div>

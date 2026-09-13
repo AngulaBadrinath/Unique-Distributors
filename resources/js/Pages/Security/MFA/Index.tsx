@@ -341,9 +341,9 @@ export default function MfaIndex({
 
                 {/* Setup Flow Active (QR Code + Confirmation) */}
                 {setup_data && !enabled && (
-                    <Card className="border-indigo-500/40 bg-indigo-500/5">
+                    <Card variant="brand">
                         <CardHeader>
-                            <CardTitle className="text-base flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                            <CardTitle className="text-base flex items-center gap-2 text-secondary-foreground font-bold">
                                 <QrCode className="h-5 w-5" />
                                 <span>Scan QR Code with Your Authenticator App</span>
                             </CardTitle>
