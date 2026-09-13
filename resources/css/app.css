@@ -29,6 +29,9 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
+  --color-action-accent: var(--action-accent);
+  --color-action-accent-foreground: var(--action-accent-foreground);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
@@ -58,27 +61,34 @@
     --popover: #ffffff;
     --popover-foreground: hsl(222.2 84% 4.9%);
 
-    /* Quantum Blue #2457FF */
-    --brand: #2457FF;
+    /* Zero Black: Primary Brand & Action Anchor */
+    --brand: #050505;
     --brand-foreground: #FFFFFF;
 
-    /* Ice Glass #DFF7FF */
-    --brand-surface: #DFF7FF;
-    --brand-surface-foreground: hsl(226 100% 32%);
+    /* Ghost Green: Primary Light Brand Surface */
+    --brand-surface: #D7FFE0;
+    --brand-surface-foreground: #063312;
 
-    /* Semantic Primary & Ring */
-    --primary: #2457FF;
+    /* Primary CTA & Shell Controls: Zero Black */
+    --primary: #050505;
     --primary-foreground: #FFFFFF;
 
-    --secondary: hsl(195 100% 95%);
-    --secondary-foreground: hsl(226 90% 32%);
+    /* Secondary Surface: Ghost Green */
+    --secondary: #D7FFE0;
+    --secondary-foreground: #063312;
 
     --muted: hsl(210 40% 96.1%);
     --muted-foreground: hsl(215.4 16.3% 46.9%);
 
-    --accent: #DFF7FF;
-    --accent-foreground: hsl(226 100% 32%);
+    /* Active / Selected Brand Surface: Ghost Green */
+    --accent: #D7FFE0;
+    --accent-foreground: #063312;
 
+    /* Quantum Blue: Selective Action Accent */
+    --action-accent: #2457FF;
+    --action-accent-foreground: #FFFFFF;
+
+    /* Semantic Status Invariants */
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(210 40% 98%);
 
@@ -105,25 +115,30 @@
     --popover: hsl(222.2 84% 4.9%);
     --popover-foreground: hsl(210 40% 98%);
 
-    /* Quantum Blue for Dark Mode */
-    --brand: hsl(226 100% 65%);
+    /* Zero Black in Dark Mode */
+    --brand: #050505;
     --brand-foreground: #FFFFFF;
 
-    /* Ice Glass dark tone */
-    --brand-surface: hsl(226 60% 16%);
-    --brand-surface-foreground: hsl(195 100% 92%);
+    /* Ghost Green Dark Surface Tone */
+    --brand-surface: hsl(150 40% 15%);
+    --brand-surface-foreground: #D7FFE0;
 
-    --primary: hsl(226 100% 65%);
-    --primary-foreground: #FFFFFF;
+    /* Primary in Dark Mode */
+    --primary: #F8FAFC;
+    --primary-foreground: #050505;
 
-    --secondary: hsl(226 40% 16%);
-    --secondary-foreground: hsl(195 100% 92%);
+    --secondary: hsl(150 35% 18%);
+    --secondary-foreground: #D7FFE0;
 
     --muted: hsl(217.2 32.6% 17.5%);
     --muted-foreground: hsl(215 20.2% 65.1%);
 
-    --accent: hsl(226 45% 18%);
-    --accent-foreground: hsl(195 100% 92%);
+    --accent: hsl(150 35% 18%);
+    --accent-foreground: #D7FFE0;
+
+    /* Quantum Blue Action Accent in Dark Mode */
+    --action-accent: #3B82F6;
+    --action-accent-foreground: #FFFFFF;
 
     --destructive: hsl(0 62.8% 30.6%);
     --destructive-foreground: hsl(210 40% 98%);
@@ -136,7 +151,7 @@
 
     --border: hsl(217.2 32.6% 17.5%);
     --input: hsl(217.2 32.6% 17.5%);
-    --ring: hsl(226 100% 65%);
+    --ring: #3B82F6;
   }
 
   * {
@@ -147,5 +162,29 @@
     background-color: var(--background);
     color: var(--foreground);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer utilities {
+  .bg-brand {
+    background-color: var(--brand);
+  }
+  .text-brand-foreground {
+    color: var(--brand-foreground);
+  }
+  .bg-brand-surface {
+    background-color: var(--brand-surface);
+  }
+  .text-brand-surface-foreground {
+    color: var(--brand-surface-foreground);
+  }
+  .bg-action-accent {
+    background-color: var(--action-accent);
+  }
+  .text-action-accent {
+    color: var(--action-accent);
+  }
+  .text-action-accent-foreground {
+    color: var(--action-accent-foreground);
   }
 }

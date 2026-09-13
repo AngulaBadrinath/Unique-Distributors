@@ -149,7 +149,7 @@ export default function MfaChallenge({
                                     placeholder="123456"
                                     value={data.code}
                                     onChange={(e) => setData('code', e.target.value.replace(/[^0-9]/g, ''))}
-                                    className="text-center font-mono text-xl tracking-widest h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-primary focus:ring-primary"
+                                    className="text-center font-mono text-xl tracking-widest h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-action-accent focus:ring-action-accent"
                                     required
                                 />
                             </div>
@@ -169,7 +169,7 @@ export default function MfaChallenge({
                                     placeholder="XXXXX-XXXXX"
                                     value={data.recovery_code}
                                     onChange={(e) => setData('recovery_code', e.target.value)}
-                                    className="text-center font-mono text-base tracking-wider h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-primary focus:ring-primary uppercase"
+                                    className="text-center font-mono text-base tracking-wider h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-action-accent focus:ring-action-accent uppercase"
                                     required
                                 />
                             </div>
@@ -196,7 +196,7 @@ export default function MfaChallenge({
                             <button
                                 type="button"
                                 onClick={toggleMode}
-                                className="text-xs text-primary hover:text-primary/80 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1"
+                                className="text-xs text-action-accent hover:text-action-accent/80 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1"
                             >
                                 <KeyRound className="w-3.5 h-3.5" />
                                 <span>

@@ -118,7 +118,7 @@ export default function SalesmanDashboard({
                             </Button>
                         </Link>
                         <Link href="/salesman/orders/create">
-                            <Button size="sm" className="text-xs h-9 gap-1.5 cursor-pointer">
+                            <Button variant="action" size="sm" className="text-xs h-9 gap-1.5 cursor-pointer">
                                 <Plus className="h-3.5 w-3.5" />
                                 <span>New Sales Order</span>
                             </Button>
@@ -128,23 +128,23 @@ export default function SalesmanDashboard({
 
                 {/* Top Metrics Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Metric 1: Assigned Customers */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
+                    {/* Metric 1: Assigned Customers - Ghost Green Branded Surface */}
+                    <Card className="border border-accent-foreground/15 bg-accent text-accent-foreground shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-accent-foreground/90">
                                 Assigned Accounts
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                            <div className="p-2 rounded-lg bg-accent-foreground/10 text-accent-foreground">
                                 <Users className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold tracking-tight font-mono text-foreground">
+                            <div className="text-2xl font-bold tracking-tight font-mono text-accent-foreground">
                                 {metrics.assigned_customers_count}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border">
+                            <div className="flex items-center justify-between text-xs text-accent-foreground/85 mt-2 pt-2 border-t border-accent-foreground/20">
                                 <span>Active Clients</span>
-                                <Link href="/customers" className="text-primary hover:underline font-medium flex items-center gap-0.5">
+                                <Link href="/customers" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     <span>Browse Directory</span>
                                     <ArrowUpRight className="h-3 w-3" />
                                 </Link>
@@ -168,7 +168,7 @@ export default function SalesmanDashboard({
                             </div>
                             <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border">
                                 <span>In-Progress Drafts</span>
-                                <Link href="/salesman/orders/drafts" className="text-primary hover:underline font-medium flex items-center gap-0.5">
+                                <Link href="/salesman/orders/drafts" className="text-action-accent hover:underline font-medium flex items-center gap-0.5">
                                     <span>Resume Editing</span>
                                     <ArrowUpRight className="h-3 w-3" />
                                 </Link>
@@ -176,23 +176,23 @@ export default function SalesmanDashboard({
                         </CardContent>
                     </Card>
 
-                    {/* Metric 3: Active Orders In-Flight */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
+                    {/* Metric 3: Active Orders In-Flight - Zero Black Anchor Card */}
+                    <Card className="border border-[#1a1a1a] bg-[#050505] text-white shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                            <CardTitle className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
                                 In-Flight Orders
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                            <div className="p-2 rounded-lg bg-action-accent/20 text-action-accent">
                                 <Layers className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold tracking-tight font-mono text-foreground">
+                            <div className="text-2xl font-bold tracking-tight font-mono text-white">
                                 {metrics.in_flight_orders_count}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border">
+                            <div className="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-[#222222]">
                                 <span>Pending / Processing</span>
-                                <Link href="/salesman/orders" className="text-primary hover:underline font-medium flex items-center gap-0.5">
+                                <Link href="/salesman/orders" className="text-action-accent hover:underline font-medium flex items-center gap-0.5">
                                     <span>Track Status</span>
                                     <ArrowUpRight className="h-3 w-3" />
                                 </Link>

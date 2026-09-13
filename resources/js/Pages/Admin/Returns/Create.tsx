@@ -418,7 +418,7 @@ export default function Create({
                                 </Link>
                                 <Button
                                     type="submit"
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    variant="default"
                                     disabled={processing || totalUnitsRequested === 0}
                                 >
                                     {processing ? 'Submitting Return...' : 'Submit Return Request'}

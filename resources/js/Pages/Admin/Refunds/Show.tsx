@@ -267,7 +267,8 @@ export default function Show({ refundRequest }: Props) {
                                 <Button
                                     onClick={handleApprove}
                                     disabled={approveForm.processing || (!canApproveMakerChecker)}
-                                    className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    variant="action"
+                                    className="gap-1.5"
                                 >
                                     <CheckCircle2 className="w-4 h-4" />
                                     Approve Refund
@@ -295,7 +296,8 @@ export default function Show({ refundRequest }: Props) {
                                 <Button
                                     onClick={handleApprove}
                                     disabled={approveForm.processing || (!canApproveMakerChecker)}
-                                    className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    variant="action"
+                                    className="gap-1.5"
                                 >
                                     <CheckCircle2 className="w-4 h-4" />
                                     Approve Refund

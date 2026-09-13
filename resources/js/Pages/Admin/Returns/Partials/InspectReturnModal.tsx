@@ -268,7 +268,7 @@ export default function InspectReturnModal({ isOpen, onClose, returnRequest }: P
                         <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white" disabled={isSubmitting}>
+                        <Button type="submit" variant="action" disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="h-4 w-4 animate-spin mr-2" />

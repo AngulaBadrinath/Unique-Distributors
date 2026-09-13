@@ -78,11 +78,11 @@ export default function SalesmanLayout({
                 </div>
 
                 {/* Desktop Nav Links */}
-                <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
+                <nav className="hidden md:flex items-center gap-1.5 text-xs font-medium">
                     <Link
                         href="/dashboard"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/dashboard') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-2xs' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Home
@@ -90,7 +90,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/customers') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/customers') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-2xs' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         My Customers
@@ -98,7 +98,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/orders') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/orders') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-2xs' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Order History
@@ -106,7 +106,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/products') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/products') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-2xs' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Catalogue
@@ -114,10 +114,10 @@ export default function SalesmanLayout({
                 </nav>
 
                 <div className="flex items-center gap-2.5">
-                    {/* Primary New Order CTA on desktop */}
+                    {/* High-intent New Order CTA on desktop */}
                     <Link
                         href="/orders/create"
-                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shadow-xs"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-action-accent text-white text-xs font-semibold hover:bg-action-accent/90 transition-colors shadow-xs"
                     >
                         <PlusCircle className="h-4 w-4" />
                         <span>New Order</span>
@@ -205,13 +205,13 @@ export default function SalesmanLayout({
             </main>
 
             {/* Mobile Bottom Navigation Bar (Fixed for thumb reachability, >=44px touch targets) */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md border-t border-border px-2 py-1.5 sm:hidden shadow-lg">
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] text-slate-400 border-t border-[#1a1a1a] px-2 py-1.5 sm:hidden shadow-lg">
                 <div className="grid grid-cols-5 gap-1 items-center">
                     {/* Home */}
                     <Link
                         href="/dashboard"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/dashboard') ? 'text-[#D7FFE0] bg-[#141414] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Home className="h-5 w-5 mb-0.5" />
@@ -222,18 +222,18 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/customers') ? 'text-[#D7FFE0] bg-[#141414] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Users className="h-5 w-5 mb-0.5" />
                         <span>Customers</span>
                     </Link>
 
-                    {/* Prominent New Order Center Action */}
+                    {/* Prominent New Order Center Action - Quantum Blue Accent */}
                     <div className="flex items-center justify-center -mt-4">
                         <Link
                             href="/orders/create"
-                            className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform"
+                            className="flex items-center justify-center h-12 w-12 rounded-full bg-action-accent text-white shadow-lg shadow-action-accent/40 hover:scale-105 active:scale-95 transition-transform"
                             aria-label="Create New Sales Order"
                         >
                             <PlusCircle className="h-6 w-6" />
@@ -244,7 +244,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/orders') ? 'text-[#D7FFE0] bg-[#141414] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <ShoppingBag className="h-5 w-5 mb-0.5" />
@@ -255,7 +255,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/products') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                            isLinkActive('/products') ? 'text-[#D7FFE0] bg-[#141414] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Package className="h-5 w-5 mb-0.5" />

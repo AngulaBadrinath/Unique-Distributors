@@ -201,7 +201,8 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                             {(returnRequest.status === 'REQUESTED' || returnRequest.status === 'UNDER_REVIEW') && (
                                 <Button
                                     onClick={() => setIsInspectOpen(true)}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white gap-1.5"
+                                    variant="action"
+                                    className="gap-1.5"
                                 >
                                     <PackageCheck className="w-4 h-4" />
                                     Warehouse Inspection

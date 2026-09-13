@@ -82,7 +82,7 @@ export default function Login({ status }: LoginProps) {
                     <CardHeader className="space-y-1 pb-4">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-base font-semibold">Sign In</CardTitle>
-                            <Badge variant="outline" className="font-mono text-[10px] uppercase">
+                            <Badge variant="brand" className="font-mono text-[10px] uppercase">
                                 Single Identity
                             </Badge>
                         </div>
@@ -128,7 +128,7 @@ export default function Login({ status }: LoginProps) {
                                     </label>
                                     <Link
                                         href="/forgot-password"
-                                        className="text-xs text-primary hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-xs"
+                                        className="text-xs text-action-accent hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-xs font-medium"
                                     >
                                         Forgot password?
                                     </Link>
@@ -203,10 +203,10 @@ export default function Login({ status }: LoginProps) {
                         </form>
                     </CardContent>
 
-                    <CardFooter className="bg-muted/30 border-t border-border py-3 px-6 text-[11px] text-muted-foreground flex items-center justify-between">
+                    <CardFooter className="bg-accent/40 border-t border-accent-foreground/10 py-3 px-6 text-[11px] text-accent-foreground flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                            <Shield className="h-3.5 w-3.5 text-primary" />
-                            <span>Encrypted Session &bull; Server-Side Abuse Protection</span>
+                            <Shield className="h-3.5 w-3.5 text-action-accent" />
+                            <span className="font-medium">Encrypted Session &bull; Server-Side Abuse Protection</span>
                         </div>
                     </CardFooter>
                 </Card>

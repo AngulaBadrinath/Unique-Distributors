@@ -96,46 +96,46 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
 
                 {/* Top Metrics Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Card 1: Pending Approvals */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
+                    {/* Card 1: Pending Approvals - Zero Black Executive Anchor */}
+                    <Card className="border border-[#1a1a1a] bg-[#050505] text-white shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                            <CardTitle className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
                                 Pending Approval
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                            <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400">
                                 <Clock className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
+                            <div className="text-2xl font-bold font-mono text-white">
                                 {metrics.pending_approval_orders}
                             </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
+                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#222222] text-[11px] text-slate-400">
                                 <span>Action required queue</span>
-                                <Link href="/admin/orders" className="text-primary hover:underline font-medium flex items-center gap-0.5">
+                                <Link href="/admin/orders" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     Review <ChevronRight className="h-3 w-3" />
                                 </Link>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Card 2: Today's Orders / Sales */}
-                    <Card className="border-border shadow-xs hover:border-border/80 transition-colors">
+                    {/* Card 2: Today's Orders / Sales - Ghost Green Branded KPI Surface */}
+                    <Card className="border border-accent-foreground/15 bg-accent text-accent-foreground shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-mono">
+                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-accent-foreground/90">
                                 Today's Sales
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                            <div className="p-2 rounded-lg bg-accent-foreground/10 text-accent-foreground">
                                 <TrendingUp className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold font-mono text-foreground">
+                            <div className="text-2xl font-bold font-mono text-accent-foreground">
                                 {formatCurrency(metrics.today_sales_volume)}
                             </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
+                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-accent-foreground/20 text-[11px] text-accent-foreground/85">
                                 <span>{metrics.today_orders_count} orders submitted today</span>
-                                <Link href="/admin/reports/sales" className="text-primary hover:underline font-medium flex items-center gap-0.5">
+                                <Link href="/admin/reports/sales" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     Analytics <ChevronRight className="h-3 w-3" />
                                 </Link>
                             </div>
