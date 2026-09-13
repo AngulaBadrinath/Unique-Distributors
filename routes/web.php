@@ -51,6 +51,8 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     Route::redirect('/products-create', '/products/create', 301);
     Route::redirect('/categories-create', '/categories/create', 301);
     Route::redirect('/tax-profiles-create', '/tax-profiles/create', 301);
+    Route::redirect('/orders', '/salesman/orders', 301);
+    Route::redirect('/orders/create', '/salesman/orders/create', 301);
     Route::redirect('/admin/customers', '/customers', 301);
     Route::redirect('/admin/products', '/products', 301);
     Route::redirect('/admin/categories', '/categories', 301);
@@ -289,11 +291,14 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             ->name('admin.inventory.exceptions.dismiss');
     });
 
-    // Payments & Payment Evidence Preview (FEAT-PAY-005 / FEAT-PAY-006 / FEAT-PAY-007)
-    Route::middleware('permission:payment.view')->group(function () {
+    // Payment Verification Workspace (FEAT-PAY-007)
+    Route::middleware('permission:payment.verify')->group(function () {
         Route::get('/admin/payments', [\App\Http\Controllers\Admin\AdminPaymentController::class, 'index'])
             ->name('admin.payments.index');
+    });
 
+    // Payments & Payment Evidence Preview (FEAT-PAY-005 / FEAT-PAY-006)
+    Route::middleware('permission:payment.view')->group(function () {
         Route::get('/admin/payments/{payment}/evidence-url', [\App\Http\Controllers\Admin\AdminPaymentController::class, 'evidenceUrl'])
             ->whereNumber('payment')
             ->name('admin.payments.evidence.url');

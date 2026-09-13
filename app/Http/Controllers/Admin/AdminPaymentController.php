@@ -50,7 +50,7 @@ class AdminPaymentController extends Controller
     public function index(AdminPaymentIndexRequest $request): Response|JsonResponse
     {
         $actor = $request->user();
-        $this->permissionService->authorize($actor, Permission::PAYMENT_VIEW);
+        $this->permissionService->authorize($actor, Permission::PAYMENT_VERIFY);
 
         $badgeCounts = PaymentVerificationService::getBadgeCounts($actor);
         $activeTab = $request->validated('tab', 'all');

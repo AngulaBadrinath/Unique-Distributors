@@ -98,9 +98,9 @@ export default function SalesmanLayout({
                         My Customers
                     </Link>
                     <Link
-                        href="/orders"
+                        href="/salesman/orders"
                         className={`px-3 py-1.5 rounded-xl transition-all ${
-                            isLinkActive('/orders') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                            isLinkActive('/salesman/orders') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
                         }`}
                     >
                         Order History
@@ -244,9 +244,9 @@ export default function SalesmanLayout({
 
                     {/* Orders */}
                     <Link
-                        href="/orders"
+                        href="/salesman/orders"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
+                            isLinkActive('/salesman/orders') ? 'text-cyan-300 font-bold' : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <ShoppingBag className="h-5 w-5 mb-0.5" />
