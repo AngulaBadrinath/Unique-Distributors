@@ -22,7 +22,7 @@ export default defineConfig({
     },
     fullyParallel: false,
     retries: process.env.CI ? 1 : 0,
-    workers: process.env.CI ? 2 : (process.env.WORKERS ? parseInt(process.env.WORKERS) : 2),
+    workers: process.env.WORKERS ? parseInt(process.env.WORKERS) : 1,
     reporter: [
         ['list'],
         ['html', { outputFolder: 'artifacts/browser/playwright-report', open: 'never' }],

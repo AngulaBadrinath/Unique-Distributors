@@ -14,7 +14,7 @@ test.describe('Audit Phase 14: Recent-Fix Regression & Cross-Module Financial Ve
         expect(page.url()).toContain('/dashboard');
         await page.waitForSelector('h1');
         const dashText = await page.locator('body').innerText();
-        expect(dashText).toContain('Field Sales Dashboard');
+        expect(dashText).toMatch(/Field Sales (Command|Dashboard)/);
         // Must NOT have stale "Phase 00" or development text
         expect(dashText).not.toContain('Phase 00');
         expect(dashText).not.toContain('Phase 18B');

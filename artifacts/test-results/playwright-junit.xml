@@ -1,8 +1,84 @@
-<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="23.843676">
-<testsuite name="visual\visual-baselines.spec.ts" timestamp="2026-09-13T11:34:58.127Z" hostname="visual" tests="2" failures="0" skipped="0" time="21.147" errors="0">
-<testcase name="Visual Regression Baseline Capture › Captures customers master visual snapshot" classname="visual\visual-baselines.spec.ts" time="10.719">
+<testsuites id="" name="" tests="28" failures="0" skipped="0" errors="0" time="507.410213">
+<testsuite name="audit\01_auth_shell_roles.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="7" failures="0" skipped="0" time="99.198" errors="0">
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.1 Invalid login and suspended account rejection" classname="audit\01_auth_shell_roles.spec.ts" time="9.677">
 </testcase>
-<testcase name="Visual Regression Baseline Capture › Captures products catalog visual snapshot" classname="visual\visual-baselines.spec.ts" time="10.428">
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.2 Salesman login and operational shell" classname="audit\01_auth_shell_roles.spec.ts" time="10.679">
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.3 Warehouse Manager login and inventory shell" classname="audit\01_auth_shell_roles.spec.ts" time="11.052">
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.4 Delivery Partner login and delivery shell" classname="audit\01_auth_shell_roles.spec.ts" time="9.686">
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.5 Accountant login and financial shell" classname="audit\01_auth_shell_roles.spec.ts" time="24.372">
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.6 Admin login and operations shell" classname="audit\01_auth_shell_roles.spec.ts" time="11.454">
+</testcase>
+<testcase name="Audit Phase 1 &amp; 2: Authentication, Shell, and Role Boundaries › 1.7 Field roles blocked from unauthorized administrative workspaces" classname="audit\01_auth_shell_roles.spec.ts" time="22.278">
+</testcase>
+</testsuite>
+<testsuite name="audit\02_customers_and_scoping.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="54.229" errors="0">
+<testcase name="Audit Phase 3: Customer Domain &amp; Salesman Scoping › 3.1 Admin customer listing, search, and details view" classname="audit\02_customers_and_scoping.spec.ts" time="27.489">
+</testcase>
+<testcase name="Audit Phase 3: Customer Domain &amp; Salesman Scoping › 3.2 Salesman customer scoping and cross-salesman anti-IDOR enforcement" classname="audit\02_customers_and_scoping.spec.ts" time="26.74">
+</testcase>
+</testsuite>
+<testsuite name="audit\03_products_pricing_tax.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="36.377" errors="0">
+<testcase name="Audit Phase 4: Product Master, Categories, Pricing &amp; Tax Invariants › 4.1 Categories management and product catalogue browsing" classname="audit\03_products_pricing_tax.spec.ts" time="21.088">
+</testcase>
+<testcase name="Audit Phase 4: Product Master, Categories, Pricing &amp; Tax Invariants › 4.2 Field roles catalog read-only and price edit restrictions" classname="audit\03_products_pricing_tax.spec.ts" time="15.289">
+</testcase>
+</testsuite>
+<testsuite name="audit\04_salesman_new_order.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="26.669" errors="0">
+<testcase name="Audit Phase 5: Flagship — Salesman New Sales Order &amp; Drafts › 5.1 Salesman New Order UI, customer scoping, and review calculation stability" classname="audit\04_salesman_new_order.spec.ts" time="15.889">
+</testcase>
+<testcase name="Audit Phase 5: Flagship — Salesman New Sales Order &amp; Drafts › 5.2 Cross-Salesman Order IDOR is strictly rejected" classname="audit\04_salesman_new_order.spec.ts" time="10.78">
+</testcase>
+</testsuite>
+<testsuite name="audit\05_admin_orders_adjustments_inventory.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="22.442" errors="0">
+<testcase name="Audit Phase 6: Admin Order Operations, Adjustments, and Inventory › 6.1 Admin Order Queue and Review Workspace" classname="audit\05_admin_orders_adjustments_inventory.spec.ts" time="22.442">
+</testcase>
+</testsuite>
+<testsuite name="audit\06_payments_verification.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="24.263" errors="0">
+<testcase name="Audit Phase 7: Payment Lifecycle &amp; Verification › 7.1 Admin / Accountant Payment Verification Workspace" classname="audit\06_payments_verification.spec.ts" time="13.253">
+</testcase>
+<testcase name="Audit Phase 7: Payment Lifecycle &amp; Verification › 7.2 Salesman payment verification access restriction" classname="audit\06_payments_verification.spec.ts" time="11.01">
+</testcase>
+</testsuite>
+<testsuite name="audit\07_accounts_receivable.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="17.532" errors="0">
+<testcase name="Audit Phase 8: Accounts Receivable (Deepest Section) › 8.1 AR Overview Dashboard loads with 200, valid aging, and no transaction aborts" classname="audit\07_accounts_receivable.spec.ts" time="17.532">
+</testcase>
+</testsuite>
+<testsuite name="audit\08_ap_and_accounting.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="31.88" errors="0">
+<testcase name="Audit Phase 9: Accounts Payable and General Ledger Accounting › 9.1 Accounts Payable workspace and supplier liabilities" classname="audit\08_ap_and_accounting.spec.ts" time="12.175">
+</testcase>
+<testcase name="Audit Phase 9: Accounts Payable and General Ledger Accounting › 9.2 General Ledger, Trial Balance, Chart of Accounts, and Financial Statements" classname="audit\08_ap_and_accounting.spec.ts" time="19.705">
+</testcase>
+</testsuite>
+<testsuite name="audit\09_delivery_returns_credits.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="28.754" errors="0">
+<testcase name="Audit Phase 10: Delivery, Returns, Credits &amp; Refunds › 10.1 Delivery Partner operations and touch-ready dashboard" classname="audit\09_delivery_returns_credits.spec.ts" time="13.122">
+</testcase>
+<testcase name="Audit Phase 10: Delivery, Returns, Credits &amp; Refunds › 10.2 Admin returns management, credits, and refunds queues" classname="audit\09_delivery_returns_credits.spec.ts" time="15.632">
+</testcase>
+</testsuite>
+<testsuite name="audit\10_invoices_reports_notifications.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="42.811" errors="0">
+<testcase name="Audit Phase 11: Invoices, Reports, and Notifications › 11.1 Invoice presentation and strict zero-product-image invariant" classname="audit\10_invoices_reports_notifications.spec.ts" time="14.706">
+</testcase>
+<testcase name="Audit Phase 11: Invoices, Reports, and Notifications › 11.2 Reporting modules and role access boundaries" classname="audit\10_invoices_reports_notifications.spec.ts" time="28.105">
+</testcase>
+</testsuite>
+<testsuite name="audit\11_security_idor_matrix.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="61.755" errors="0">
+<testcase name="Audit Phase 12: Security, Authorization &amp; Anti-IDOR Abuse Matrix › 12.1 Unauthenticated guests redirected to login on protected routes" classname="audit\11_security_idor_matrix.spec.ts" time="15.033">
+</testcase>
+<testcase name="Audit Phase 12: Security, Authorization &amp; Anti-IDOR Abuse Matrix › 12.2 Privilege separation across specialized roles" classname="audit\11_security_idor_matrix.spec.ts" time="46.722">
+</testcase>
+</testsuite>
+<testsuite name="audit\12_responsive_and_a11y.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="2" failures="0" skipped="0" time="36.061" errors="0">
+<testcase name="Audit Phase 13: Responsive Breakpoints Matrix &amp; Accessibility › 13.1 Systematic 11-breakpoint responsive rendering on core workspaces" classname="audit\12_responsive_and_a11y.spec.ts" time="32.712">
+</testcase>
+<testcase name="Audit Phase 13: Responsive Breakpoints Matrix &amp; Accessibility › 13.2 Keyboard accessibility (Tab navigation and Escape dismiss)" classname="audit\12_responsive_and_a11y.spec.ts" time="3.349">
+</testcase>
+</testsuite>
+<testsuite name="audit\13_regression_e2e_financial.spec.ts" timestamp="2026-09-13T13:05:35.406Z" hostname="audit-e2e" tests="1" failures="0" skipped="0" time="20.31" errors="0">
+<testcase name="Audit Phase 14: Recent-Fix Regression &amp; Cross-Module Financial Verification › 14.1 Re-verifying recent fixes across Salesman, AR, and Adjustments" classname="audit\13_regression_e2e_financial.spec.ts" time="20.31">
 </testcase>
 </testsuite>
 </testsuites>

@@ -10,10 +10,12 @@ test.describe('Responsive Viewport Matrix Verification', () => {
 
         const testBreakpoints = Object.values(VIEWPORT_MATRIX);
 
+        await safeGoto(page, '/dashboard');
+        await page.waitForLoadState('domcontentloaded');
+
         for (const bp of testBreakpoints) {
             await page.setViewportSize({ width: bp.width, height: bp.height });
-            await safeGoto(page, '/dashboard');
-            await page.waitForLoadState('domcontentloaded');
+            await page.waitForTimeout(150);
 
             // Assert no unintentional horizontal scrolling
             const isOverflowing = await page.evaluate(() => {

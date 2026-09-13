@@ -4,9 +4,7 @@
       "C:\\Program Files\\nodejs\\node.exe",
       "F:\\Wholesale Distribution Management System\\node_modules\\@playwright\\test\\cli.js",
       "test",
-      "tests/browser/visual/visual-baselines.spec.ts",
-      "-g",
-      "Captures customers master|Captures products catalog"
+      "--project=audit-e2e"
     ],
     "configFile": "F:\\Wholesale Distribution Management System\\playwright.config.ts",
     "rootDir": "F:/Wholesale Distribution Management System/tests/browser",
@@ -124,25 +122,1062 @@
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
     "version": "1.63.0",
-    "workers": 2,
+    "workers": 1,
     "webServer": null
   },
   "suites": [
     {
-      "title": "visual\\visual-baselines.spec.ts",
-      "file": "visual/visual-baselines.spec.ts",
+      "title": "audit\\01_auth_shell_roles.spec.ts",
+      "file": "audit/01_auth_shell_roles.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Visual Regression Baseline Capture",
-          "file": "visual/visual-baselines.spec.ts",
+          "title": "Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries",
+          "file": "audit/01_auth_shell_roles.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1.1 Invalid login and suspended account rejection",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9677,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:05:37.125Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-fbb49865233cb5f9e53d",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "1.2 Salesman login and operational shell",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10679,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:05:47.367Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-51644cfbb31b3bf94946",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 32,
+              "column": 5
+            },
+            {
+              "title": "1.3 Warehouse Manager login and inventory shell",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11052,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:05:58.115Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-525b9ab148a283942267",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 47,
+              "column": 5
+            },
+            {
+              "title": "1.4 Delivery Partner login and delivery shell",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9686,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:06:09.207Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-56499d29a37bfc237a43",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 60,
+              "column": 5
+            },
+            {
+              "title": "1.5 Accountant login and financial shell",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 24372,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:06:18.945Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-ce93daebb416850714d6",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "1.6 Admin login and operations shell",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11454,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:06:43.368Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-0e438abf7bfd270d5249",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "1.7 Field roles blocked from unauthorized administrative workspaces",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22278,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:06:54.874Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ae0a1dc1e5e05fb2aee8-9a875f00f77e2da59cb5",
+              "file": "audit/01_auth_shell_roles.spec.ts",
+              "line": 95,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\02_customers_and_scoping.spec.ts",
+      "file": "audit/02_customers_and_scoping.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 3: Customer Domain & Salesman Scoping",
+          "file": "audit/02_customers_and_scoping.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "3.1 Admin customer listing, search, and details view",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 27489,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:07:17.264Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1c42d0b924785b5663bf-039f2c5adf884b028ef1",
+              "file": "audit/02_customers_and_scoping.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "3.2 Salesman customer scoping and cross-salesman anti-IDOR enforcement",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 26740,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:07:44.806Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1c42d0b924785b5663bf-fe267a8a80f94acaba10",
+              "file": "audit/02_customers_and_scoping.spec.ts",
+              "line": 44,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\03_products_pricing_tax.spec.ts",
+      "file": "audit/03_products_pricing_tax.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 4: Product Master, Categories, Pricing & Tax Invariants",
+          "file": "audit/03_products_pricing_tax.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "4.1 Categories management and product catalogue browsing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 21088,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:08:11.656Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2c08e12f7acd5227145f-1767aa7f52751aed2178",
+              "file": "audit/03_products_pricing_tax.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "4.2 Field roles catalog read-only and price edit restrictions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15289,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:08:32.805Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2c08e12f7acd5227145f-6719e1ac4b43f155032a",
+              "file": "audit/03_products_pricing_tax.spec.ts",
+              "line": 44,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\04_salesman_new_order.spec.ts",
+      "file": "audit/04_salesman_new_order.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 5: Flagship — Salesman New Sales Order & Drafts",
+          "file": "audit/04_salesman_new_order.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "5.1 Salesman New Order UI, customer scoping, and review calculation stability",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15889,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:08:48.215Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0728f328049bbd6e367d-7e2c58b57cf323a9d1db",
+              "file": "audit/04_salesman_new_order.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "5.2 Cross-Salesman Order IDOR is strictly rejected",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10780,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:09:04.178Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0728f328049bbd6e367d-c2a86b040f60ff9214b3",
+              "file": "audit/04_salesman_new_order.spec.ts",
+              "line": 36,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\05_admin_orders_adjustments_inventory.spec.ts",
+      "file": "audit/05_admin_orders_adjustments_inventory.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 6: Admin Order Operations, Adjustments, and Inventory",
+          "file": "audit/05_admin_orders_adjustments_inventory.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "6.1 Admin Order Queue and Review Workspace",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22442,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:09:15.045Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "886260d3ab930e13dfc5-71c884c13583832a9f41",
+              "file": "audit/05_admin_orders_adjustments_inventory.spec.ts",
+              "line": 9,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\06_payments_verification.spec.ts",
+      "file": "audit/06_payments_verification.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 7: Payment Lifecycle & Verification",
+          "file": "audit/06_payments_verification.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "7.1 Admin / Accountant Payment Verification Workspace",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13253,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:09:37.552Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "85ee50ce1932a5210deb-4fe84c1330d477bd620b",
+              "file": "audit/06_payments_verification.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "7.2 Salesman payment verification access restriction",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11010,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:09:50.856Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "85ee50ce1932a5210deb-c0076478d5a473389273",
+              "file": "audit/06_payments_verification.spec.ts",
+              "line": 26,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\07_accounts_receivable.spec.ts",
+      "file": "audit/07_accounts_receivable.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 8: Accounts Receivable (Deepest Section)",
+          "file": "audit/07_accounts_receivable.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "8.1 AR Overview Dashboard loads with 200, valid aging, and no transaction aborts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17532,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:10:01.967Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ed1c4c2ac98a9294d1ee-5523c1eaa113a1126774",
+              "file": "audit/07_accounts_receivable.spec.ts",
+              "line": 9,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\08_ap_and_accounting.spec.ts",
+      "file": "audit/08_ap_and_accounting.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 9: Accounts Payable and General Ledger Accounting",
+          "file": "audit/08_ap_and_accounting.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "9.1 Accounts Payable workspace and supplier liabilities",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 12175,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:10:19.591Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8fbf257051934e064dea-76299a7b152a4b4b5054",
+              "file": "audit/08_ap_and_accounting.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "9.2 General Ledger, Trial Balance, Chart of Accounts, and Financial Statements",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19705,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:10:31.808Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8fbf257051934e064dea-11c12473827559ce6896",
+              "file": "audit/08_ap_and_accounting.spec.ts",
+              "line": 25,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\09_delivery_returns_credits.spec.ts",
+      "file": "audit/09_delivery_returns_credits.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 10: Delivery, Returns, Credits & Refunds",
+          "file": "audit/09_delivery_returns_credits.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "10.1 Delivery Partner operations and touch-ready dashboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13122,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:10:51.645Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b61a69cde67ab498e556-193619ee29ffb68bd4da",
+              "file": "audit/09_delivery_returns_credits.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "10.2 Admin returns management, credits, and refunds queues",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15632,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:11:04.826Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b61a69cde67ab498e556-295a08ca9078d24ac0be",
+              "file": "audit/09_delivery_returns_credits.spec.ts",
+              "line": 29,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\10_invoices_reports_notifications.spec.ts",
+      "file": "audit/10_invoices_reports_notifications.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 11: Invoices, Reports, and Notifications",
+          "file": "audit/10_invoices_reports_notifications.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "11.1 Invoice presentation and strict zero-product-image invariant",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14706,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:11:20.518Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "92635145ffb8dc02f624-27dafecf509f64c111f6",
+              "file": "audit/10_invoices_reports_notifications.spec.ts",
+              "line": 9,
+              "column": 5
+            },
+            {
+              "title": "11.2 Reporting modules and role access boundaries",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 28105,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:11:35.259Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "92635145ffb8dc02f624-3ceacef988922a083a24",
+              "file": "audit/10_invoices_reports_notifications.spec.ts",
+              "line": 34,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\11_security_idor_matrix.spec.ts",
+      "file": "audit/11_security_idor_matrix.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 12: Security, Authorization & Anti-IDOR Abuse Matrix",
+          "file": "audit/11_security_idor_matrix.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "12.1 Unauthenticated guests redirected to login on protected routes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15033,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:12:03.447Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "da4da6445152b63a66b3-16fd54122b7ff047e653",
+              "file": "audit/11_security_idor_matrix.spec.ts",
+              "line": 7,
+              "column": 5
+            },
+            {
+              "title": "12.2 Privilege separation across specialized roles",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 90000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 46722,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:12:18.534Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "da4da6445152b63a66b3-ade5f58b7c44b3d44edc",
+              "file": "audit/11_security_idor_matrix.spec.ts",
+              "line": 25,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\12_responsive_and_a11y.spec.ts",
+      "file": "audit/12_responsive_and_a11y.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 13: Responsive Breakpoints Matrix & Accessibility",
+          "file": "audit/12_responsive_and_a11y.spec.ts",
           "line": 7,
           "column": 6,
           "specs": [
             {
-              "title": "Captures customers master visual snapshot",
+              "title": "13.1 Systematic 11-breakpoint responsive rendering on core workspaces",
               "ok": true,
               "tags": [],
               "tests": [
@@ -150,19 +1185,19 @@
                   "timeout": 45000,
                   "annotations": [],
                   "expectedStatus": "passed",
-                  "projectId": "visual",
-                  "projectName": "visual",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
                   "results": [
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 10719,
+                      "duration": 32712,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-13T11:34:59.436Z",
+                      "startTime": "2026-09-13T13:13:05.345Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -170,13 +1205,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "40146a963c697e3bc324-871ab22778d1d2529201",
-              "file": "visual/visual-baselines.spec.ts",
-              "line": 100,
+              "id": "21517b7488874952c8f4-38c9fa932c3247865b7a",
+              "file": "audit/12_responsive_and_a11y.spec.ts",
+              "line": 10,
               "column": 5
             },
             {
-              "title": "Captures products catalog visual snapshot",
+              "title": "13.2 Keyboard accessibility (Tab navigation and Escape dismiss)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -184,19 +1219,19 @@
                   "timeout": 45000,
                   "annotations": [],
                   "expectedStatus": "passed",
-                  "projectId": "visual",
-                  "projectName": "visual",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
                   "results": [
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 10428,
+                      "duration": 3349,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-13T11:35:10.779Z",
+                      "startTime": "2026-09-13T13:13:38.094Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -204,9 +1239,60 @@
                   "status": "expected"
                 }
               ],
-              "id": "40146a963c697e3bc324-187e66560bcc4cad7f3f",
-              "file": "visual/visual-baselines.spec.ts",
-              "line": 114,
+              "id": "21517b7488874952c8f4-c0bfe52d54daa4a5efef",
+              "file": "audit/12_responsive_and_a11y.spec.ts",
+              "line": 31,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "audit\\13_regression_e2e_financial.spec.ts",
+      "file": "audit/13_regression_e2e_financial.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Audit Phase 14: Recent-Fix Regression & Cross-Module Financial Verification",
+          "file": "audit/13_regression_e2e_financial.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "14.1 Re-verifying recent fixes across Salesman, AR, and Adjustments",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "audit-e2e",
+                  "projectName": "audit-e2e",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 20310,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-13T13:13:41.501Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "68a5b5cb8027f68c9ebb-07310cfe016d82849759",
+              "file": "audit/13_regression_e2e_financial.spec.ts",
+              "line": 9,
               "column": 5
             }
           ]
@@ -216,9 +1302,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-09-13T11:34:58.042Z",
-    "duration": 23843.676,
-    "expected": 2,
+    "startTime": "2026-09-13T13:05:35.156Z",
+    "duration": 507410.213,
+    "expected": 28,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

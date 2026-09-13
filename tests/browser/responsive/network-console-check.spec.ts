@@ -24,12 +24,14 @@ test.describe('Runtime Console and Network Health Check', () => {
 
         const coreRoutes = [
             '/dashboard',
-            '/admin/customers',
-            '/admin/products',
+            '/customers',
+            '/products',
             '/admin/orders',
-            '/admin/payments/verification',
-            '/admin/ar/dashboard',
-            '/admin/accounting/chart-of-accounts'
+            '/admin/payments',
+            '/admin/receivables',
+            '/admin/accounting/accounts',
+            '/notifications',
+            '/notifications/preferences'
         ];
 
         for (const route of coreRoutes) {
