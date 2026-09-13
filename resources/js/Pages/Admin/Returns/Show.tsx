@@ -339,23 +339,23 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                                 </h3>
 
                                 {returnRequest.notes && (
-                                    <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded border border-slate-200 dark:border-slate-700 text-sm">
-                                        <span className="font-semibold text-slate-700 dark:text-slate-300 block text-xs">Request Notes</span>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-1">{returnRequest.notes}</p>
+                                    <div className="p-3 bg-muted/40 rounded border border-border text-sm">
+                                        <span className="font-semibold text-foreground block text-xs">Request Notes</span>
+                                        <p className="text-muted-foreground mt-1">{returnRequest.notes}</p>
                                     </div>
                                 )}
 
                                 {returnRequest.inspection_notes && (
-                                    <div className="p-3 bg-[#D7FFE0]/30 rounded border border-[#063312]/20 text-sm">
-                                        <span className="font-semibold text-[#063312] block text-xs">Warehouse Inspection Notes</span>
-                                        <p className="text-[#063312]/90 mt-1">{returnRequest.inspection_notes}</p>
+                                    <div className="p-3 bg-brand-surface/30 rounded border border-brand-surface-foreground/20 text-sm">
+                                        <span className="font-semibold text-brand-surface-foreground block text-xs">Warehouse Inspection Notes</span>
+                                        <p className="text-brand-surface-foreground/90 mt-1">{returnRequest.inspection_notes}</p>
                                     </div>
                                 )}
 
                                 {returnRequest.rejection_reason && (
-                                    <div className="p-3 bg-rose-50 dark:bg-rose-950/30 rounded border border-rose-200 dark:border-rose-800 text-sm">
-                                        <span className="font-semibold text-rose-900 dark:text-rose-300 block text-xs">Rejection Reason</span>
-                                        <p className="text-rose-800 dark:text-rose-200 mt-1">{returnRequest.rejection_reason}</p>
+                                    <div className="p-3 bg-destructive/10 rounded border border-destructive/20 text-sm">
+                                        <span className="font-semibold text-destructive block text-xs">Rejection Reason</span>
+                                        <p className="text-destructive/90 mt-1">{returnRequest.rejection_reason}</p>
                                     </div>
                                 )}
                             </div>
@@ -365,21 +365,21 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                     {/* Right Col: Metadata & Audit Events */}
                     <div className="space-y-6">
                         {/* Meta Card */}
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                                 <Building2 className="w-4 h-4 text-primary" />
                                 Return Specifications
                             </h3>
 
-                            <dl className="divide-y divide-slate-100 dark:divide-slate-750 text-sm space-y-3">
+                            <dl className="divide-y divide-border/60 text-sm space-y-3">
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Customer</dt>
-                                    <dd className="font-semibold text-slate-800 dark:text-slate-200 text-right">
+                                    <dt className="text-muted-foreground">Customer</dt>
+                                    <dd className="font-semibold text-foreground text-right">
                                         {returnRequest.customer?.name} ({returnRequest.customer?.code})
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Original Order</dt>
+                                    <dt className="text-muted-foreground">Original Order</dt>
                                     <dd className="font-semibold text-action-accent text-right">
                                         <Link href={`/admin/orders/${returnRequest.order_id}`} className="hover:underline">
                                             {returnRequest.order?.order_number}
@@ -387,14 +387,14 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Target Warehouse</dt>
-                                    <dd className="font-semibold text-slate-800 dark:text-slate-200 text-right">
+                                    <dt className="text-muted-foreground">Target Warehouse</dt>
+                                    <dd className="font-semibold text-foreground text-right">
                                         {returnRequest.warehouse?.name}
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Requested Date</dt>
-                                    <dd className="font-medium text-slate-700 dark:text-slate-300 text-right">
+                                    <dt className="text-muted-foreground">Requested Date</dt>
+                                    <dd className="font-medium text-foreground text-right">
                                         {new Date(returnRequest.requested_at).toLocaleString()}
                                     </dd>
                                 </div>
@@ -402,17 +402,17 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                         </div>
 
                         {/* Audit Timeline */}
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                                 <Clock className="w-4 h-4 text-primary" />
                                 Immutable Lifecycle Timeline
                             </h3>
 
-                            <div className="space-y-3 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+                            <div className="space-y-3 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
                                 {returnRequest.events?.map((ev, idx) => (
                                     <div key={ev.id || idx} className="flex items-start gap-3 relative pl-1">
-                                        <div className="w-6 h-6 rounded-full bg-[#D7FFE0] border border-[#063312]/30 text-[#063312] flex items-center justify-center shrink-0 z-10">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-[#063312]" />
+                                        <div className="w-6 h-6 rounded-full bg-brand-surface border border-brand-surface-foreground/30 text-brand-surface-foreground flex items-center justify-center shrink-0 z-10">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-brand-surface-foreground" />
                                         </div>
                                         <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
                                             <div className="flex justify-between items-center font-semibold text-slate-800 dark:text-slate-200">

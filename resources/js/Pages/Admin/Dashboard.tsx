@@ -97,7 +97,7 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                 {/* Top Metrics Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Card 1: Pending Approvals - Zero Black Executive Anchor */}
-                    <Card className="border border-[#1a1a1a] bg-[#050505] text-white shadow-sm">
+                    <Card variant="executive">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
                                 Pending Approval
@@ -110,7 +110,7 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                             <div className="text-2xl font-bold font-mono text-white">
                                 {metrics.pending_approval_orders}
                             </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#222222] text-[11px] text-slate-400">
+                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-neutral-800 text-[11px] text-slate-400">
                                 <span>Action required queue</span>
                                 <Link href="/admin/orders" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     Review <ChevronRight className="h-3 w-3" />
@@ -120,20 +120,20 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                     </Card>
 
                     {/* Card 2: Today's Orders / Sales - Ghost Green Branded KPI Surface */}
-                    <Card className="border border-accent-foreground/15 bg-accent text-accent-foreground shadow-sm">
+                    <Card variant="brand">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-accent-foreground/90">
+                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-brand-surface-foreground/90">
                                 Today's Sales
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-accent-foreground/10 text-accent-foreground">
+                            <div className="p-2 rounded-lg bg-brand-surface-foreground/10 text-brand-surface-foreground">
                                 <TrendingUp className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold font-mono text-accent-foreground">
+                            <div className="text-2xl font-bold font-mono text-brand-surface-foreground">
                                 {formatCurrency(metrics.today_sales_volume)}
                             </div>
-                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-accent-foreground/20 text-[11px] text-accent-foreground/85">
+                            <div className="flex items-center justify-between mt-2 pt-2 border-t border-brand-surface-foreground/20 text-[11px] text-brand-surface-foreground/85">
                                 <span>{metrics.today_orders_count} orders submitted today</span>
                                 <Link href="/admin/reports/sales" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     Analytics <ChevronRight className="h-3 w-3" />

@@ -308,7 +308,7 @@ export default function Create({
                                                 <div className="flex items-center gap-3 text-xs">
                                                     <span className="text-slate-500 dark:text-slate-400">Delivered: <strong className="text-slate-700 dark:text-slate-200">{item.delivered_quantity}</strong></span>
                                                     <span className="text-slate-500 dark:text-slate-400">Already Returned: <strong className="text-slate-700 dark:text-slate-200">{item.returned_quantity}</strong></span>
-                                                    <Badge variant="outline" className={isEligible ? 'border-[#063312]/20 bg-[#D7FFE0] text-[#063312] font-semibold' : 'text-slate-400'}>
+                                                    <Badge variant={isEligible ? 'brand' : 'outline'} className={!isEligible ? 'text-muted-foreground' : ''}>
                                                         Returnable: {item.returnable_quantity} units
                                                     </Badge>
                                                 </div>

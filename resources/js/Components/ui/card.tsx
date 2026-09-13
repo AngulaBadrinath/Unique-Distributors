@@ -11,12 +11,12 @@ const cardVariants = cva(
                 default: 'border-border bg-card shadow-2xs',
                 // Interactive Card: Neutral with hover elevation
                 interactive: 'border-border bg-card shadow-2xs hover:border-border/80 hover:shadow-xs cursor-pointer',
-                // Brand Card: Ghost Green surface with #063312 foreground
-                brand: 'border-[#063312]/20 bg-[#D7FFE0] text-[#063312] shadow-2xs',
+                // Brand Card: Ghost Green surface with dark brand foreground
+                brand: 'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground shadow-2xs',
                 // Executive Card: Zero Black brand anchor with crisp white text
-                executive: 'border-[#1a1a1a] bg-[#050505] text-white shadow-xs',
+                executive: 'border-neutral-900 bg-brand text-brand-foreground shadow-md',
                 // Action Card: Selective Quantum Blue tint
-                action: 'border-action-accent/30 bg-action-accent/5 text-foreground shadow-2xs',
+                action: 'border-action-accent/30 bg-action-accent/5 text-card-foreground shadow-2xs',
             },
         },
         defaultVariants: {

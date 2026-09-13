@@ -121,11 +121,11 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 title={sidebarCollapsed ? label : undefined}
                 className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
                     active
-                        ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs'
-                        : 'text-slate-300 hover:bg-[#141414] hover:text-white'
+                        ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
+                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
                 } ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
             >
-                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-[#063312]' : 'text-slate-400 group-hover:text-white'}`}>
+                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-brand-surface-foreground' : 'text-slate-400 group-hover:text-white'}`}>
                     {icon}
                 </div>
                 {!sidebarCollapsed && <span className="truncate">{label}</span>}
@@ -147,12 +147,12 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             <div className="flex flex-1 w-full min-w-0">
                 {/* Sidebar Navigation - Zero Black Shell Anchor */}
                 <aside
-                    className={`fixed inset-y-0 left-0 z-50 border-r border-[#1a1a1a] bg-[#050505] text-slate-100 flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-50 border-r border-neutral-900 bg-brand text-slate-100 flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'
                     } ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}`}
                 >
                     {/* Brand header */}
-                    <div className="h-16 flex items-center justify-between px-4 border-b border-[#1a1a1a] bg-[#050505]">
+                    <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-900 bg-brand">
                         <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
                             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-action-accent text-white font-semibold text-sm tracking-tight shadow-xs">
                                 {initials}
@@ -355,7 +355,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </div>
 
                     {/* Sidebar Footer with Collapse Toggle */}
-                    <div className="p-3 border-t border-[#1a1a1a] bg-[#050505] flex items-center justify-between text-xs">
+                    <div className="p-3 border-t border-neutral-900 bg-brand flex items-center justify-between text-xs">
                         {!sidebarCollapsed && (
                             <div className="flex items-center gap-1.5 text-emerald-400 font-medium text-[11px]">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -366,7 +366,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                             type="button"
                             onClick={toggleSidebarCollapse}
                             title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-[#262626] bg-[#141414] hover:bg-[#222222] text-slate-300 hover:text-white transition-colors cursor-pointer ${
+                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-slate-300 hover:text-white transition-colors cursor-pointer ${
                                 sidebarCollapsed ? 'mx-auto' : ''
                             }`}
                         >
@@ -536,12 +536,12 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             </div>
 
             {/* Mobile Bottom Navigation Bar - Zero Black Anchor & Ghost Green Active Navigation */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] text-slate-400 border-t border-[#1a1a1a] px-2 py-1.5 lg:hidden shadow-lg">
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-brand text-slate-400 border-t border-neutral-900 px-2 py-1.5 lg:hidden shadow-lg">
                 <div className="grid grid-cols-5 gap-1 items-center">
                     <Link
                         href="/dashboard"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/dashboard') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Home className="h-5 w-5 mb-0.5" />
@@ -552,7 +552,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         href={auth?.user?.role === 'SALESMAN' ? '/salesman/orders' : '/admin/orders'}
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
                             isLinkActive('/orders') || isLinkActive('/admin/orders') || isLinkActive('/salesman/orders') 
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' 
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' 
                                 : 'text-slate-400 hover:text-white'
                         }`}
                     >
@@ -574,7 +574,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     <Link
                         href="/customers"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/customers') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Users className="h-5 w-5 mb-0.5" />

@@ -94,7 +94,7 @@ export default function OrderStatusBadge({
                 return 'border-action-accent/30 bg-action-accent/10 text-action-accent font-semibold';
             case 'brand':
             case 'secondary':
-                return 'border-[#063312]/20 bg-[#D7FFE0] text-[#063312] font-semibold';
+                return 'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground font-semibold';
             case 'primary':
             case 'default':
                 return 'border-transparent bg-primary text-primary-foreground';

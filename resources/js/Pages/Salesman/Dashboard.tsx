@@ -129,20 +129,20 @@ export default function SalesmanDashboard({
                 {/* Top Metrics Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Metric 1: Assigned Customers - Ghost Green Branded Surface */}
-                    <Card className="border border-accent-foreground/15 bg-accent text-accent-foreground shadow-sm">
+                    <Card variant="brand">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-accent-foreground/90">
+                            <CardTitle className="text-xs font-semibold uppercase tracking-wider font-mono text-brand-surface-foreground/90">
                                 Assigned Accounts
                             </CardTitle>
-                            <div className="p-2 rounded-lg bg-accent-foreground/10 text-accent-foreground">
+                            <div className="p-2 rounded-lg bg-brand-surface-foreground/10 text-brand-surface-foreground">
                                 <Users className="h-4 w-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold tracking-tight font-mono text-accent-foreground">
+                            <div className="text-2xl font-bold tracking-tight font-mono text-brand-surface-foreground">
                                 {metrics.assigned_customers_count}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-accent-foreground/85 mt-2 pt-2 border-t border-accent-foreground/20">
+                            <div className="flex items-center justify-between text-xs text-brand-surface-foreground/85 mt-2 pt-2 border-t border-brand-surface-foreground/20">
                                 <span>Active Clients</span>
                                 <Link href="/customers" className="text-action-accent hover:underline font-semibold flex items-center gap-0.5">
                                     <span>Browse Directory</span>
@@ -177,7 +177,7 @@ export default function SalesmanDashboard({
                     </Card>
 
                     {/* Metric 3: Active Orders In-Flight - Zero Black Anchor Card */}
-                    <Card className="border border-[#1a1a1a] bg-[#050505] text-white shadow-sm">
+                    <Card variant="executive">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
                                 In-Flight Orders
@@ -190,7 +190,7 @@ export default function SalesmanDashboard({
                             <div className="text-2xl font-bold tracking-tight font-mono text-white">
                                 {metrics.in_flight_orders_count}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-[#222222]">
+                            <div className="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-neutral-800">
                                 <span>Pending / Processing</span>
                                 <Link href="/salesman/orders" className="text-action-accent hover:underline font-medium flex items-center gap-0.5">
                                     <span>Track Status</span>

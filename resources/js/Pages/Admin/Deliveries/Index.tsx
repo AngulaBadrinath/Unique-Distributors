@@ -331,13 +331,13 @@ export default function AdminDeliveriesIndex({
                                 onClick={() => handleTabChange(t.key)}
                                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
                                     currentTab === t.key
-                                        ? 'bg-brand-surface text-brand-surface-foreground border border-[#063312]/20 font-bold shadow-xs'
+                                        ? 'bg-brand-surface text-brand-surface-foreground border border-brand-surface-foreground/20 font-bold shadow-xs'
                                         : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                                 }`}
                             >
                                 <span>{t.label}</span>
                                 <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${
-                                    currentTab === t.key ? 'bg-[#063312] text-[#D7FFE0]' : 'bg-muted text-muted-foreground'
+                                    currentTab === t.key ? 'bg-brand-surface-foreground text-brand-surface' : 'bg-muted text-muted-foreground'
                                 }`}>
                                     {t.count}
                                 </span>

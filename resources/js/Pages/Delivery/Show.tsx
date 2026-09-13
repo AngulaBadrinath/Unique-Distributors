@@ -355,12 +355,12 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
             />
 
             {/* Bottom Sticky Action Bar - Zero Black Anchor Surface */}
-            <div className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] border-t border-[#1a1a1a] p-3 flex gap-2 max-w-4xl mx-auto shadow-2xl">
+            <div className="fixed bottom-0 inset-x-0 z-40 bg-brand border-t border-neutral-900 p-3 flex gap-2 max-w-4xl mx-auto shadow-2xl">
                 {capabilities.can_pickup && (
                     <button
                         onClick={handlePickup}
                         disabled={submittingAction !== null}
-                        className="flex-1 min-h-[48px] rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-[#333] shadow-xs disabled:opacity-50 cursor-pointer"
+                        className="flex-1 min-h-[48px] rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-neutral-700 shadow-xs disabled:opacity-50 cursor-pointer"
                     >
                         <Package className="w-5 h-5" />
                         <span>Confirm Warehouse Pickup</span>
@@ -381,7 +381,7 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
                 {capabilities.can_complete && (
                     <button
                         onClick={() => setIsCompleteModalOpen(true)}
-                        className="flex-1 min-h-[48px] rounded-xl bg-[#D7FFE0] hover:bg-[#c2f7cd] text-[#063312] font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-[#063312]/30 shadow-xs cursor-pointer"
+                        className="flex-1 min-h-[48px] rounded-xl bg-brand-surface hover:bg-brand-surface/85 text-brand-surface-foreground font-bold text-sm flex items-center justify-center gap-2 active:scale-98 transition-all border border-brand-surface-foreground/30 shadow-xs cursor-pointer"
                     >
                         <CheckCircle2 className="w-5 h-5" />
                         <span>Complete Delivery & POD</span>

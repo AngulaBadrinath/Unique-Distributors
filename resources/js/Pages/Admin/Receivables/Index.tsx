@@ -373,9 +373,9 @@ export default function ReceivablesIndex({ agingReport, filters }: Props) {
                                                 <span className="text-[10px] text-rose-600 dark:text-rose-400 block">91+d</span>
                                                 <span className="font-mono font-semibold text-rose-600 dark:text-rose-400">{formatCurrency(row.days_91_plus)}</span>
                                             </div>
-                                            <div className="p-2 rounded bg-secondary/30 border border-[#063312]/20">
-                                                <span className="text-[10px] text-secondary-foreground font-semibold block">Credit</span>
-                                                <span className="font-mono font-medium text-secondary-foreground">{formatCurrency(row.available_credit)}</span>
+                                            <div className="p-2 rounded bg-brand-surface/30 border border-brand-surface-foreground/20">
+                                                <span className="text-[10px] text-brand-surface-foreground font-semibold block">Credit</span>
+                                                <span className="font-mono font-medium text-brand-surface-foreground">{formatCurrency(row.available_credit)}</span>
                                             </div>
                                         </div>
 

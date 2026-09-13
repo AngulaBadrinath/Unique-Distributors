@@ -130,7 +130,7 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                         onClick={() => handleTabChange('today')}
                         className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'today'
-                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                ? 'bg-brand-surface border-brand-surface-foreground/30 text-brand-surface-foreground shadow-xs ring-1 ring-brand-surface-foreground/20'
                                 : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
@@ -146,7 +146,7 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                         onClick={() => handleTabChange('active')}
                         className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'active'
-                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                ? 'bg-brand-surface border-brand-surface-foreground/30 text-brand-surface-foreground shadow-xs ring-1 ring-brand-surface-foreground/20'
                                 : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
@@ -162,7 +162,7 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                         onClick={() => handleTabChange('pending')}
                         className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'pending'
-                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                ? 'bg-brand-surface border-brand-surface-foreground/30 text-brand-surface-foreground shadow-xs ring-1 ring-brand-surface-foreground/20'
                                 : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >
@@ -178,7 +178,7 @@ export default function DeliveryIndex({ deliveries, counts, currentTab, driver }
                         onClick={() => handleTabChange('completed')}
                         className={`p-3.5 rounded-2xl border text-left transition-all active:scale-98 cursor-pointer ${
                             currentTab === 'completed'
-                                ? 'bg-[#D7FFE0] border-[#063312]/30 text-[#063312] shadow-xs ring-1 ring-[#063312]/20'
+                                ? 'bg-brand-surface border-brand-surface-foreground/30 text-brand-surface-foreground shadow-xs ring-1 ring-brand-surface-foreground/20'
                                 : 'bg-card border-border hover:border-border/80 text-foreground'
                         }`}
                     >

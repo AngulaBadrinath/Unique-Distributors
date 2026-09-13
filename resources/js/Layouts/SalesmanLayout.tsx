@@ -79,7 +79,7 @@ export default function SalesmanLayout({
                         href="/dashboard"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
                             isLinkActive('/dashboard') 
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold border border-[#063312]/20 shadow-xs' 
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
                                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
@@ -89,7 +89,7 @@ export default function SalesmanLayout({
                         href="/customers"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
                             isLinkActive('/customers') 
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold border border-[#063312]/20 shadow-xs' 
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
                                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
@@ -99,7 +99,7 @@ export default function SalesmanLayout({
                         href="/orders"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
                             isLinkActive('/orders') 
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold border border-[#063312]/20 shadow-xs' 
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
                                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
@@ -109,7 +109,7 @@ export default function SalesmanLayout({
                         href="/products"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
                             isLinkActive('/products') 
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold border border-[#063312]/20 shadow-xs' 
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
                                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
@@ -209,13 +209,13 @@ export default function SalesmanLayout({
             </main>
 
             {/* Mobile Bottom Navigation Bar - Zero Black Anchor Surface & Ghost Green Active Items */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] text-slate-400 border-t border-[#1a1a1a] px-2 py-1.5 sm:hidden shadow-lg">
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-brand text-slate-400 border-t border-neutral-900 px-2 py-1.5 sm:hidden shadow-lg">
                 <div className="grid grid-cols-5 gap-1 items-center">
                     {/* Home */}
                     <Link
                         href="/dashboard"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/dashboard') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Home className="h-5 w-5 mb-0.5" />
@@ -226,7 +226,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/customers') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Users className="h-5 w-5 mb-0.5" />
@@ -248,7 +248,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/orders') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <ShoppingBag className="h-5 w-5 mb-0.5" />
@@ -259,7 +259,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/products') ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/products') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
                         }`}
                     >
                         <Package className="h-5 w-5 mb-0.5" />

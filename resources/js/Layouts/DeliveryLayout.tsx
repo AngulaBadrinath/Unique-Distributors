@@ -42,18 +42,18 @@ export default function DeliveryLayout({
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-accent selection:text-accent-foreground">
             {/* Top Fixed Header - Zero Black Brand Anchor */}
-            <header className="sticky top-0 z-40 bg-[#050505] text-white border-b border-[#1a1a1a] px-4 py-3 flex items-center justify-between shadow-2xs">
+            <header className="sticky top-0 z-40 bg-brand text-white border-b border-neutral-900 px-4 py-3 flex items-center justify-between shadow-2xs">
                 <div className="flex items-center gap-3">
                     {showBackButton ? (
                         <Link
                             href={backUrl}
-                            className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#141414] hover:bg-[#222222] text-slate-200 active:scale-95 transition-all cursor-pointer"
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 active:scale-95 transition-all cursor-pointer"
                             aria-label="Go back"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </Link>
                     ) : (
-                        <div className="w-9 h-9 rounded-xl bg-[#D7FFE0] text-[#063312] border border-[#063312]/20 flex items-center justify-center shadow-xs">
+                        <div className="w-9 h-9 rounded-xl bg-brand-surface text-brand-surface-foreground border border-brand-surface-foreground/20 flex items-center justify-center shadow-xs">
                             <Truck className="w-5 h-5" />
                         </div>
                     )}
@@ -108,13 +108,13 @@ export default function DeliveryLayout({
             </main>
 
             {/* Mobile Bottom Navigation Bar - Zero Black Anchor & Ghost Green Active Tabs */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#050505] text-slate-400 border-t border-[#1a1a1a] px-2 py-1.5 sm:hidden shadow-lg">
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-brand text-slate-400 border-t border-neutral-900 px-2 py-1.5 sm:hidden shadow-lg">
                 <div className="grid grid-cols-4 gap-1">
                     <Link
                         href="/delivery?tab=today"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 px-2 text-xs font-medium transition-all ${
                             isTabActive('today')
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs'
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
                                 : 'text-slate-400 hover:text-white'
                         }`}
                     >
@@ -126,7 +126,7 @@ export default function DeliveryLayout({
                         href="/delivery?tab=active"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 px-2 text-xs font-medium transition-all ${
                             isTabActive('active')
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs'
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
                                 : 'text-slate-400 hover:text-white'
                         }`}
                     >
@@ -138,7 +138,7 @@ export default function DeliveryLayout({
                         href="/delivery?tab=completed"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 px-2 text-xs font-medium transition-all ${
                             isTabActive('completed')
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs'
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
                                 : 'text-slate-400 hover:text-white'
                         }`}
                     >
@@ -150,7 +150,7 @@ export default function DeliveryLayout({
                         href="/delivery?tab=all"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 px-2 text-xs font-medium transition-all ${
                             isTabActive('all')
-                                ? 'bg-[#D7FFE0] text-[#063312] font-semibold shadow-xs'
+                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
                                 : 'text-slate-400 hover:text-white'
                         }`}
                     >

@@ -12,11 +12,11 @@ const badgeVariants = cva(
                     'border-transparent bg-primary text-primary-foreground shadow-2xs',
                 // Ghost Green Brand / Info Surface
                 brand:
-                    'border-[#063312]/20 bg-secondary text-secondary-foreground font-medium',
+                    'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground font-medium',
                 secondary:
-                    'border-[#063312]/20 bg-secondary text-secondary-foreground font-medium',
+                    'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground font-medium',
                 info:
-                    'border-[#063312]/20 bg-secondary text-secondary-foreground font-medium',
+                    'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground font-medium',
                 // Selective Quantum Blue Action Badge
                 action:
                     'border-transparent bg-action-accent text-action-accent-foreground shadow-2xs font-medium',

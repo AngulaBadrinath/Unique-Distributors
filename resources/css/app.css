@@ -197,18 +197,18 @@
     border: 1px solid var(--border);
   }
   .surface-brand {
-    background-color: #D7FFE0;
-    color: #063312;
-    border: 1px solid rgba(6, 51, 18, 0.2);
+    background-color: var(--brand-surface);
+    color: var(--brand-surface-foreground);
+    border: 1px solid color-mix(in srgb, var(--brand-surface-foreground) 20%, transparent);
   }
   .surface-anchor {
-    background-color: #050505;
-    color: #FFFFFF;
-    border: 1px solid #1a1a1a;
+    background-color: var(--brand);
+    color: var(--brand-foreground);
+    border: 1px solid color-mix(in srgb, var(--brand-foreground) 10%, transparent);
   }
   .surface-action {
-    background-color: rgba(36, 87, 255, 0.08);
-    color: #2457FF;
-    border: 1px solid rgba(36, 87, 255, 0.25);
+    background-color: color-mix(in srgb, var(--action-accent) 8%, transparent);
+    color: var(--action-accent);
+    border: 1px solid color-mix(in srgb, var(--action-accent) 25%, transparent);
   }
 }

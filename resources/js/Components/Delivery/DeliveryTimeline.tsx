@@ -50,9 +50,9 @@ const getEventConfig = (eventType: string) => {
             return {
                 icon: UserCheck,
                 bg: 'bg-brand-surface',
-                border: 'border-[#063312]/20',
-                text: 'text-[#063312]',
-                badgeBg: 'bg-brand-surface text-[#063312] border border-[#063312]/20',
+                border: 'border-brand-surface-foreground/20',
+                text: 'text-brand-surface-foreground',
+                badgeBg: 'bg-brand-surface text-brand-surface-foreground border border-brand-surface-foreground/20',
             };
         case 'REASSIGNED':
             return {

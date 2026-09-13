@@ -271,9 +271,9 @@ export default function ReceivablesStatement({ statement, filters }: Props) {
                             <span className="text-xs font-semibold text-primary uppercase">Closing Receivable</span>
                             <p className="text-lg font-black font-mono text-primary">{formatCurrency(closing_balance)}</p>
                         </div>
-                        <div className="space-y-1 bg-[#D7FFE0] p-2.5 rounded-lg border border-[#063312]/20 col-span-2 sm:col-span-1">
-                            <span className="text-xs font-semibold text-[#063312] uppercase">Available Credit</span>
-                            <p className="text-lg font-black font-mono text-[#063312]">{formatCurrency(available_credit)}</p>
+                        <div className="space-y-1 bg-brand-surface p-2.5 rounded-lg border border-brand-surface-foreground/20 col-span-2 sm:col-span-1">
+                            <span className="text-xs font-semibold text-brand-surface-foreground uppercase">Available Credit</span>
+                            <p className="text-lg font-black font-mono text-brand-surface-foreground">{formatCurrency(available_credit)}</p>
                         </div>
                     </div>
 

@@ -9,8 +9,8 @@ const buttonVariants = cva(
             variant: {
                 // LEVEL 1: Zero Black + White text
                 default: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs active:scale-[0.98]',
-                // LEVEL 2: Ghost Green + #063312 text
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/85 border border-[#063312]/20 shadow-2xs active:scale-[0.98]',
+                // LEVEL 2: Ghost Green + dark brand foreground text
+                secondary: 'bg-brand-surface text-brand-surface-foreground hover:bg-brand-surface/85 border border-brand-surface-foreground/20 shadow-2xs active:scale-[0.98]',
                 // LEVEL 3: Selective Quantum Blue + White text
                 action: 'bg-action-accent text-action-accent-foreground hover:bg-action-accent/90 shadow-xs active:scale-[0.98]',
                 // Semantic Destructive
