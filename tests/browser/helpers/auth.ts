@@ -70,7 +70,11 @@ export const QA_USER_CREDENTIALS: Record<UserRole, UserCredential> = {
     },
 };
 
-const mfaSecretCache: Record<string, string> = {};
+const mfaSecretCache: Record<string, string> = {
+    'admin.qa@example.test': 'VA2ZJNHTYKCCKHYTJF5J3IAGGULFJ7IO',
+    'superadmin.qa@example.test': 'XOALNE242KWVOR5G2JKAY45KVPINDHWB',
+    'accountant.qa@example.test': 'SU3UCP6R4XLAIE5L6W3JYBIKRZO27V74',
+};
 
 /**
  * Retrieve the TOTP secret for a user if already enrolled in the local database.
@@ -79,7 +83,7 @@ function getStoredUserMfaSecret(email: string): string {
     if (mfaSecretCache[email]) return mfaSecretCache[email];
     try {
         const cmd = `php artisan tinker --execute="echo \\App\\Models\\User::where('email', '${email}')->value('two_factor_secret');"`;
-        const output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
+        const output = execSync(cmd, { encoding: 'utf-8', timeout: 15000 });
         const secret = output.trim().replace(/[^A-Za-z0-9]/g, '');
         if (secret) mfaSecretCache[email] = secret;
         return secret;
@@ -104,13 +108,23 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
     // Always clear session cookies to ensure fresh login and avoid guest redirection
     try {
         await page.context().clearCookies();
+        await page.evaluate(() => {
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+            } catch {}
+        });
     } catch {}
 
     let gotoAttempts = 0;
     while (gotoAttempts < 4) {
         try {
             await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
-            break;
+            if (page.url().includes('/login')) {
+                break;
+            }
+            await page.context().clearCookies();
+            await page.waitForTimeout(800);
         } catch (err: any) {
             gotoAttempts++;
             if (gotoAttempts >= 4) throw err;
@@ -119,8 +133,13 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
     }
 
     for (let attempt = 1; attempt <= 3; attempt++) {
+        if (attempt > 1) {
+            await page.waitForTimeout(1000);
+            await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+        }
+
         await page.locator('input[type="email"], input[name="email"]').waitFor({ state: 'visible', timeout: 15000 });
-        await page.waitForTimeout(200);
+        await page.waitForTimeout(300);
 
         const emailInput = page.locator('input#email, input[name="email"], input[type="email"]').first();
         const passwordInput = page.locator('input#password, input[name="password"], input[type="password"]').first();
@@ -129,16 +148,27 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
         await emailInput.fill(creds.email);
         await emailInput.dispatchEvent('input');
         await emailInput.dispatchEvent('change');
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(150);
 
         await passwordInput.click();
         await passwordInput.fill(creds.password);
         await passwordInput.dispatchEvent('input');
         await passwordInput.dispatchEvent('change');
-        await page.waitForTimeout(200);
+        await page.waitForTimeout(250);
 
+        // Ensure submit button is enabled before clicking
         const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+        await page.waitForFunction(() => {
+            const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+            return btn && !btn.disabled;
+        }, { timeout: 8000 }).catch(() => {});
+
+        try {
+            await submitBtn.click({ timeout: 6000 });
+        } catch {
+            // If normal click timed out, try force click or enter key
+            await passwordInput.press('Enter').catch(() => {});
+        }
 
         try {
             await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
@@ -148,7 +178,6 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
                 const alertText = await page.locator('[role="alert"], .text-destructive').first().textContent().catch(() => '');
                 throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${page.url()}. Page alert: "${alertText?.trim()}"`);
             }
-            await page.waitForTimeout(1000);
         }
     }
 
@@ -188,10 +217,23 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
             for (let attempt = 0; attempt < 3; attempt++) {
                 const totpCode = generateTOTP(secretKey);
                 const mfaInput = page.locator('input#code, input[name="code"], input[type="text"]').first();
+                await mfaInput.click();
                 await mfaInput.fill(totpCode);
+                await mfaInput.dispatchEvent('input');
+                await mfaInput.dispatchEvent('change');
+                await page.waitForTimeout(200);
 
                 const mfaSubmit = page.locator('button[type="submit"]');
-                await mfaSubmit.click();
+                await page.waitForFunction(() => {
+                    const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+                    return btn && !btn.disabled;
+                }, { timeout: 8000 }).catch(() => {});
+
+                try {
+                    await mfaSubmit.click({ timeout: 6000 });
+                } catch {
+                    await mfaInput.press('Enter').catch(() => {});
+                }
 
                 try {
                     await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 10000 });
@@ -225,8 +267,19 @@ export async function logout(page: Page): Promise<void> {
     const loginUrl = `${baseUrl.replace(/\/$/, '')}/login`;
     try {
         await page.context().clearCookies();
+        await page.evaluate(() => {
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+            } catch {}
+        });
         await page.waitForTimeout(400);
         await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        if (!page.url().includes('/login')) {
+            await page.context().clearCookies();
+            await page.waitForTimeout(600);
+            await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        }
     } catch {
         // Fallback
     }

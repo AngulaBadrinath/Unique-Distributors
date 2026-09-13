@@ -76,6 +76,9 @@ export class QAHarness {
         const failed = this.results.filter(r => !r.passed).length;
         console.log(`  Total: ${total} | Passed: ${passed} | Failed: ${failed}`);
         console.log(`======================================================\n`);
+        if (failed > 0) {
+            process.exit(1);
+        }
         return { total, passed, failed };
     }
 }

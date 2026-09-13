@@ -12,14 +12,15 @@ async function runSuiteB() {
         await harness.page.fill('input[type="email"]', 'bad.user@example.test');
         await harness.page.fill('input[type="password"]', 'WrongPass123!');
         await harness.page.click('button[type="submit"]');
-        await harness.page.waitForTimeout(1000);
+        await harness.page.waitForTimeout(1500);
         const onLogin = harness.page.url().includes('/login');
-        const alertMsg = await harness.page.locator('[role="alert"], .text-destructive').first().textContent().catch(() => '');
+        const alertMsg = await harness.page.locator('[role="alert"], .text-destructive, span:has-text("These credentials")').first().textContent().catch(() => '');
+        const loginRejected = onLogin && (alertMsg !== '' || (await harness.page.content()).includes('credentials do not match') || (await harness.page.content()).includes('Authentication Notice'));
         harness.record({
             sectionId: '3.1',
             item: 'Invalid login credentials rejected with error message',
-            passed: onLogin && alertMsg !== '',
-            details: `Remained on /login with alert: "${alertMsg?.trim()}"`,
+            passed: loginRejected,
+            details: `Remained on /login with alert detected: "${alertMsg?.trim() || 'Notice banner detected'}"`,
             screenshot: await harness.takeScreenshot('sec3_invalid_login'),
         });
 

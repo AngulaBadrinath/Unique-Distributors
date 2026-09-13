@@ -6,10 +6,19 @@ async function runSuiteH() {
     console.log('\n>>> RUNNING SUITE H: INVOICES, REPORTS, NOTIFICATIONS & AUDIT <<<');
 
     try {
+        const safeGoto = async (url: string) => {
+            await harness.page.waitForTimeout(800);
+            try {
+                return await harness.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+            } catch {
+                await harness.page.waitForTimeout(1500);
+                return await harness.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+            }
+        };
+
         // 22.1 Invoices & Billing (Admin & Salesman)
         await harness.login('ADMIN');
-        await harness.page.goto('http://localhost:8000/admin/invoices');
-        await harness.page.waitForLoadState('domcontentloaded');
+        await safeGoto('http://localhost:8000/admin/invoices');
         await harness.page.waitForTimeout(800);
 
         const invTableContent = await harness.page.content();
@@ -25,7 +34,7 @@ async function runSuiteH() {
         });
 
         // 22.2 Invoice Print View & RULE-DOC-001 Zero Images Check
-        const printResp = await harness.page.goto('http://localhost:8000/invoices/4/print');
+        const printResp = await safeGoto('http://localhost:8000/invoices/4/print');
         const printStatus = printResp?.status();
         const printHtml = await harness.page.content();
         // RULE-DOC-001: Product images must NEVER appear on invoices
@@ -56,7 +65,7 @@ async function runSuiteH() {
         });
 
         // 21.1 Analytics & Reports Workspace
-        await harness.page.goto('http://localhost:8000/admin/reports/sales');
+        await safeGoto('http://localhost:8000/admin/reports/sales');
         await harness.page.waitForTimeout(800);
         const repLoaded = !harness.page.url().includes('/404');
         harness.record({
@@ -70,7 +79,7 @@ async function runSuiteH() {
         });
 
         // 23.1 Notifications Center & Preferences
-        await harness.page.goto('http://localhost:8000/notifications');
+        await safeGoto('http://localhost:8000/notifications');
         await harness.page.waitForTimeout(800);
         const notifLoaded = !harness.page.url().includes('/404');
         harness.record({
@@ -83,7 +92,7 @@ async function runSuiteH() {
             screenshot: await harness.takeScreenshot('sec23_notifications_feed'),
         });
 
-        await harness.page.goto('http://localhost:8000/notifications/preferences');
+        await safeGoto('http://localhost:8000/notifications/preferences');
         await harness.page.waitForTimeout(800);
         const prefLoaded = !harness.page.url().includes('/404');
         harness.record({
@@ -99,7 +108,7 @@ async function runSuiteH() {
         // 24.1 System Audit & Security Timeline
         await harness.logout();
         await harness.login('SUPER_ADMIN');
-        await harness.page.goto('http://localhost:8000/admin/audit/timeline');
+        await safeGoto('http://localhost:8000/admin/audit/timeline');
         await harness.page.waitForTimeout(800);
         const auditLoaded = !harness.page.url().includes('/404');
         harness.record({
@@ -112,7 +121,7 @@ async function runSuiteH() {
             screenshot: await harness.takeScreenshot('sec24_audit_timeline'),
         });
 
-        await harness.page.goto('http://localhost:8000/admin/audit/security');
+        await safeGoto('http://localhost:8000/admin/audit/security');
         await harness.page.waitForTimeout(800);
         const secLoaded = !harness.page.url().includes('/404');
         harness.record({
