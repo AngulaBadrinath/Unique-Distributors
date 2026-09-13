@@ -94,7 +94,7 @@ export default function NotificationPreferences({ preferences }: Props) {
                         type="button"
                         onClick={handleSubmit}
                         disabled={saving}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-action-accent text-white hover:bg-action-accent/90 transition-all shadow-neu-dark glow-cyan-subtle hover:glow-cyan disabled:opacity-50 cursor-pointer"
                     >
                         <Save className="h-4 w-4" />
                         {saving ? 'Saving...' : 'Save Preferences'}
@@ -102,14 +102,14 @@ export default function NotificationPreferences({ preferences }: Props) {
                 </div>
 
                 {savedMessage && (
-                    <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in duration-200">
-                        <Check className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in duration-200 shadow-neu-dark">
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0" />
                         <span>{savedMessage}</span>
                     </div>
                 )}
 
                 {/* Preferences Form Card */}
-                <div className="border border-border rounded-xl bg-card divide-y divide-border overflow-hidden shadow-xs">
+                <div className="border border-white/8 rounded-2xl bg-dark-surface divide-y divide-white/6 overflow-hidden shadow-neu-dark">
                     {preferences.map((item) => {
                         const isEnabled = settings[item.category] ?? item.is_in_app_enabled;
 
@@ -143,19 +143,19 @@ export default function NotificationPreferences({ preferences }: Props) {
 
                                 <div className="flex items-center pt-1">
                                     {item.is_mandatory ? (
-                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-xs font-medium cursor-not-allowed">
-                                            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono font-medium cursor-not-allowed shadow-xs">
+                                            <ShieldCheck className="h-4 w-4 text-emerald-400" />
                                             Always Active
                                         </div>
                                     ) : (
-                                        <label className="relative inline-flex items-center cursor-pointer">
+                                        <label className="relative inline-flex items-center cursor-pointer select-none">
                                             <input
                                                 type="checkbox"
                                                 checked={isEnabled}
                                                 onChange={() => handleToggle(item.category, item.is_mandatory)}
                                                 className="sr-only peer"
                                             />
-                                            <div className="w-11 h-6 bg-muted peer-focus:outline-hidden peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                            <div className="w-12 h-6 bg-dark-canvas border border-white/10 rounded-full shadow-neu-inset peer peer-checked:bg-cyan-500/20 peer-checked:border-cyan-500/50 transition-all duration-200 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 after:shadow-neu-dark peer-checked:after:translate-x-6 peer-checked:after:bg-cyan-400 peer-checked:after:shadow-[0_0_10px_rgba(6,182,212,0.8)]"></div>
                                         </label>
                                     )}
                                 </div>

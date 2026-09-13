@@ -174,15 +174,15 @@ export default function NotificationIndex({ notifications, unread_count, filters
                             <button
                                 type="button"
                                 onClick={handleMarkAllAsRead}
-                                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-border bg-card hover:bg-muted text-foreground transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border border-white/10 bg-dark-surface hover:bg-white/10 text-white transition-all shadow-neu-dark cursor-pointer"
                             >
-                                <CheckCheck className="h-4 w-4" />
+                                <CheckCheck className="h-4 w-4 text-cyan-400" />
                                 Mark All as Read
                             </button>
                         )}
                         <Link
                             href="/notifications/preferences"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-action-accent text-white hover:bg-action-accent/90 transition-all shadow-neu-dark glow-cyan-subtle"
                         >
                             <Settings className="h-4 w-4" />
                             Preferences
@@ -191,16 +191,16 @@ export default function NotificationIndex({ notifications, unread_count, filters
                 </div>
 
                 {/* Filter & Search Bar */}
-                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 bg-card border border-border rounded-xl">
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 bg-dark-surface border border-white/8 rounded-2xl shadow-neu-dark">
                     {/* Status Tabs */}
-                    <div className="flex items-center gap-1 p-1 bg-muted rounded-lg w-fit">
+                    <div className="flex items-center gap-1 p-1 bg-dark-canvas border border-white/6 rounded-xl w-fit shadow-neu-inset">
                         <button
                             type="button"
                             onClick={() => handleTabChange('all')}
-                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
                                 statusTab === 'all'
-                                    ? 'bg-card text-foreground shadow-xs'
-                                    : 'text-muted-foreground hover:text-foreground'
+                                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-neu-dark'
+                                    : 'text-muted-foreground hover:text-white'
                             }`}
                         >
                             All ({notifications.total})
@@ -208,10 +208,10 @@ export default function NotificationIndex({ notifications, unread_count, filters
                         <button
                             type="button"
                             onClick={() => handleTabChange('unread')}
-                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
                                 statusTab === 'unread'
-                                    ? 'bg-card text-foreground shadow-xs'
-                                    : 'text-muted-foreground hover:text-foreground'
+                                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-neu-dark'
+                                    : 'text-muted-foreground hover:text-white'
                             }`}
                         >
                             Unread ({unread_count})

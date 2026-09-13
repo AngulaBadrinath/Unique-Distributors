@@ -61,7 +61,8 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     });
 
     const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const currentUrl = typeof window !== 'undefined' ? window.location.pathname : '';
+    const { url: pageUrl } = usePage();
+    const currentUrl = pageUrl ? pageUrl.split('?')[0] : (typeof window !== 'undefined' ? window.location.pathname : '');
 
     const displayName = identity?.name || appName || 'Unique Distributors';
     const displayCompany = company?.display_name || identity?.company_name || 'Unique Distributors';
@@ -108,7 +109,12 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
 
     const isLinkActive = (path: string) => {
         if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
-        return currentUrl === path || (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(path));
+        if (path === currentUrl) return true;
+        // Sibling exclusion: /notifications must NOT match when visiting /notifications/preferences
+        if (path === '/notifications' && currentUrl.startsWith('/notifications/preferences')) return false;
+        // Prefix matching with trailing slash for nested details (e.g. /customers/1)
+        if (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(`${path}/`)) return true;
+        return false;
     };
 
     const renderNavLink = (href: string, icon: React.ReactNode, label: string) => {
@@ -427,10 +433,10 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                                     <button
                                         type="button"
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-action-accent transition-colors cursor-pointer"
+                                        className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 focus:outline-hidden focus:ring-2 focus:ring-action-accent transition-all cursor-pointer"
                                         aria-expanded={userMenuOpen}
                                     >
-                                        <div className="h-8 w-8 rounded-full bg-primary/20 text-primary font-semibold text-xs flex items-center justify-center border border-primary/30">
+                                        <div className="h-8 w-8 rounded-full bg-cyan-500/20 text-cyan-300 font-bold text-xs flex items-center justify-center border border-cyan-500/40 shadow-neu-dark glow-cyan-subtle hover:border-cyan-400">
                                             {auth.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()}
                                         </div>
                                     </button>

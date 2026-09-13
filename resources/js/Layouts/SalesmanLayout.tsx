@@ -44,7 +44,9 @@ export default function SalesmanLayout({
 
     const isLinkActive = (path: string) => {
         if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
-        return currentUrl === path || (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(path));
+        if (path === currentUrl) return true;
+        if (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(`${path}/`)) return true;
+        return false;
     };
 
     return (

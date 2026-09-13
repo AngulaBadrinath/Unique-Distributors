@@ -128,7 +128,7 @@ export default function Login({ status }: LoginProps) {
                                     </label>
                                     <Link
                                         href="/forgot-password"
-                                        className="text-xs text-primary hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded-xs"
+                                        className="text-xs text-action-accent hover:text-cyan-300 hover:underline focus:outline-none focus:ring-1 focus:ring-action-accent rounded-xs font-medium transition-colors"
                                     >
                                         Forgot password?
                                     </Link>
@@ -175,11 +175,11 @@ export default function Login({ status }: LoginProps) {
                                     name="remember"
                                     checked={data.remember}
                                     onChange={(e) => setData('remember', e.target.checked)}
-                                    className="h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-background cursor-pointer"
+                                    className="h-4 w-4 rounded-md border border-white/20 bg-dark-canvas text-cyan-400 focus:ring-2 focus:ring-action-accent/40 focus:ring-offset-0 transition-all cursor-pointer accent-cyan-500"
                                 />
                                 <label
                                     htmlFor="remember"
-                                    className="text-xs text-muted-foreground font-medium select-none cursor-pointer"
+                                    className="text-xs text-slate-300 hover:text-white font-medium select-none cursor-pointer transition-colors"
                                 >
                                     Remember this browser session
                                 </label>

@@ -140,8 +140,8 @@ export default function DeliveryLayout({
                         href="/delivery?tab=all"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 px-2 text-xs font-medium transition-all ${
                             currentUrl.includes('tab=all')
-                                ? 'bg-indigo-600/20 text-indigo-400'
-                                : 'text-slate-400 hover:text-slate-200'
+                                ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30'
+                                : 'text-muted-foreground hover:text-white'
                         }`}
                     >
                         <Package className="w-5 h-5 mb-0.5" />

@@ -174,13 +174,13 @@ export default function NotificationBell() {
                     setIsOpen(!isOpen);
                     if (!isOpen) fetchFeed();
                 }}
-                className="relative p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors cursor-pointer"
+                className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 border border-white/8 bg-dark-surface shadow-neu-dark focus:outline-hidden focus:ring-2 focus:ring-action-accent transition-all cursor-pointer"
                 aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
                 aria-expanded={isOpen}
             >
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-xs">
+                    <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-neu-dark glow-cyan-subtle">
                         {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                 )}
@@ -188,13 +188,13 @@ export default function NotificationBell() {
 
             {/* Dropdown Popover */}
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl border border-border bg-card shadow-xl z-50 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-100">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-white/10 bg-dark-surface shadow-2xl z-50 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-100 shadow-neu-dark">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/40">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/8 bg-dark-surface-elevated/90">
                         <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-foreground">Notifications</span>
+                            <span className="font-semibold text-sm text-white">Notifications</span>
                             {unreadCount > 0 && (
-                                <span className="px-2 py-0.5 text-[11px] font-medium bg-primary/10 text-primary rounded-full">
+                                <span className="px-2 py-0.5 text-[11px] font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-full font-mono">
                                     {unreadCount} new
                                 </span>
                             )}
@@ -223,17 +223,17 @@ export default function NotificationBell() {
                     </div>
 
                     {/* Notification Feed List */}
-                    <div className="max-h-[380px] overflow-y-auto divide-y divide-border">
+                    <div className="max-h-[380px] overflow-y-auto divide-y divide-white/6 bg-dark-surface">
                         {loading && notifications.length === 0 ? (
                             <div className="p-8 text-center flex flex-col items-center justify-center text-muted-foreground">
-                                <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                                <Loader2 className="h-6 w-6 animate-spin mb-2 text-cyan-400" />
                                 <span className="text-xs">Loading notifications...</span>
                             </div>
                         ) : notifications.length === 0 ? (
                             <div className="p-8 text-center text-muted-foreground">
                                 <Bell className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                                <p className="text-xs font-medium">No notifications yet</p>
-                                <p className="text-[11px] text-muted-foreground/80 mt-0.5">
+                                <p className="text-xs font-medium text-white">No notifications yet</p>
+                                <p className="text-[11px] text-muted-foreground mt-0.5">
                                     You are all caught up with your operational tasks.
                                 </p>
                             </div>
@@ -241,8 +241,8 @@ export default function NotificationBell() {
                             notifications.map((item) => (
                                 <div
                                     key={item.id}
-                                    className={`p-3.5 flex gap-3 text-xs transition-colors hover:bg-muted/50 ${
-                                        !item.is_read ? 'bg-primary/5 dark:bg-primary/10' : ''
+                                    className={`p-3.5 flex gap-3 text-xs transition-colors hover:bg-white/5 ${
+                                        !item.is_read ? 'bg-cyan-500/10' : ''
                                     }`}
                                 >
                                     {getSeverityIcon(item.severity)}

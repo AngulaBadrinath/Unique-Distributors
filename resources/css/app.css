@@ -105,11 +105,11 @@
     --brand-muted: #8E98AB;
     --brand-border: rgba(255, 255, 255, 0.06);
 
-    /* Primary & Secondary Buttons */
-    --primary: #131B2E;
-    --primary-foreground: #F8FAFC;
+    /* Primary & Secondary Actions & Accents */
+    --primary: #06B6D4;
+    --primary-foreground: #FFFFFF;
 
-    --secondary: #1E2738;
+    --secondary: #131B2E;
     --secondary-foreground: #F8FAFC;
 
     --muted: #131B2E;
