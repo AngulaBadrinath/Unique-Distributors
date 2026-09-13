@@ -123,13 +123,13 @@ export default function Index({ refundRequests, filters, statuses = [] }: Props)
                 );
             case 'APPROVED':
                 return (
-                    <Badge variant="brand" className="gap-1">
+                    <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 gap-1">
                         <CheckCircle2 className="w-3 h-3" /> APPROVED
                     </Badge>
                 );
             case 'PROCESSING':
                 return (
-                    <Badge variant="action" className="gap-1">
+                    <Badge className="bg-purple-50 text-purple-700 border-purple-200 gap-1">
                         <RefreshCw className="w-3 h-3 animate-spin" /> PROCESSING
                     </Badge>
                 );
@@ -296,7 +296,7 @@ export default function Index({ refundRequests, filters, statuses = [] }: Props)
                                                 {req.credit_note ? (
                                                     <Link
                                                         href={`/admin/credits/${req.credit_note.id}`}
-                                                        className="text-action-accent hover:underline font-semibold"
+                                                        className="text-blue-600 hover:underline font-semibold"
                                                     >
                                                         {req.credit_note.credit_number}
                                                     </Link>

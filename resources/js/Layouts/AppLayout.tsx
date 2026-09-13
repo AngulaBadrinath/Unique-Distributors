@@ -121,11 +121,11 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 title={sidebarCollapsed ? label : undefined}
                 className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all ${
                     active
-                        ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
-                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                        ? 'bg-primary/10 text-primary font-semibold'
+                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
                 } ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
             >
-                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-brand-surface-foreground' : 'text-slate-400 group-hover:text-white'}`}>
+                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
                     {icon}
                 </div>
                 {!sidebarCollapsed && <span className="truncate">{label}</span>}
@@ -134,35 +134,35 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-accent selection:text-accent-foreground">
+        <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-150"
+                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden animate-in fade-in duration-150"
                     onClick={() => setSidebarOpen(false)}
                     aria-hidden="true"
                 />
             )}
 
             <div className="flex flex-1 w-full min-w-0">
-                {/* Sidebar Navigation - Zero Black Shell Anchor */}
+                {/* Sidebar Navigation */}
                 <aside
-                    className={`fixed inset-y-0 left-0 z-50 border-r border-neutral-900 bg-brand text-slate-100 flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-50 border-r border-border bg-card flex flex-col transition-all duration-200 ease-in-out lg:static lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'
                     } ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}`}
                 >
                     {/* Brand header */}
-                    <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-900 bg-brand">
+                    <div className="h-16 flex items-center justify-between px-4 border-b border-border bg-card">
                         <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-action-accent text-white font-semibold text-sm tracking-tight shadow-xs">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-semibold text-sm tracking-tight shadow-xs">
                                 {initials}
                             </div>
                             {!sidebarCollapsed && (
                                 <div className="flex flex-col min-w-0">
-                                    <span className="font-semibold text-xs leading-tight truncate text-white">
+                                    <span className="font-semibold text-xs leading-tight truncate text-foreground">
                                         {displayName}
                                     </span>
-                                    <span className="text-[10px] text-slate-400 font-mono truncate">
+                                    <span className="text-[10px] text-muted-foreground font-mono truncate">
                                         {displayCompany}
                                     </span>
                                 </div>
@@ -171,7 +171,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         <button
                             type="button"
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer"
+                            className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
                             aria-label="Close navigation"
                         >
                             <X className="h-5 w-5" />
@@ -189,7 +189,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasInvoiceView) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Sales & Operations
                                     </div>
                                 )}
@@ -208,7 +208,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasCustomerView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Customer Accounts
                                     </div>
                                 )}
@@ -223,7 +223,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasProductView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Product Master
                                     </div>
                                 )}
@@ -239,7 +239,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasInventoryView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Warehouse Inventory
                                     </div>
                                 )}
@@ -254,7 +254,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasPaymentVerify || hasCreditView || hasReceivableView || hasPayableView) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Payments & Subledgers
                                     </div>
                                 )}
@@ -271,7 +271,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasAccountingView && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Financial Accounting
                                     </div>
                                 )}
@@ -290,7 +290,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {hasReportingAccess && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Analytics & Reports
                                     </div>
                                 )}
@@ -309,7 +309,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasAuditView || hasSecurityView) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Audit & Governance
                                     </div>
                                 )}
@@ -324,7 +324,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {(hasUserView || hasRoleManage) && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         Administration
                                     </div>
                                 )}
@@ -340,7 +340,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         {auth?.user && (
                             <div>
                                 {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-slate-400/90 font-mono">
+                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
                                         My Profile & Security
                                     </div>
                                 )}
@@ -355,10 +355,10 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </div>
 
                     {/* Sidebar Footer with Collapse Toggle */}
-                    <div className="p-3 border-t border-neutral-900 bg-brand flex items-center justify-between text-xs">
+                    <div className="p-3 border-t border-border bg-muted/20 flex items-center justify-between text-xs">
                         {!sidebarCollapsed && (
-                            <div className="flex items-center gap-1.5 text-emerald-400 font-medium text-[11px]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium text-[11px]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                 <span>Platform Operational</span>
                             </div>
                         )}
@@ -366,7 +366,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                             type="button"
                             onClick={toggleSidebarCollapse}
                             title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-slate-300 hover:text-white transition-colors cursor-pointer ${
+                            className={`hidden lg:flex items-center justify-center p-1.5 rounded-lg border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors ${
                                 sidebarCollapsed ? 'mx-auto' : ''
                             }`}
                         >
@@ -513,14 +513,14 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     )}
 
                     {/* Page Content */}
-                    <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 min-w-0 pb-24 lg:pb-8">
+                    <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 min-w-0">
                         <div className="max-w-7xl mx-auto w-full min-w-0">
                             {children}
                         </div>
                     </main>
 
                     {/* Subdued Footer */}
-                    <footer className="border-t border-border py-3 px-4 sm:px-6 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2 bg-card/40 pb-20 lg:pb-3">
+                    <footer className="border-t border-border py-3 px-4 sm:px-6 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2 bg-card/40">
                         <div className="font-mono text-[11px]">
                             {identity?.footer_text || displayName} &bull; Enterprise Distribution Platform
                         </div>
@@ -534,64 +534,6 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </footer>
                 </div>
             </div>
-
-            {/* Mobile Bottom Navigation Bar - Zero Black Anchor & Ghost Green Active Navigation */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-brand text-slate-400 border-t border-neutral-900 px-2 py-1.5 lg:hidden shadow-lg">
-                <div className="grid grid-cols-5 gap-1 items-center">
-                    <Link
-                        href="/dashboard"
-                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
-                        }`}
-                    >
-                        <Home className="h-5 w-5 mb-0.5" />
-                        <span>Home</span>
-                    </Link>
-
-                    <Link
-                        href={auth?.user?.role === 'SALESMAN' ? '/salesman/orders' : '/admin/orders'}
-                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') || isLinkActive('/admin/orders') || isLinkActive('/salesman/orders') 
-                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' 
-                                : 'text-slate-400 hover:text-white'
-                        }`}
-                    >
-                        <Receipt className="h-5 w-5 mb-0.5" />
-                        <span>Orders</span>
-                    </Link>
-
-                    {/* Prominent Center Action - Quantum Blue Accent */}
-                    <div className="flex items-center justify-center -mt-4">
-                        <Link
-                            href={hasOrderCreate ? '/salesman/orders/create' : '/dashboard'}
-                            className="flex items-center justify-center h-12 w-12 rounded-full bg-action-accent text-white shadow-lg shadow-action-accent/40 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
-                            aria-label="Create New Order"
-                        >
-                            <PlusCircle className="h-6 w-6" />
-                        </Link>
-                    </div>
-
-                    <Link
-                        href="/customers"
-                        className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
-                        }`}
-                    >
-                        <Users className="h-5 w-5 mb-0.5" />
-                        <span>Customers</span>
-                    </Link>
-
-                    <button
-                        type="button"
-                        onClick={() => setSidebarOpen(true)}
-                        className="flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium text-slate-400 hover:text-white cursor-pointer"
-                        aria-label="Open Navigation Menu"
-                    >
-                        <Menu className="h-5 w-5 mb-0.5" />
-                        <span>Menu</span>
-                    </button>
-                </div>
-            </nav>
         </div>
     );
 }

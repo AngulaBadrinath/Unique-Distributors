@@ -146,7 +146,7 @@ export default function AccountingIndex({ summary, recent_journals }: Props) {
                     <div className="rounded-xl border bg-card p-5 shadow-xs">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Equity</span>
-                            <div className="p-2 rounded-lg bg-action-accent/10 text-action-accent">
+                            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-600">
                                 <Scale className="w-4 h-4" />
                             </div>
                         </div>

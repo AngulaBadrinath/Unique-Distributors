@@ -210,12 +210,12 @@ export default function ApproveAdjustmentModal({
 
                     {/* Super Admin Emergency Override Section */}
                     {requiresEmergencyOverride && (
-                        <div className="p-3.5 bg-action-accent/10 border border-action-accent/30 rounded-xl space-y-2.5">
-                            <div className="flex items-start gap-2 text-action-accent">
-                                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-action-accent" />
+                        <div className="p-3.5 bg-blue-500/10 border border-blue-500/30 rounded-xl space-y-2.5">
+                            <div className="flex items-start gap-2 text-blue-800 dark:text-blue-300">
+                                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
                                 <div className="space-y-0.5 text-xs">
                                     <h4 className="font-semibold">Super Admin Emergency Override</h4>
-                                    <p className="text-action-accent/90 leading-relaxed">
+                                    <p className="text-blue-700/90 dark:text-blue-300/90 leading-relaxed">
                                         You are approving an adjustment that you personally submitted. Document the emergency business justification below (mandatory for audit compliance).
                                     </p>
                                 </div>

@@ -114,7 +114,7 @@ export default function AuditTimeline({ logs, modules, filters }: Props) {
             case 'DELIVERY':
                 return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/50 dark:text-purple-400 dark:border-purple-800';
             case 'ACCOUNTING':
-                return 'bg-primary/10 text-primary border-primary/20';
+                return 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-400 dark:border-indigo-800';
             case 'TAX':
                 return 'bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/50 dark:text-cyan-400 dark:border-cyan-800';
             case 'SECURITY':

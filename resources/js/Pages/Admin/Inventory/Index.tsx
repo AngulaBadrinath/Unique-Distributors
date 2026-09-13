@@ -205,10 +205,10 @@ export default function InventoryIndex({
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                                 Physical On-Hand
                             </span>
-                            <Boxes className="h-4 w-4 text-action-accent" />
+                            <Boxes className="h-4 w-4 text-blue-500" />
                         </div>
                         <div className="mt-1.5 flex items-baseline gap-1.5">
-                            <span className="text-xl font-bold text-foreground">
+                            <span className="text-xl font-bold text-blue-700 dark:text-blue-300">
                                 {metrics.total_on_hand_units.toLocaleString()}
                             </span>
                             <span className="text-[10px] text-muted-foreground">units</span>
@@ -247,18 +247,18 @@ export default function InventoryIndex({
                         onClick={() => handleFilterChange({ has_allocations: !filters.has_allocations })}
                         className={`cursor-pointer rounded-xl border p-3.5 transition-all duration-200 hover:shadow-md ${
                             filters.has_allocations
-                                ? 'border-action-accent bg-action-accent/5 ring-1 ring-action-accent/20'
+                                ? 'border-indigo-500 bg-indigo-500/5 ring-1 ring-indigo-500/20'
                                 : 'border-border bg-card'
                         }`}
                     >
                         <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-semibold uppercase tracking-wider text-action-accent">
+                            <span className="text-[11px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                                 Allocated Units
                             </span>
-                            <PackageCheck className="h-4 w-4 text-action-accent" />
+                            <PackageCheck className="h-4 w-4 text-indigo-500" />
                         </div>
                         <div className="mt-1.5 flex items-baseline gap-1.5">
-                            <span className="text-xl font-bold text-action-accent">
+                            <span className="text-xl font-bold text-indigo-700 dark:text-indigo-300">
                                 {metrics.total_allocated_units.toLocaleString()}
                             </span>
                             <span className="text-[10px] text-muted-foreground">units</span>
@@ -499,7 +499,7 @@ export default function InventoryIndex({
                                         </button>
                                     </th>
                                     {/* Commercial Commitment Group */}
-                                    <th className="px-3 py-3 text-right bg-action-accent/5 text-action-accent">
+                                    <th className="px-3 py-3 text-right bg-indigo-50/30 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-300">
                                         <button
                                             onClick={() => handleSortChange('commercial_allocated_quantity')}
                                             className="group inline-flex items-center hover:text-foreground"
@@ -607,9 +607,9 @@ export default function InventoryIndex({
                                                 </span>
                                             </td>
                                             {/* Commercial Allocated */}
-                                            <td className="px-3 py-3 text-right font-mono bg-action-accent/5">
+                                            <td className="px-3 py-3 text-right font-mono bg-indigo-50/20 dark:bg-indigo-950/10">
                                                 {item.commercial_allocated_quantity > 0 ? (
-                                                    <span className="text-action-accent font-medium">
+                                                    <span className="text-indigo-600 dark:text-indigo-400 font-medium">
                                                         {item.commercial_allocated_quantity.toLocaleString()}
                                                     </span>
                                                 ) : (
@@ -732,7 +732,7 @@ export default function InventoryIndex({
                                 <div className="flex items-center justify-between border-t border-border/60 pt-2 text-xs">
                                     <div className="text-muted-foreground">
                                         Allocated:{' '}
-                                        <span className="font-mono font-semibold text-action-accent">
+                                        <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">
                                             {item.commercial_allocated_quantity} units
                                         </span>
                                     </div>

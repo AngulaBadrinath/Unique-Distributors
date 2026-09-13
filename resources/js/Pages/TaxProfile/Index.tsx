@@ -168,7 +168,7 @@ export default function TaxProfileIndex({
                                     {zeroRateCount}
                                 </p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-action-accent/10 flex items-center justify-center text-action-accent">
+                            <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
                                 <Percent className="h-5 w-5" />
                             </div>
                         </CardContent>

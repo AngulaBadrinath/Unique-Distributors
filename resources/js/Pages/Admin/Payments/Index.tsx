@@ -363,7 +363,7 @@ export default function PaymentsIndex({
                 );
             case 'CHEQUE':
                 return (
-                    <Badge variant="outline" className="gap-1 border-action-accent/30 text-action-accent bg-action-accent/10">
+                    <Badge variant="outline" className="gap-1 border-indigo-500/30 text-indigo-700 dark:text-indigo-400 bg-indigo-500/10">
                         <Landmark className="h-3 w-3" /> Cheque
                     </Badge>
                 );

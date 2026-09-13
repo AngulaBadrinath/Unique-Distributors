@@ -230,22 +230,24 @@
 
 ## 12. DESIGN SYSTEM & USER INTERFACES
 
-### Historical Foundation (SUPERSEDED / RETIRED)
-- [x] `UI-001`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Design Tokens Implementation (Legacy foundation retired)
-- [x] `UI-002`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Core shadcn/ui Component Library Tailoring (Rebuilt with semantic token primitives)
-- [x] `UI-003`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Admin Portal Shell (Rebuilt with Zero Black anchor & Ghost Green active navigation)
-- [x] `UI-004`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Salesman Portal Shell (Rebuilt with Zero Black dock & Ghost Green active states)
-- [x] `UI-005`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Delivery Partner Portal Shell (Rebuilt with Zero Black shell & Ghost Green indicators)
-- [x] `UI-006`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Responsive Table System (Rebuilt with structured neutral canvas & Ghost Green selection)
-- [x] `UI-007`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Unified Form State System (Rebuilt with Quantum Blue focus rings & semantic validation)
-- [x] `UI-008`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Payment Evidence Upload & Preview UI Component (Migrated to unified visual system)
-- [x] `UI-009`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Order Creation Mobile/Tablet Flow (Migrated to unified visual system)
-- [x] `UI-010`: [SUPERSEDED — REBUILT UNDER NEW VISUAL SYSTEM] Responsive QA Width Matrix Verification (Preserved across 320px–1920px under new visual system)
+### UI-001 → UI-010 STATUS
+**STATUS: RETIRED — VISUAL FOUNDATION RESET**  
+**NEW DESIGN SYSTEM: NOT YET IMPLEMENTED**  
+**PHASE 2: GROUND-UP UI REBUILD**
 
-### Authoritative Unified Design System Foundation (ACTIVE)
-- [x] `UI-FOUND-V2`: Ground-Up Presentation Rebuild (Level 1: Zero Black `#050505`, Level 2: Ghost Green `#D7FFE0` / `#063312`, Level 3: Selective Quantum Blue `#2457FF`, Level 4: Structured Neutral Canvas `#F8F9FA`, Invariant Business Semantic Statuses)
-- [x] `UI-SHELL-V2`: Unified Multi-Portal Shell Architecture (Admin, Salesman, Delivery, Warehouse, Accountant, Super Admin)
-- [x] `UI-PRIMITIVES-V2`: Semantic Component Library (Buttons, Badges, Cards, Inputs, Tables, Modals, Badges, Tabs)
+- [x] `UI-001`: [RETIRED — VISUAL FOUNDATION RESET] Design Tokens Implementation (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-002`: [RETIRED — VISUAL FOUNDATION RESET] Core shadcn/ui Component Library Tailoring (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-003`: [RETIRED — VISUAL FOUNDATION RESET] Admin Portal Shell (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-004`: [RETIRED — VISUAL FOUNDATION RESET] Salesman Portal Shell (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-005`: [RETIRED — VISUAL FOUNDATION RESET] Delivery Partner Portal Shell (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-006`: [RETIRED — VISUAL FOUNDATION RESET] Responsive Table System (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-007`: [RETIRED — VISUAL FOUNDATION RESET] Unified Form State System (Original baseline restored; Phase 2 ground-up rebuild pending)
+- [x] `UI-008`: [RETIRED — VISUAL FOUNDATION RESET] Payment Evidence Upload & Preview UI Component (Functional component preserved; visual rebuild pending)
+- [x] `UI-009`: [RETIRED — VISUAL FOUNDATION RESET] Order Creation Mobile/Tablet Flow (Functional flow preserved; visual rebuild pending)
+- [x] `UI-010`: [RETIRED — VISUAL FOUNDATION RESET] Responsive QA Width Matrix Verification (Preserved across 320px–1920px; visual rebuild pending)
+
+### Pending Design System (PHASE 2)
+- [ ] `UI-PHASE-2`: Ground-Up Frontend Visual System Rebuild (NOT YET IMPLEMENTED)
 
 ---
 

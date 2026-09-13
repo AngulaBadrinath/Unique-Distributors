@@ -177,6 +177,7 @@ export default function InventoryShow({
                         <div className="flex flex-wrap items-center gap-2">
                             {can_adjust && (
                                 <Button
+                                    size="sm"
                                     onClick={() => {
                                         adjustForm.setData({
                                             warehouse_id: balance.warehouse_id,
@@ -189,9 +190,7 @@ export default function InventoryShow({
                                         });
                                         setIsAdjustModalOpen(true);
                                     }}
-                                    variant="action"
-                                    size="sm"
-                                    className="inline-flex items-center gap-1.5"
+                                    className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm"
                                 >
                                     <Sliders className="h-4 w-4" />
                                     <span>Adjust Stock</span>
@@ -295,14 +294,14 @@ export default function InventoryShow({
                     </div>
 
                     {/* Commercially Allocated */}
-                    <div className="rounded-xl border border-action-accent/30 bg-action-accent/5 p-4 shadow-sm">
+                    <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/5 p-4 shadow-sm">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold uppercase tracking-wider text-action-accent">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
                                 Commercial Allocated
                             </span>
-                            <PackageCheck className="h-4 w-4 text-action-accent" />
+                            <PackageCheck className="h-4 w-4 text-indigo-600" />
                         </div>
-                        <div className="mt-2 text-2xl font-bold text-foreground">
+                        <div className="mt-2 text-2xl font-bold text-indigo-700 dark:text-indigo-300">
                             {commercial_summary.allocated_quantity.toLocaleString()}
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">Assigned across active orders</p>
@@ -383,7 +382,7 @@ export default function InventoryShow({
                 <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
                     <div className="border-b border-border bg-muted/30 px-4 py-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <PackageCheck className="h-4 w-4 text-primary" />
+                            <PackageCheck className="h-4 w-4 text-indigo-500" />
                             <h2 className="text-sm font-semibold text-foreground">
                                 Active Commercial Order Commitments ({active_allocations.length})
                             </h2>
@@ -425,7 +424,7 @@ export default function InventoryShow({
                                                 <div className="font-medium text-foreground">{alloc.order_number}</div>
                                                 <div className="text-xs text-muted-foreground">{alloc.customer_name}</div>
                                             </td>
-                                            <td className="px-3 py-3 text-right font-mono font-semibold text-foreground">
+                                            <td className="px-3 py-3 text-right font-mono font-semibold text-indigo-600 dark:text-indigo-400">
                                                 {alloc.allocated_quantity.toLocaleString()}
                                             </td>
                                             <td className="px-3 py-3 text-right font-mono text-muted-foreground">
@@ -682,8 +681,8 @@ export default function InventoryShow({
                                 <Button
                                     type="submit"
                                     size="sm"
-                                    variant="action"
                                     disabled={adjustForm.processing || isInvalidPreview || adjustForm.data.notes.trim().length < 5}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
                                 >
                                     {adjustForm.processing ? 'Posting...' : 'Apply Stock Adjustment'}
                                 </Button>

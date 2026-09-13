@@ -138,15 +138,15 @@ export default function ReceivablesShow({
     const getTypeBadge = (type: string) => {
         switch (type) {
             case 'INVOICE_CHARGE':
-                return <Badge variant="action">Invoice Charge</Badge>;
+                return <Badge variant="default" className="bg-blue-600">Invoice Charge</Badge>;
             case 'PAYMENT':
                 return <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Payment</Badge>;
             case 'PAYMENT_REVERSAL':
                 return <Badge variant="destructive">Payment Reversal</Badge>;
             case 'CREDIT_NOTE':
-                return <Badge variant="brand">Credit Note</Badge>;
+                return <Badge variant="outline" className="text-indigo-600 border-indigo-300">Credit Note</Badge>;
             case 'CREDIT_APPLICATION':
-                return <Badge variant="action">Credit Application</Badge>;
+                return <Badge variant="outline" className="text-purple-600 border-purple-300">Credit Application</Badge>;
             default:
                 return <Badge variant="outline">{type}</Badge>;
         }
@@ -252,10 +252,10 @@ export default function ReceivablesShow({
                         <span className="text-xs text-muted-foreground">After pending payments</span>
                     </div>
 
-                    <div className="bg-card border border-border rounded-xl p-4 shadow-2xs space-y-1">
+                    <div className="bg-card border rounded-lg p-4 shadow-sm space-y-1 bg-muted/20">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-action-accent uppercase tracking-wider">Available Credit</span>
-                            <CreditCard className="h-4 w-4 text-action-accent" />
+                            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Available Credit</span>
+                            <CreditCard className="h-4 w-4 text-indigo-500" />
                         </div>
                         <p className="text-2xl font-bold text-foreground">
                             {formatCurrency(available_credit)}

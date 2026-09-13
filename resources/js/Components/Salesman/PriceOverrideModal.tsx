@@ -163,7 +163,7 @@ export const PriceOverrideModal: React.FC<PriceOverrideModalProps> = ({
                         </div>
                         <div className="flex justify-between pt-1 border-t border-border/60">
                             <span>Exception Status:</span>
-                            <Badge variant="outline" className={isBelowMin ? 'text-amber-600 border-amber-500/30' : 'text-action-accent border-action-accent/30'}>
+                            <Badge variant="outline" className={isBelowMin ? 'text-amber-600 border-amber-500/30' : 'text-blue-600 border-blue-500/30'}>
                                 {isBelowMin ? 'Below Minimum Floor' : isAboveMrp ? 'Above Standard MRP' : 'Standard Boundary'}
                             </Badge>
                         </div>

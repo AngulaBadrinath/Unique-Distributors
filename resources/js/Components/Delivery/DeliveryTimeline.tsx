@@ -49,18 +49,18 @@ const getEventConfig = (eventType: string) => {
         case 'ASSIGNED':
             return {
                 icon: UserCheck,
-                bg: 'bg-brand-surface',
-                border: 'border-brand-surface-foreground/20',
-                text: 'text-brand-surface-foreground',
-                badgeBg: 'bg-brand-surface text-brand-surface-foreground border border-brand-surface-foreground/20',
+                bg: 'bg-indigo-500/15',
+                border: 'border-indigo-500/30',
+                text: 'text-indigo-400',
+                badgeBg: 'bg-indigo-900/40 text-indigo-300 border border-indigo-500/30',
             };
         case 'REASSIGNED':
             return {
                 icon: UserPlus,
-                bg: 'bg-action-accent/10',
-                border: 'border-action-accent/30',
-                text: 'text-action-accent',
-                badgeBg: 'bg-action-accent/10 text-action-accent border border-action-accent/30',
+                bg: 'bg-blue-500/15',
+                border: 'border-blue-500/30',
+                text: 'text-blue-400',
+                badgeBg: 'bg-blue-900/40 text-blue-300 border border-blue-500/30',
             };
         case 'UNASSIGNED':
             return {

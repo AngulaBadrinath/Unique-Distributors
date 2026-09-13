@@ -88,18 +88,14 @@ export default function OrderStatusBadge({
             case 'warning':
                 return 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-300';
             case 'info':
-            case 'action':
-            case 'indigo':
-            case 'purple':
-                return 'border-action-accent/30 bg-action-accent/10 text-action-accent font-semibold';
-            case 'brand':
-            case 'secondary':
-                return 'border-brand-surface-foreground/20 bg-brand-surface text-brand-surface-foreground font-semibold';
             case 'primary':
-            case 'default':
-                return 'border-transparent bg-primary text-primary-foreground';
+                return 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-300';
+            case 'indigo':
+                return 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300';
+            case 'purple':
+                return 'border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950/60 dark:text-purple-300';
             default:
-                return 'border-border bg-muted text-muted-foreground';
+                return 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300';
         }
     };
 

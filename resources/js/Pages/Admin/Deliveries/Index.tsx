@@ -219,21 +219,21 @@ export default function AdminDeliveriesIndex({
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'DELIVERED':
-                return <Badge variant="success">Delivered</Badge>;
+                return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Delivered</Badge>;
             case 'OUT_FOR_DELIVERY':
-                return <Badge variant="warning" className="animate-pulse">Out for Delivery</Badge>;
+                return <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse">Out for Delivery</Badge>;
             case 'PICKED_UP':
-                return <Badge variant="action">Picked Up</Badge>;
+                return <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30">Picked Up</Badge>;
             case 'ASSIGNED':
-                return <Badge variant="brand">Assigned</Badge>;
+                return <Badge variant="outline" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/30">Assigned</Badge>;
             case 'FAILED':
-                return <Badge variant="destructive">Failed</Badge>;
+                return <Badge variant="outline" className="bg-rose-500/10 text-rose-400 border-rose-500/30">Failed</Badge>;
             case 'RESCHEDULED':
-                return <Badge variant="warning">Rescheduled</Badge>;
+                return <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30">Rescheduled</Badge>;
             case 'RETURNED_TO_WAREHOUSE':
-                return <Badge variant="neutral">Returned to Hub</Badge>;
+                return <Badge variant="outline" className="bg-slate-500/10 text-slate-400 border-slate-500/30">Returned to Hub</Badge>;
             default:
-                return <Badge variant="outline">Pending</Badge>;
+                return <Badge variant="outline" className="bg-slate-500/10 text-slate-300 border-slate-700">Pending</Badge>;
         }
     };
 
@@ -247,11 +247,11 @@ export default function AdminDeliveriesIndex({
                 {/* Page Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-                            <Truck className="w-7 h-7 text-primary" />
+                        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
+                            <Truck className="w-7 h-7 text-indigo-400" />
                             Logistics & Delivery Operations
                         </h1>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-slate-400 mt-1">
                             Authoritative mission dispatch, real-time driver tracking, and chain-of-custody audit.
                         </p>
                     </div>
@@ -259,7 +259,7 @@ export default function AdminDeliveriesIndex({
                     <div className="flex items-center gap-2">
                         <Link
                             href="/delivery"
-                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-muted hover:bg-muted/80 text-foreground border border-border text-xs font-semibold transition-all"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition-all"
                         >
                             <Navigation className="w-4 h-4" />
                             <span>Driver Mobile View</span>
@@ -269,43 +269,43 @@ export default function AdminDeliveriesIndex({
 
                 {/* Metric Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="p-4 rounded-2xl bg-card border border-border flex items-center gap-3.5 shadow-xs">
-                        <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                             <Truck className="w-5 h-5" />
                         </div>
                         <div>
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Missions</span>
-                            <p className="text-2xl font-bold text-foreground tracking-tight">{badgeCounts.all}</p>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Missions</span>
+                            <p className="text-2xl font-bold text-white tracking-tight">{badgeCounts.all}</p>
                         </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-card border border-border flex items-center gap-3.5 shadow-xs">
-                        <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                             <Navigation className="w-5 h-5" />
                         </div>
                         <div>
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">In Transit</span>
-                            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">{badgeCounts.active_route}</p>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">In Transit</span>
+                            <p className="text-2xl font-bold text-amber-400 tracking-tight">{badgeCounts.active_route}</p>
                         </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-card border border-border flex items-center gap-3.5 shadow-xs">
-                        <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                             <CheckCircle2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Delivered</span>
-                            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">{badgeCounts.delivered}</p>
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Delivered</span>
+                            <p className="text-2xl font-bold text-emerald-400 tracking-tight">{badgeCounts.delivered}</p>
                         </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-card border border-border flex items-center gap-3.5 shadow-xs">
-                        <div className="w-11 h-11 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
                             <AlertTriangle className="w-5 h-5" />
                         </div>
                         <div>
-                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Exceptions</span>
-                            <p className="text-2xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Exceptions</span>
+                            <p className="text-2xl font-bold text-rose-400 tracking-tight">
                                 {badgeCounts.failed + badgeCounts.rescheduled + badgeCounts.returned}
                             </p>
                         </div>
@@ -315,7 +315,7 @@ export default function AdminDeliveriesIndex({
                 {/* Tabs & Filters */}
                 <div className="space-y-4">
                     {/* Tab Pills */}
-                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-border">
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-800">
                         {[
                             { key: 'all', label: 'All Missions', count: badgeCounts.all },
                             { key: 'pending', label: 'Pending Assignment', count: badgeCounts.pending },
@@ -331,13 +331,13 @@ export default function AdminDeliveriesIndex({
                                 onClick={() => handleTabChange(t.key)}
                                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
                                     currentTab === t.key
-                                        ? 'bg-brand-surface text-brand-surface-foreground border border-brand-surface-foreground/20 font-bold shadow-xs'
-                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                                 }`}
                             >
                                 <span>{t.label}</span>
                                 <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${
-                                    currentTab === t.key ? 'bg-brand-surface-foreground text-brand-surface' : 'bg-muted text-muted-foreground'
+                                    currentTab === t.key ? 'bg-indigo-800 text-white' : 'bg-slate-800 text-slate-400'
                                 }`}>
                                     {t.count}
                                 </span>
@@ -346,15 +346,15 @@ export default function AdminDeliveriesIndex({
                     </div>
 
                     {/* Search & Filter Bar */}
-                    <form onSubmit={handleFilterSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-card p-3.5 rounded-2xl border border-border shadow-xs">
+                    <form onSubmit={handleFilterSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
                         {/* Search Input */}
                         <div className="relative">
-                            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+                            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                             <Input
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="Search Delivery #, Order, Customer..."
-                                className="pl-9 bg-background border-border text-xs text-foreground placeholder-muted-foreground rounded-xl"
+                                className="pl-9 bg-slate-950 border-slate-800 text-xs text-white placeholder-slate-500 rounded-xl"
                             />
                         </div>
 
@@ -363,7 +363,7 @@ export default function AdminDeliveriesIndex({
                             <select
                                 value={selectedDriver}
                                 onChange={(e) => setSelectedDriver(e.target.value)}
-                                className="w-full bg-background border border-border text-xs text-foreground rounded-xl px-3 py-2 outline-hidden focus:border-ring focus:ring-1 focus:ring-ring"
+                                className="w-full bg-slate-950 border border-slate-800 text-xs text-white rounded-xl px-3 py-2 outline-hidden focus:border-indigo-500"
                             >
                                 <option value="">All Drivers</option>
                                 {availableDrivers.map((driver) => (
@@ -380,13 +380,13 @@ export default function AdminDeliveriesIndex({
                                 type="date"
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
-                                className="bg-background border-border text-xs text-foreground rounded-xl"
+                                className="bg-slate-950 border-slate-800 text-xs text-white rounded-xl"
                             />
                         </div>
 
                         {/* Filter Buttons */}
                         <div className="flex items-center gap-2">
-                            <Button type="submit" variant="default" className="flex-1 text-xs font-bold rounded-xl min-h-[38px]">
+                            <Button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl min-h-[38px]">
                                 Filter
                             </Button>
                             {(searchTerm || selectedDriver || selectedDate) && (
@@ -394,7 +394,7 @@ export default function AdminDeliveriesIndex({
                                     type="button"
                                     onClick={handleClearFilters}
                                     variant="outline"
-                                    className="text-xs rounded-xl min-h-[38px]"
+                                    className="border-slate-800 hover:bg-slate-800 text-slate-400 text-xs rounded-xl min-h-[38px]"
                                 >
                                     <RotateCcw className="w-3.5 h-3.5" />
                                 </Button>
@@ -404,11 +404,11 @@ export default function AdminDeliveriesIndex({
                 </div>
 
                 {/* Deliveries Table */}
-                <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xs">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr className="border-b border-border bg-muted/40 text-muted-foreground font-semibold uppercase tracking-wider text-[11px]">
+                                <tr className="border-b border-slate-800 bg-slate-900/90 text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                                     <th className="p-3.5">Mission / Delivery #</th>
                                     <th className="p-3.5">Order Ref</th>
                                     <th className="p-3.5">Customer / City</th>
@@ -418,46 +418,46 @@ export default function AdminDeliveriesIndex({
                                     <th className="p-3.5 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-border/60">
+                            <tbody className="divide-y divide-slate-800/60">
                                 {deliveries.data.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="p-12 text-center text-muted-foreground text-xs">
+                                        <td colSpan={7} className="p-12 text-center text-slate-500 text-xs">
                                             No delivery missions matching current filters.
                                         </td>
                                     </tr>
                                 ) : (
                                     deliveries.data.map((del) => (
-                                        <tr key={del.id} className="hover:bg-muted/30 transition-colors">
-                                            <td className="p-3.5 font-mono font-bold text-foreground">
+                                        <tr key={del.id} className="hover:bg-slate-800/30 transition-colors">
+                                            <td className="p-3.5 font-mono font-bold text-white">
                                                 <Link
                                                     href={`/delivery/${del.id}`}
-                                                    className="hover:text-action-accent transition-colors"
+                                                    className="hover:text-indigo-400 transition-colors"
                                                 >
                                                     {del.delivery_number}
                                                 </Link>
                                             </td>
 
-                                            <td className="p-3.5 font-mono text-muted-foreground">
+                                            <td className="p-3.5 font-mono text-slate-300">
                                                 {del.order?.order_number || `Order #${del.order_id}`}
                                             </td>
 
                                             <td className="p-3.5">
-                                                <p className="font-semibold text-foreground">{del.customer?.name || 'Customer'}</p>
-                                                <p className="text-muted-foreground text-[11px]">{del.delivery_city}, {del.delivery_state}</p>
+                                                <p className="font-semibold text-white">{del.customer?.name || 'Customer'}</p>
+                                                <p className="text-slate-400 text-[11px]">{del.delivery_city}, {del.delivery_state}</p>
                                             </td>
 
                                             <td className="p-3.5">
                                                 {del.driver ? (
-                                                    <span className="font-medium text-foreground">{del.driver.name}</span>
+                                                    <span className="font-medium text-slate-200">{del.driver.name}</span>
                                                 ) : (
-                                                    <span className="text-amber-600 dark:text-amber-400 italic">Unassigned</span>
+                                                    <span className="text-amber-400/80 italic">Unassigned</span>
                                                 )}
                                             </td>
 
-                                            <td className="p-3.5 text-muted-foreground">
-                                                <p className="font-medium text-foreground">{del.scheduled_date}</p>
+                                            <td className="p-3.5 text-slate-300">
+                                                <p className="font-medium">{del.scheduled_date}</p>
                                                 {del.delivery_window && (
-                                                    <p className="text-muted-foreground text-[10px]">{del.delivery_window}</p>
+                                                    <p className="text-slate-500 text-[10px]">{del.delivery_window}</p>
                                                 )}
                                             </td>
 
@@ -470,7 +470,7 @@ export default function AdminDeliveriesIndex({
                                                     <button
                                                         onClick={() => openTimelineDrawer(del)}
                                                         title="Quick Event Timeline"
-                                                        className="p-1.5 rounded-lg bg-muted hover:bg-muted/80 text-foreground transition-colors"
+                                                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
                                                     >
                                                         <Clock className="w-3.5 h-3.5" />
                                                     </button>
@@ -479,7 +479,7 @@ export default function AdminDeliveriesIndex({
                                                         <button
                                                             onClick={() => openAssignModal(del)}
                                                             title={del.driver ? 'Reassign Driver' : 'Assign Driver'}
-                                                            className="p-1.5 rounded-lg bg-action-accent/10 hover:bg-action-accent/20 text-action-accent border border-action-accent/30 transition-colors"
+                                                            className="p-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 transition-colors"
                                                         >
                                                             {del.driver ? <UserPlus className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
                                                         </button>
@@ -487,7 +487,7 @@ export default function AdminDeliveriesIndex({
 
                                                     <Link
                                                         href={`/delivery/${del.id}`}
-                                                        className="p-1.5 rounded-lg bg-muted hover:bg-muted/80 text-foreground transition-colors"
+                                                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
                                                         title="Full Mission Details"
                                                     >
                                                         <Eye className="w-3.5 h-3.5" />
@@ -503,7 +503,7 @@ export default function AdminDeliveriesIndex({
 
                     {/* Pagination */}
                     {deliveries.last_page > 1 && (
-                        <div className="p-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                             <span>Showing {deliveries.data.length} of {deliveries.total} deliveries</span>
                             <div className="flex items-center gap-1">
                                 {deliveries.links.map((link, i) => (
@@ -513,15 +513,15 @@ export default function AdminDeliveriesIndex({
                                             href={link.url}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
                                                 link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'bg-muted hover:bg-muted/80 text-foreground'
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                                             }`}
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
                                     ) : (
                                         <span
                                             key={i}
-                                            className="px-3 py-1.5 rounded-lg text-xs text-muted-foreground bg-muted/40"
+                                            className="px-3 py-1.5 rounded-lg text-xs text-slate-600 bg-slate-900"
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
                                     )
@@ -547,19 +547,19 @@ export default function AdminDeliveriesIndex({
 
             {/* Quick Timeline Side Drawer */}
             {timelineDrawerOpen && timelineDelivery && (
-                <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs">
-                    <div className="w-full max-w-md bg-card border-l border-border h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-200">
-                        <div className="p-4 border-b border-border flex items-center justify-between">
+                <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs">
+                    <div className="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-200">
+                        <div className="p-4 border-b border-slate-800 flex items-center justify-between">
                             <div>
-                                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                                    <Clock className="w-4 h-4 text-action-accent" />
+                                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                    <Clock className="w-4 h-4 text-indigo-400" />
                                     Mission Event Audit
                                 </h3>
-                                <p className="text-xs font-mono text-muted-foreground">#{timelineDelivery.delivery_number}</p>
+                                <p className="text-xs font-mono text-slate-400">#{timelineDelivery.delivery_number}</p>
                             </div>
                             <button
                                 onClick={() => { setTimelineDrawerOpen(false); setTimelineDelivery(null); }}
-                                className="w-8 h-8 rounded-lg bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors"
+                                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -567,16 +567,16 @@ export default function AdminDeliveriesIndex({
 
                         <div className="p-4 flex-1 overflow-y-auto">
                             {loadingTimeline ? (
-                                <div className="p-8 text-center text-xs text-muted-foreground">Loading audit history...</div>
+                                <div className="p-8 text-center text-xs text-slate-500">Loading audit history...</div>
                             ) : (
                                 <DeliveryTimeline events={timelineEvents} />
                             )}
                         </div>
 
-                        <div className="p-4 border-t border-border">
+                        <div className="p-4 border-t border-slate-800">
                             <Link
                                 href={`/delivery/${timelineDelivery.id}`}
-                                className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
                             >
                                 <span>Open Full Mission Record</span>
                                 <ExternalLink className="w-3.5 h-3.5" />

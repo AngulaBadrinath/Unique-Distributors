@@ -192,13 +192,13 @@ export default function Show({ refundRequest }: Props) {
                 );
             case 'APPROVED':
                 return (
-                    <Badge variant="brand" className="gap-1.5 py-1 px-3">
+                    <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 gap-1.5 py-1 px-3">
                         <CheckCircle2 className="w-3.5 h-3.5" /> APPROVED
                     </Badge>
                 );
             case 'PROCESSING':
                 return (
-                    <Badge variant="action" className="gap-1.5 py-1 px-3">
+                    <Badge className="bg-purple-50 text-purple-700 border-purple-200 gap-1.5 py-1 px-3">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" /> PROCESSING
                     </Badge>
                 );
@@ -267,8 +267,7 @@ export default function Show({ refundRequest }: Props) {
                                 <Button
                                     onClick={handleApprove}
                                     disabled={approveForm.processing || (!canApproveMakerChecker)}
-                                    variant="action"
-                                    className="gap-1.5"
+                                    className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white"
                                 >
                                     <CheckCircle2 className="w-4 h-4" />
                                     Approve Refund
@@ -296,8 +295,7 @@ export default function Show({ refundRequest }: Props) {
                                 <Button
                                     onClick={handleApprove}
                                     disabled={approveForm.processing || (!canApproveMakerChecker)}
-                                    variant="action"
-                                    className="gap-1.5"
+                                    className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white"
                                 >
                                     <CheckCircle2 className="w-4 h-4" />
                                     Approve Refund
@@ -528,7 +526,7 @@ export default function Show({ refundRequest }: Props) {
                             </div>
                             <Link
                                 href={`/admin/credits/${refundRequest.credit_note.id}`}
-                                className="text-xs font-semibold text-action-accent hover:underline"
+                                className="text-xs font-semibold text-blue-600 hover:underline"
                             >
                                 View Full Credit Note →
                             </Link>

@@ -44,7 +44,7 @@ export function MobileListCard({
             className={cn(
                 'rounded-xl border border-border bg-card p-4 transition-all duration-200 shadow-xs relative overflow-hidden',
                 onClick ? 'cursor-pointer active:scale-[0.99] hover:border-border/80' : '',
-                isSelected ? 'border-primary ring-1 ring-primary bg-accent/80 text-accent-foreground' : '',
+                isSelected ? 'border-primary ring-1 ring-primary bg-primary/5' : '',
                 className
             )}
             onClick={onClick}

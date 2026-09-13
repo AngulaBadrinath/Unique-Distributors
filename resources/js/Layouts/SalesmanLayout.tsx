@@ -8,10 +8,15 @@ import {
     ShoppingBag, 
     Package, 
     LogOut, 
+    User as UserIcon, 
     ChevronLeft, 
     CheckCircle2, 
     AlertCircle, 
-    Settings
+    Settings,
+    FileText,
+    Menu,
+    X,
+    TrendingUp
 } from 'lucide-react';
 import NotificationBell from '@/Components/Notifications/NotificationBell';
 
@@ -30,6 +35,7 @@ export default function SalesmanLayout({
 }: SalesmanLayoutProps) {
     const { identity, company, auth, flash } = usePage<PageProps>().props;
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const currentUrl = typeof window !== 'undefined' ? window.location.pathname : '';
 
     const handleLogout = () => {
@@ -42,8 +48,8 @@ export default function SalesmanLayout({
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-accent selection:text-accent-foreground pb-20 sm:pb-0">
-            {/* Top Fixed Header - Unified Shell Header */}
+        <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary pb-20 sm:pb-0">
+            {/* Top Fixed Header */}
             <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between shadow-2xs">
                 <div className="flex items-center gap-3">
                     {showBackButton ? (
@@ -55,15 +61,13 @@ export default function SalesmanLayout({
                             <ChevronLeft className="h-5 w-5" />
                         </Link>
                     ) : (
-                        <Link href="/dashboard" className="flex items-center gap-2.5 group cursor-pointer">
+                        <Link href="/dashboard" className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-xs">
-                                UD
+                                SW
                             </div>
                             <div className="hidden sm:block">
-                                <span className="font-semibold text-xs text-foreground block leading-tight">
-                                    {identity?.company_name || company?.display_name || 'Unique Distributors'}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground font-mono">Sales Representative Portal</span>
+                                <span className="font-semibold text-xs text-foreground block leading-tight">Sales Workspace</span>
+                                <span className="text-[10px] text-muted-foreground font-mono">{company?.display_name || identity?.company_name || 'Wholesale Portal'}</span>
                             </div>
                         </Link>
                     )}
@@ -73,14 +77,12 @@ export default function SalesmanLayout({
                     </h1>
                 </div>
 
-                {/* Desktop Nav Links - Standardized with Ghost Green Active State */}
-                <nav className="hidden md:flex items-center gap-1.5 text-xs font-medium">
+                {/* Desktop Nav Links */}
+                <nav className="hidden md:flex items-center gap-1 text-xs font-medium">
                     <Link
                         href="/dashboard"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/dashboard') 
-                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Home
@@ -88,9 +90,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/customers') 
-                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/customers') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         My Customers
@@ -98,9 +98,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/orders') 
-                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/orders') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Order History
@@ -108,9 +106,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`px-3 py-1.5 rounded-lg transition-colors ${
-                            isLinkActive('/products') 
-                                ? 'bg-brand-surface text-brand-surface-foreground font-semibold border border-brand-surface-foreground/20 shadow-xs' 
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            isLinkActive('/products') ? 'bg-primary/10 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                     >
                         Catalogue
@@ -118,10 +114,10 @@ export default function SalesmanLayout({
                 </nav>
 
                 <div className="flex items-center gap-2.5">
-                    {/* High-intent New Order CTA on desktop - Quantum Blue Action */}
+                    {/* Primary New Order CTA on desktop */}
                     <Link
                         href="/orders/create"
-                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-action-accent text-white text-xs font-semibold hover:bg-action-accent/90 transition-colors shadow-xs cursor-pointer"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shadow-xs"
                     >
                         <PlusCircle className="h-4 w-4" />
                         <span>New Order</span>
@@ -135,10 +131,10 @@ export default function SalesmanLayout({
                             <button
                                 type="button"
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-1.5 p-1 rounded-full hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-ring transition-colors cursor-pointer"
+                                className="flex items-center gap-1.5 p-1 rounded-full hover:bg-muted focus:outline-hidden focus:ring-2 focus:ring-primary transition-colors cursor-pointer"
                                 aria-label="User profile menu"
                             >
-                                <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-semibold text-xs flex items-center justify-center border border-border shadow-xs">
+                                <div className="h-8 w-8 rounded-full bg-primary/20 text-primary font-semibold text-xs flex items-center justify-center border border-primary/30">
                                     {auth.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()}
                                 </div>
                             </button>
@@ -187,7 +183,7 @@ export default function SalesmanLayout({
 
             {/* Flash Alerts */}
             {flash?.success && (
-                <div className="max-w-5xl mx-auto w-full px-4 mt-4">
+                <div className="max-w-4xl mx-auto w-full px-4 mt-3">
                     <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-medium flex items-center gap-2 animate-in fade-in duration-150">
                         <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                         <span>{flash.success}</span>
@@ -195,7 +191,7 @@ export default function SalesmanLayout({
                 </div>
             )}
             {flash?.error && (
-                <div className="max-w-5xl mx-auto w-full px-4 mt-4">
+                <div className="max-w-4xl mx-auto w-full px-4 mt-3">
                     <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 text-xs font-medium flex items-center gap-2 animate-in fade-in duration-150">
                         <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
                         <span>{flash.error}</span>
@@ -208,14 +204,14 @@ export default function SalesmanLayout({
                 {children}
             </main>
 
-            {/* Mobile Bottom Navigation Bar - Zero Black Anchor Surface & Ghost Green Active Items */}
-            <nav className="fixed bottom-0 inset-x-0 z-40 bg-brand text-slate-400 border-t border-neutral-900 px-2 py-1.5 sm:hidden shadow-lg">
+            {/* Mobile Bottom Navigation Bar (Fixed for thumb reachability, >=44px touch targets) */}
+            <nav className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md border-t border-border px-2 py-1.5 sm:hidden shadow-lg">
                 <div className="grid grid-cols-5 gap-1 items-center">
                     {/* Home */}
                     <Link
                         href="/dashboard"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/dashboard') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/dashboard') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <Home className="h-5 w-5 mb-0.5" />
@@ -226,18 +222,18 @@ export default function SalesmanLayout({
                     <Link
                         href="/customers"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/customers') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/customers') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <Users className="h-5 w-5 mb-0.5" />
                         <span>Customers</span>
                     </Link>
 
-                    {/* Prominent New Order Center Action - Selective Quantum Blue Accent */}
+                    {/* Prominent New Order Center Action */}
                     <div className="flex items-center justify-center -mt-4">
                         <Link
                             href="/orders/create"
-                            className="flex items-center justify-center h-12 w-12 rounded-full bg-action-accent text-white shadow-lg shadow-action-accent/40 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                            className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform"
                             aria-label="Create New Sales Order"
                         >
                             <PlusCircle className="h-6 w-6" />
@@ -248,7 +244,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/orders"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/orders') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/orders') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <ShoppingBag className="h-5 w-5 mb-0.5" />
@@ -259,7 +255,7 @@ export default function SalesmanLayout({
                     <Link
                         href="/products"
                         className={`flex flex-col items-center justify-center min-h-[48px] rounded-xl py-1 text-[10px] font-medium transition-all ${
-                            isLinkActive('/products') ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs' : 'text-slate-400 hover:text-white'
+                            isLinkActive('/products') ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <Package className="h-5 w-5 mb-0.5" />

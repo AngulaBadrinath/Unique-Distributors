@@ -306,7 +306,7 @@ export function ResponsiveTable<T>({
                                         onClick={onRowClick ? () => onRowClick(item) : undefined}
                                         className={cn(
                                             'transition-colors hover:bg-muted/40',
-                                            isSelected ? 'bg-accent/80 text-accent-foreground font-medium' : '',
+                                            isSelected ? 'bg-primary/5 dark:bg-primary/10' : '',
                                             onRowClick ? 'cursor-pointer' : ''
                                         )}
                                     >

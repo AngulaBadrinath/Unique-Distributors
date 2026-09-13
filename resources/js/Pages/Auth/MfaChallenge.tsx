@@ -61,7 +61,7 @@ export default function MfaChallenge({
 
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-inner">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
                         <Shield className="w-6 h-6" aria-hidden="true" />
                     </div>
                 </div>
@@ -82,7 +82,7 @@ export default function MfaChallenge({
                     {/* Setup QR section if required */}
                     {requires_setup && qr_code_svg && (
                         <div className="mb-6 p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col items-center">
-                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary mb-3">
+                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-3">
                                 <QrCode className="w-4 h-4" />
                                 <span>Scan with Authenticator App</span>
                             </div>
@@ -122,9 +122,9 @@ export default function MfaChallenge({
                     {(errors.code || errors.recovery_code) && (
                         <div
                             role="alert"
-                            className="mb-6 p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-start gap-2.5"
+                            className="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm flex items-start gap-2.5"
                         >
-                            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" />
+                            <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
                             <div>{errors.code || errors.recovery_code}</div>
                         </div>
                     )}
@@ -149,7 +149,7 @@ export default function MfaChallenge({
                                     placeholder="123456"
                                     value={data.code}
                                     onChange={(e) => setData('code', e.target.value.replace(/[^0-9]/g, ''))}
-                                    className="text-center font-mono text-xl tracking-widest h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-action-accent focus:ring-action-accent"
+                                    className="text-center font-mono text-xl tracking-widest h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-indigo-500"
                                     required
                                 />
                             </div>
@@ -169,7 +169,7 @@ export default function MfaChallenge({
                                     placeholder="XXXXX-XXXXX"
                                     value={data.recovery_code}
                                     onChange={(e) => setData('recovery_code', e.target.value)}
-                                    className="text-center font-mono text-base tracking-wider h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-action-accent focus:ring-action-accent uppercase"
+                                    className="text-center font-mono text-base tracking-wider h-12 bg-slate-950/60 border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:ring-indigo-500 uppercase"
                                     required
                                 />
                             </div>
@@ -178,7 +178,7 @@ export default function MfaChallenge({
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md transition-all flex items-center justify-center gap-2"
+                            className="w-full h-11 bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-md transition-all flex items-center justify-center gap-2"
                         >
                             {processing ? (
                                 <>
@@ -196,7 +196,7 @@ export default function MfaChallenge({
                             <button
                                 type="button"
                                 onClick={toggleMode}
-                                className="text-xs text-action-accent hover:text-action-accent/80 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1"
+                                className="text-xs text-indigo-400 hover:text-indigo-300 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1"
                             >
                                 <KeyRound className="w-3.5 h-3.5" />
                                 <span>

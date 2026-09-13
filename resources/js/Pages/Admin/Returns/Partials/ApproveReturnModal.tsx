@@ -183,7 +183,7 @@ export default function ApproveReturnModal({ isOpen, onClose, returnRequest }: P
                                         </div>
                                         <div className="text-right">
                                             <span className="text-xs text-muted-foreground block">Verified Received</span>
-                                            <span className="font-bold text-action-accent text-xs">{received} units</span>
+                                            <span className="font-bold text-indigo-600 text-xs">{received} units</span>
                                         </div>
                                     </div>
 
@@ -266,7 +266,7 @@ export default function ApproveReturnModal({ isOpen, onClose, returnRequest }: P
                         </div>
                         <div className="border-l border-slate-700 pl-4">
                             <span className="text-slate-400 block">Approved for Credit</span>
-                            <span className="text-lg font-black text-white font-mono">{totalGood + totalDamaged} units</span>
+                            <span className="text-lg font-black text-indigo-300">{totalGood + totalDamaged} units</span>
                         </div>
                     </div>
 

@@ -86,7 +86,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                     <div className="rounded-xl border border-border bg-card p-5 shadow-xs transition-all hover:border-primary/40">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Average Order Value</span>
-                            <div className="rounded-md bg-action-accent/10 p-2 text-action-accent">
+                            <div className="rounded-md bg-blue-500/10 p-2 text-blue-600">
                                 <TrendingUp className="h-4 w-4" />
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                         <div className="group rounded-xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 hover:shadow-md">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center">
                                         <Building2 className="h-5 w-5" />
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                         <div className="group rounded-xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 hover:shadow-md">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center">
                                         <Users className="h-5 w-5" />
                                     </div>
                                 </div>
@@ -206,7 +206,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                         <div className="group rounded-xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 hover:shadow-md">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
                                         <Boxes className="h-5 w-5" />
                                     </div>
                                 </div>
@@ -229,7 +229,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                         <div className="group rounded-xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 hover:shadow-md">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center">
                                         <Truck className="h-5 w-5" />
                                     </div>
                                 </div>
@@ -252,7 +252,7 @@ export default function ReportingIndex({ salesSummary, deliverySummary, canViewC
                         <div className="group rounded-xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 hover:shadow-md">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                    <div className="h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                                         <FileSpreadsheet className="h-5 w-5" />
                                     </div>
                                 </div>
