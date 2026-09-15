@@ -17,9 +17,6 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::get('/health', HealthCheckController::class)->name('health');
-Route::get('/ready', \App\Http\Controllers\ReadyCheckController::class)->name('ready');
-
 // Guest authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
