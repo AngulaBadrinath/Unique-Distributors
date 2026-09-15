@@ -96,4 +96,17 @@ class FoundationTest extends TestCase
         $this->assertNotEmpty($appName);
         $this->assertStringContainsString('Unique Distributors', $appName);
     }
+
+    /**
+     * Test that the /login route renders successfully without requiring database assumptions.
+     */
+    public function test_login_page_renders_successfully(): void
+    {
+        $response = $this->get('/login');
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Login')
+        );
+    }
 }

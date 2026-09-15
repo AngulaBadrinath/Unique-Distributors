@@ -32,13 +32,43 @@ class CompanyInformationService
             return self::$cachedInstance;
         }
 
-        /** @var CompanyInformation|null $instance */
-        $instance = CompanyInformation::query()
-            ->where('is_singleton', true)
-            ->first();
+        try {
+            /** @var CompanyInformation|null $instance */
+            $instance = CompanyInformation::query()
+                ->where('is_singleton', true)
+                ->first();
 
-        if (! $instance) {
-            $instance = CompanyInformation::create([
+            if (! $instance) {
+                $instance = CompanyInformation::create([
+                    'legal_name' => 'Unique Distributors Inc.',
+                    'dba_name' => 'Unique Distributors',
+                    'address_line1' => '100 Distribution Blvd',
+                    'address_line2' => 'Suite 400',
+                    'city' => 'Atlanta',
+                    'state' => 'GA',
+                    'postal_code' => '30301',
+                    'country' => 'US',
+                    'phone' => '+1 (800) 555-0199',
+                    'email' => 'support@example.com',
+                    'website' => 'https://example.com',
+                    'tax_id' => '12-3456789',
+                    'state_tax_id' => 'GA-987654',
+                    'currency' => 'USD',
+                    'timezone' => 'America/New_York',
+                    'invoice_footer_note' => 'Thank you for your business. Invoices are payable within 30 days.',
+                    'is_singleton' => true,
+                ]);
+            }
+
+            self::$cachedInstance = $instance;
+
+            return $instance;
+        } catch (\Throwable $e) {
+            Log::warning('CompanyInformationService: database unavailable, falling back to default identity', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return new CompanyInformation([
                 'legal_name' => 'Unique Distributors Inc.',
                 'dba_name' => 'Unique Distributors',
                 'address_line1' => '100 Distribution Blvd',
@@ -58,10 +88,6 @@ class CompanyInformationService
                 'is_singleton' => true,
             ]);
         }
-
-        self::$cachedInstance = $instance;
-
-        return $instance;
     }
 
     /**
