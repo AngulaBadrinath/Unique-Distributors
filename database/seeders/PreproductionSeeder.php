@@ -118,5 +118,72 @@ class PreproductionSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // 6. Seed QA Manual Test Accounts (Documented in docs/MANUAL_TEST_CREDENTIALS.md)
+        $qaPassword = env('PREPROD_QA_PASSWORD', 'Password123!');
+
+        $qaAccounts = [
+            [
+                'email' => 'superadmin.qa@example.test',
+                'name' => 'Super Administrator (QA)',
+                'role' => UserRole::SUPER_ADMIN,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'admin.qa@example.test',
+                'name' => 'Operations Administrator (QA)',
+                'role' => UserRole::ADMIN,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'accountant.qa@example.test',
+                'name' => 'Senior Accountant (QA)',
+                'role' => UserRole::ACCOUNTANT,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'salesman.a@example.test',
+                'name' => 'Sales Executive A (North)',
+                'role' => UserRole::SALESMAN,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'salesman.b@example.test',
+                'name' => 'Sales Executive B (South)',
+                'role' => UserRole::SALESMAN,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'warehouse.qa@example.test',
+                'name' => 'Warehouse Dispatch Manager (QA)',
+                'role' => UserRole::WAREHOUSE_MANAGER,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'driver.qa@example.test',
+                'name' => 'Delivery Driver Partner (QA)',
+                'role' => UserRole::DELIVERY_PARTNER,
+                'status' => AccountStatus::ACTIVE,
+            ],
+            [
+                'email' => 'suspended.qa@example.test',
+                'name' => 'Terminated Representative (QA)',
+                'role' => UserRole::SALESMAN,
+                'status' => AccountStatus::SUSPENDED,
+            ],
+        ];
+
+        foreach ($qaAccounts as $account) {
+            User::updateOrCreate(
+                ['email' => $account['email']],
+                [
+                    'name' => $account['name'],
+                    'password' => Hash::make($qaPassword),
+                    'role' => $account['role'],
+                    'status' => $account['status'],
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }
