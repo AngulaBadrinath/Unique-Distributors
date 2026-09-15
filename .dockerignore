@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+node_modules
+vendor
+tests
+storage/*.key
+storage/logs/*.log
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/data/*
+artifacts
+playwright-report
+test-results
+BUGLIST.md

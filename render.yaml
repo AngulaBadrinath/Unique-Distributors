@@ -1,0 +1,91 @@
+# ==============================================================================
+# Unique Distributors — Render Blueprint Specification
+# ==============================================================================
+# Blueprint for deploying the pre-production web service to Render.
+# All secret parameters (Neon credentials, Upstash credentials, S3 keys)
+# are configured with 'sync: false' so they must be entered securely via the
+# Render dashboard or secret manager, preventing repository leakage.
+# ==============================================================================
+
+services:
+  - type: web
+    name: unique-distributors-wdms
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      # Application Core
+      - key: APP_NAME
+        value: "Unique Distributors"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+
+      # Logging & Observability
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: info
+
+      # Database Configuration (Neon PostgreSQL 18)
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+
+      # Redis Configuration (Upstash Redis TLS)
+      - key: REDIS_CLIENT
+        value: predis
+      - key: REDIS_SCHEME
+        value: tls
+      - key: REDIS_URL
+        sync: false
+
+      # State Drivers
+      - key: CACHE_STORE
+        value: redis
+      - key: CACHE_PREFIX
+        value: wdms_preprod_cache_
+      - key: SESSION_DRIVER
+        value: redis
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: SESSION_HTTP_ONLY
+        value: "true"
+      - key: SESSION_SAME_SITE
+        value: lax
+      - key: QUEUE_CONNECTION
+        value: redis
+
+      # Persistent S3 Storage (Authoritative Business Store)
+      - key: FILESYSTEM_DISK
+        value: s3
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        value: us-east-1
+      - key: AWS_BUCKET
+        sync: false
+      - key: AWS_USE_PATH_STYLE_ENDPOINT
+        value: "false"
+
+      # Safe Mail Configuration
+      - key: MAIL_MAILER
+        value: log
+
+      # Reverse Proxy & Networking
+      - key: TRUSTED_PROXIES
+        value: "*"
