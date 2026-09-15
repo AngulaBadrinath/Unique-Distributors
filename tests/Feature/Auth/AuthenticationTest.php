@@ -330,4 +330,27 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect('/login');
         $response->assertSessionHasErrors('email');
     }
+
+    /**
+     * AUTH-016: Privileged user transitions to MFA challenge during authentication.
+     */
+    public function test_privileged_user_transitions_to_mfa_challenge(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'privileged-admin@wdms.local',
+            'password' => 'secret123',
+            'role' => \App\Enums\UserRole::SUPER_ADMIN,
+            'status' => AccountStatus::ACTIVE,
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'privileged-admin@wdms.local',
+            'password' => 'secret123',
+        ]);
+
+        $response->assertRedirect(route('mfa.challenge'));
+        $this->assertTrue(session()->has('mfa.challenge'));
+        $challenge = session()->get('mfa.challenge');
+        $this->assertEquals($admin->id, $challenge['user_id']);
+    }
 }

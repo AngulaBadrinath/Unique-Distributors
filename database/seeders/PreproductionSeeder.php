@@ -103,5 +103,20 @@ class PreproductionSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // 5. Seed Initial Pre-Production Sales Representative (Standard Non-Privileged Flow)
+        $salesmanEmail = env('PREPROD_SALESMAN_EMAIL', 'salesman@uniquedistributors.com');
+        $salesmanPassword = env('PREPROD_SALESMAN_PASSWORD', 'SalesmanSecure2026!');
+
+        User::updateOrCreate(
+            ['email' => $salesmanEmail],
+            [
+                'name' => 'Pre-Production Sales Representative',
+                'password' => Hash::make($salesmanPassword),
+                'role' => UserRole::SALESMAN,
+                'status' => AccountStatus::ACTIVE,
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }

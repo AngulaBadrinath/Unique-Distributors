@@ -32,10 +32,13 @@ fi
 echo "Running pre-production startup verification..."
 php artisan deploy:verify || echo "WARNING: deploy:verify reported issues during container startup." >&2
 
-# Run database migrations safely if database is configured
+# Run database migrations and base seed safely if database is configured
 if [ -n "$DATABASE_URL" ] || [ -n "$DB_HOST" ]; then
     echo "Running database migrations on container startup..."
     php artisan migrate --force --isolated || echo "WARNING: Database migration failed or database temporarily unreachable during startup." >&2
+
+    echo "Ensuring pre-production base seed data..."
+    php artisan db:seed --class="Database\Seeders\PreproductionSeeder" --force || echo "WARNING: PreproductionSeeder execution encountered an issue." >&2
 fi
 
 # Ensure storage and cache permissions
