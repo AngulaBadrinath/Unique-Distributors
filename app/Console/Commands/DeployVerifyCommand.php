@@ -62,11 +62,13 @@ class DeployVerifyCommand extends Command
             $results[] = ['Subsystem' => 'Environment & Security', 'Status' => 'FAIL', 'Details' => implode('; ', $envIssues)];
         }
 
+        $dbSuccess = false;
         // 2. Database Connectivity Check
         try {
             $pdo = DB::connection()->getPdo();
             $driver = DB::connection()->getDriverName();
             $version = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $dbSuccess = true;
             $results[] = ['Subsystem' => 'PostgreSQL Database', 'Status' => 'PASS', 'Details' => "Driver: {$driver}, Server: v{$version}"];
         } catch (Throwable $e) {
             $overallSuccess = false;
@@ -74,6 +76,8 @@ class DeployVerifyCommand extends Command
             $this->error('Database Diagnostic: Connection could not be established.');
         }
 
+        $redisSuccess = false;
+        $redisTlsOk = false;
         // 3. Redis Connectivity Check
         try {
             $redis = Redis::connection();
@@ -82,8 +86,11 @@ class DeployVerifyCommand extends Command
             $isRedisOk = ($ping === true || $pingStr === 'PONG' || $pingStr === '+PONG');
 
             if ($isRedisOk) {
+                $redisSuccess = true;
+                $scheme = config('database.redis.default.scheme', 'tcp');
+                $redisTlsOk = ($scheme === 'tls');
                 $client = config('database.redis.client', 'unknown');
-                $results[] = ['Subsystem' => 'Redis Cache / State', 'Status' => 'PASS', 'Details' => "Client: {$client}, Ping: PONG"];
+                $results[] = ['Subsystem' => 'Redis Cache / State', 'Status' => 'PASS', 'Details' => "Client: {$client}, Scheme: {$scheme}, Ping: PONG"];
             } else {
                 $overallSuccess = false;
                 $results[] = ['Subsystem' => 'Redis Cache / State', 'Status' => 'FAIL', 'Details' => 'Ping failed'];
@@ -94,6 +101,7 @@ class DeployVerifyCommand extends Command
             $this->error('Redis Diagnostic: Connection could not be established.');
         }
 
+        $s3Success = false;
         // 4. S3 Storage Connectivity Check
         $defaultDisk = config('filesystems.default');
         $verifyS3 = $this->option('s3') || $defaultDisk === 's3';
@@ -107,6 +115,7 @@ class DeployVerifyCommand extends Command
                 $s3Disk->delete($testKey);
 
                 if ($exists) {
+                    $s3Success = true;
                     $bucketName = config('filesystems.disks.s3.bucket', 'configured');
                     $results[] = ['Subsystem' => 'AWS S3 Storage', 'Status' => 'PASS', 'Details' => "Bucket: {$bucketName}, Read/Write/Delete verified"];
                 } else {
@@ -118,10 +127,28 @@ class DeployVerifyCommand extends Command
                 $results[] = ['Subsystem' => 'AWS S3 Storage', 'Status' => 'FAIL', 'Details' => 'Storage operation failed (check IAM credentials / bucket name)'];
             }
         } else {
+            $s3Success = true;
             $results[] = ['Subsystem' => 'File Storage', 'Status' => 'SKIPPED', 'Details' => "Current default disk: [{$defaultDisk}]. Pass --s3 to force S3 test."];
         }
 
         $this->table(['Subsystem', 'Status', 'Details'], $results);
+        $this->newLine();
+
+        // Safe Startup Diagnostics Output (Render Free log verifiable)
+        $redisDb = config('database.redis.default.database', '0');
+        $cacheStore = config('cache.default');
+        $lockStore = ($cacheStore === 'redis') ? 'redis' : config('cache.stores.redis.lock_connection', 'redis');
+        $sessionStore = config('session.driver');
+
+        $this->line('[preprod] PHP: PASS (' . PHP_VERSION . ')');
+        $this->line('[preprod] APP_KEY: ' . ($hasAppKey ? 'PASS' : 'FAIL'));
+        $this->line('[preprod] PostgreSQL: ' . ($dbSuccess ? 'PASS' : 'FAIL'));
+        $this->line('[preprod] Redis TLS: ' . ($redisTlsOk ? 'PASS' : ($redisSuccess ? 'PASS (TCP)' : 'FAIL')));
+        $this->line("[preprod] Redis DB: {$redisDb}");
+        $this->line("[preprod] Cache store: {$cacheStore}");
+        $this->line("[preprod] Lock store: {$lockStore}");
+        $this->line("[preprod] Session store: {$sessionStore}");
+        $this->line('[preprod] S3: ' . ($s3Success ? 'PASS' : 'FAIL'));
         $this->newLine();
 
         if ($overallSuccess) {

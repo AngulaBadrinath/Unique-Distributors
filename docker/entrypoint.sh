@@ -15,10 +15,22 @@ rm -f /var/www/html/bootstrap/cache/config.php
 rm -f /var/www/html/bootstrap/cache/routes*.php
 rm -f /var/www/html/bootstrap/cache/events*.php
 
+# Ensure pre-production environment defaults when Redis is present
+if [ -n "$REDIS_URL" ] || [ -n "$REDIS_HOST" ]; then
+    export REDIS_CLIENT="${REDIS_CLIENT:-predis}"
+    export CACHE_STORE="${CACHE_STORE:-redis}"
+    export SESSION_DRIVER="${SESSION_DRIVER:-redis}"
+    export QUEUE_CONNECTION="${QUEUE_CONNECTION:-redis}"
+fi
+
 # Diagnostic check for essential encryption key
 if [ -z "$APP_KEY" ]; then
     echo "WARNING: APP_KEY environment variable is not set! Encrypted sessions and cookies will fail." >&2
 fi
+
+# Run pre-production startup verification and emit safe diagnostics
+echo "Running pre-production startup verification..."
+php artisan deploy:verify || echo "WARNING: deploy:verify reported issues during container startup." >&2
 
 # Run database migrations safely if database is configured
 if [ -n "$DATABASE_URL" ] || [ -n "$DB_HOST" ]; then
