@@ -25,29 +25,52 @@ class FoundationTest extends TestCase
     }
 
     /**
-     * Test that the /health endpoint responds with expected JSON contract.
+     * Test that the /up liveness endpoint responds with HTTP 200.
+     */
+    public function test_up_liveness_endpoint_returns_ok(): void
+    {
+        $response = $this->get('/up');
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Test that the /health endpoint responds with shallow liveness JSON contract.
      */
     public function test_health_check_endpoint_contract(): void
     {
         $response = $this->get('/health');
 
-        // Health endpoint returns 200 or 503 depending on Redis/DB in test environment
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'timestamp',
+            'application' => [
+                'name',
+                'environment',
+            ],
+        ]);
+        $response->assertJson([
+            'status' => 'healthy',
+        ]);
+    }
+
+    /**
+     * Test that the /ready endpoint responds with deep readiness diagnostics contract.
+     */
+    public function test_ready_check_endpoint_contract(): void
+    {
+        $response = $this->get('/ready');
+
+        // Ready endpoint returns 200 or 503 depending on Redis/DB in test environment
         $this->assertContains($response->getStatusCode(), [200, 503]);
         $response->assertJsonStructure([
             'status',
             'timestamp',
-            'services' => [
-                'application' => [
-                    'status',
-                    'version',
-                    'environment',
-                ],
-                'database' => [
-                    'status',
-                ],
-                'redis' => [
-                    'status',
-                ],
+            'dependencies' => [
+                'database',
+                'redis',
+                'storage',
             ],
         ]);
     }

@@ -14,7 +14,7 @@ services:
     plan: free
     region: oregon
     dockerfilePath: ./Dockerfile
-    healthCheckPath: /health
+    healthCheckPath: /up
     autoDeploy: true
 
     envVars:
