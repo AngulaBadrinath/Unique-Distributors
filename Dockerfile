@@ -15,9 +15,9 @@ COPY public ./public
 RUN npm run build
 
 # ==============================================================================
-# Stage 2: Production PHP Runtime (PHP 8.3 Apache)
+# Stage 2: Production PHP Runtime (PHP 8.5 Apache)
 # ==============================================================================
-FROM php:8.3-apache-bookworm AS app
+FROM php:8.5-apache-bookworm AS app
 
 # Install system dependencies required for PostgreSQL, GD, and Zip
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -30,13 +30,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
+    && docker-php-ext-install \
         pdo_pgsql \
         pgsql \
         zip \
         gd \
         intl \
-        opcache \
         bcmath \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
