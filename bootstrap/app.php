@@ -26,13 +26,13 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*') || $request->is('health') || $request->is('ready') || $request->is('up') || $request->expectsJson(),
         );
 
         $exceptions->respond(function (\Symfony\Component\HttpFoundation\Response $response, \Throwable $exception, Request $request) {
             $status = $response->getStatusCode();
 
-            if (! $request->is('api/*') && ! $request->expectsJson()) {
+            if (! $request->is('api/*') && ! $request->is('health') && ! $request->is('ready') && ! $request->is('up') && ! $request->expectsJson()) {
                 if (in_array($status, [403, 404, 503], true) || ($status === 500 && ! app()->hasDebugModeEnabled())) {
                     return \Inertia\Inertia::render('Error', [
                         'status' => $status,
