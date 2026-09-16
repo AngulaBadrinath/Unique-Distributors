@@ -33,6 +33,7 @@ import {
     Bell,
     ChevronLeft,
     ChevronRight,
+    ChevronDown,
     LogOut,
     User as UserIcon,
     Home,
@@ -139,6 +140,237 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
         );
     };
 
+
+    // Keyboard shortcut for sidebar toggle (Ctrl+B / Cmd+B)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+                e.preventDefault();
+                toggleSidebarCollapse();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [sidebarCollapsed]);
+
+    // Nav Groups and Items definitions
+    interface NavItem {
+        href: string;
+        label: string;
+        icon: React.ReactNode;
+        show: boolean;
+    }
+
+    interface NavGroup {
+        id: string;
+        title: string;
+        icon: React.ReactNode;
+        show: boolean;
+        items: NavItem[];
+    }
+
+    const navGroups: NavGroup[] = [
+        {
+            id: 'sales_ops',
+            title: 'Sales & Operations',
+            icon: <Layers className="h-4 w-4" />,
+            show: Boolean(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasInvoiceView),
+            items: [
+                { href: '/admin/orders', label: 'Order Processing', icon: <Layers className="h-3.5 w-3.5" />, show: Boolean(hasAdminOrderQueue) },
+                { href: '/salesman/orders', label: 'Sales Order History', icon: <Receipt className="h-3.5 w-3.5" />, show: Boolean(auth?.user?.role === 'SALESMAN') },
+                { href: '/salesman/orders/create', label: 'New Sales Order', icon: <PlusCircle className="h-3.5 w-3.5" />, show: Boolean(hasOrderCreate) },
+                { href: '/admin/adjustments', label: 'Order Adjustments', icon: <SlidersHorizontal className="h-3.5 w-3.5" />, show: Boolean(hasAdjustReview) },
+                { href: '/admin/returns', label: 'Reverse Logistics', icon: <RotateCcw className="h-3.5 w-3.5" />, show: Boolean(hasReturnReview) },
+                { href: invoiceUrl, label: 'Invoices & Billing', icon: <FileText className="h-3.5 w-3.5" />, show: Boolean(hasInvoiceView) },
+            ]
+        },
+        {
+            id: 'customers',
+            title: 'Customer Accounts',
+            icon: <Users className="h-4 w-4" />,
+            show: Boolean(hasCustomerView),
+            items: [
+                { href: '/customers', label: 'Customer Master', icon: <Users className="h-3.5 w-3.5" />, show: true },
+                { href: '/customers/create', label: 'Onboard Customer', icon: <PlusCircle className="h-3.5 w-3.5" />, show: Boolean(hasCustomerCreate) },
+            ]
+        },
+        {
+            id: 'products',
+            title: 'Product Master',
+            icon: <Package className="h-4 w-4" />,
+            show: Boolean(hasProductView),
+            items: [
+                { href: '/products', label: 'Product Catalog', icon: <Package className="h-3.5 w-3.5" />, show: true },
+                { href: '/categories', label: 'Categories', icon: <FolderTree className="h-3.5 w-3.5" />, show: true },
+                { href: '/tax-profiles', label: 'Tax Profiles', icon: <Receipt className="h-3.5 w-3.5" />, show: Boolean(hasTaxManage) },
+            ]
+        },
+        {
+            id: 'inventory',
+            title: 'Warehouse Inventory',
+            icon: <Boxes className="h-4 w-4" />,
+            show: Boolean(hasInventoryView),
+            items: [
+                { href: '/admin/inventory', label: 'Stock Balances', icon: <Boxes className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/inventory-exceptions', label: 'Stock Exceptions', icon: <ShieldAlert className="h-3.5 w-3.5" />, show: true },
+            ]
+        },
+        {
+            id: 'payments',
+            title: 'Payments & Subledgers',
+            icon: <CreditCard className="h-4 w-4" />,
+            show: Boolean(hasPaymentVerify || hasCreditView || hasReceivableView || hasPayableView),
+            items: [
+                { href: '/admin/payments', label: 'Payment Verification', icon: <CreditCard className="h-3.5 w-3.5" />, show: Boolean(hasPaymentVerify) },
+                { href: '/admin/credits', label: 'Credit Notes', icon: <Receipt className="h-3.5 w-3.5" />, show: Boolean(hasCreditView) },
+                { href: '/admin/receivables', label: 'Accounts Receivable', icon: <TrendingUp className="h-3.5 w-3.5" />, show: Boolean(hasReceivableView) },
+                { href: '/admin/payables', label: 'Accounts Payable', icon: <Scale className="h-3.5 w-3.5" />, show: Boolean(hasPayableView) },
+            ]
+        },
+        {
+            id: 'accounting',
+            title: 'Financial Accounting',
+            icon: <BookOpen className="h-4 w-4" />,
+            show: Boolean(hasAccountingView),
+            items: [
+                { href: '/admin/accounting/general-ledger', label: 'General Ledger', icon: <BookOpen className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/accounting/trial-balance', label: 'Trial Balance', icon: <Scale className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/accounting/profit-loss', label: 'Profit & Loss', icon: <TrendingUp className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/accounting/balance-sheet', label: 'Balance Sheet', icon: <Landmark className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/accounting/reconciliation', label: 'Cash Reconciliation', icon: <FileCheck className="h-3.5 w-3.5" />, show: true },
+                { href: '/admin/accounting/accounts', label: 'Chart of Accounts', icon: <FileSpreadsheet className="h-3.5 w-3.5" />, show: true },
+            ]
+        },
+        {
+            id: 'reports',
+            title: 'Analytics & Reports',
+            icon: <BarChart3 className="h-4 w-4" />,
+            show: Boolean(hasReportingAccess),
+            items: [
+                { href: '/admin/reports/sales', label: 'Sales Analysis', icon: <BarChart3 className="h-3.5 w-3.5" />, show: Boolean(hasOrderView) },
+                { href: '/admin/reports/customers', label: 'Customer Reports', icon: <Users className="h-3.5 w-3.5" />, show: Boolean(hasCustomerView) },
+                { href: '/admin/reports/salesmen', label: 'Sales Rep Performance', icon: <TrendingUp className="h-3.5 w-3.5" />, show: Boolean(hasOrderView || hasUserView) },
+                { href: '/admin/reports/inventory', label: 'Inventory Analytics', icon: <Boxes className="h-3.5 w-3.5" />, show: Boolean(hasInventoryView) },
+                { href: '/admin/reports/delivery', label: 'Delivery Performance', icon: <Truck className="h-3.5 w-3.5" />, show: Boolean(hasDeliveryView) },
+                { href: '/admin/reports/financial', label: 'Financial Reports', icon: <Landmark className="h-3.5 w-3.5" />, show: Boolean(hasAccountingView) },
+            ]
+        },
+        {
+            id: 'governance',
+            title: 'Audit & Governance',
+            icon: <ShieldCheck className="h-4 w-4" />,
+            show: Boolean(hasAuditView || hasSecurityView),
+            items: [
+                { href: '/admin/audit/timeline', label: 'Activity Timeline', icon: <History className="h-3.5 w-3.5" />, show: Boolean(hasAuditView) },
+                { href: '/admin/audit/security', label: 'Security Logs', icon: <ShieldAlert className="h-3.5 w-3.5 text-rose-500" />, show: Boolean(hasSecurityView) },
+            ]
+        },
+        {
+            id: 'admin',
+            title: 'Administration',
+            icon: <Settings className="h-4 w-4" />,
+            show: Boolean(hasUserView || hasRoleManage),
+            items: [
+                { href: '/salesmen', label: 'Staff & Sales Reps', icon: <Users className="h-3.5 w-3.5" />, show: Boolean(hasUserView) },
+                { href: '/security/roles', label: 'Role Governance', icon: <KeyRound className="h-3.5 w-3.5" />, show: Boolean(hasRoleManage) },
+                { href: '/system/company', label: 'Company Information', icon: <Building2 className="h-3.5 w-3.5" />, show: Boolean(hasRoleManage) },
+            ]
+        },
+        {
+            id: 'profile',
+            title: 'My Profile & Security',
+            icon: <UserIcon className="h-4 w-4" />,
+            show: Boolean(auth?.user),
+            items: [
+                { href: '/notifications', label: 'Notification Center', icon: <Bell className="h-3.5 w-3.5" />, show: true },
+                { href: '/notifications/preferences', label: 'Alert Preferences', icon: <Settings className="h-3.5 w-3.5" />, show: true },
+                { href: '/security/mfa', label: 'Two-Factor Auth', icon: <Shield className="h-3.5 w-3.5" />, show: true },
+                { href: '/security/sessions', label: 'Active Sessions', icon: <KeyRound className="h-3.5 w-3.5" />, show: true },
+            ]
+        }
+    ];
+
+    // Nested group expansion state with localStorage persistence
+    const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                const saved = localStorage.getItem('app_sidebar_expanded_groups');
+                if (saved) return JSON.parse(saved);
+            } catch {
+                // fallback
+            }
+        }
+        return {};
+    });
+
+    const toggleGroup = (groupId: string) => {
+        setExpandedGroups(prev => {
+            const next = { ...prev, [groupId]: !prev[groupId] };
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('app_sidebar_expanded_groups', JSON.stringify(next));
+            }
+            return next;
+        });
+    };
+
+    // Auto-expand any group that contains the current active route
+    useEffect(() => {
+        const toOpen: Record<string, boolean> = {};
+        let shouldUpdate = false;
+        navGroups.forEach(group => {
+            if (group.show && group.items.some(item => item.show && isLinkActive(item.href))) {
+                if (!expandedGroups[group.id]) {
+                    toOpen[group.id] = true;
+                    shouldUpdate = true;
+                }
+            }
+        });
+        if (shouldUpdate) {
+            setExpandedGroups(prev => {
+                const next = { ...prev, ...toOpen };
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('app_sidebar_expanded_groups', JSON.stringify(next));
+                }
+                return next;
+            });
+        }
+    }, [currentUrl]);
+
+    // Collapsed rail hover flyout state
+    const [flyoutState, setFlyoutState] = useState<{
+        groupId: string;
+        top: number;
+        group: NavGroup;
+    } | null>(null);
+    const flyoutTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleGroupMouseEnter = (e: React.MouseEvent<HTMLElement>, group: NavGroup) => {
+        if (!sidebarCollapsed) return;
+        if (flyoutTimerRef.current) clearTimeout(flyoutTimerRef.current);
+        const rect = e.currentTarget.getBoundingClientRect();
+        const top = Math.min(rect.top, window.innerHeight - 280);
+        setFlyoutState({
+            groupId: group.id,
+            top: Math.max(10, top),
+            group,
+        });
+    };
+
+    const handleGroupMouseLeave = () => {
+        if (!sidebarCollapsed) return;
+        flyoutTimerRef.current = setTimeout(() => {
+            setFlyoutState(null);
+        }, 150);
+    };
+
+    const handleFlyoutMouseEnter = () => {
+        if (flyoutTimerRef.current) clearTimeout(flyoutTimerRef.current);
+    };
+
+    const handleFlyoutMouseLeave = () => {
+        setFlyoutState(null);
+    };
+
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
             {/* Mobile Sidebar Overlay */}
@@ -185,180 +417,143 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                     </div>
 
                     {/* Navigation Items */}
-                    <div className="flex-1 overflow-y-auto px-2.5 py-4 space-y-5 scrollbar-thin">
+                    <div className="flex-1 overflow-y-auto px-2.5 py-4 space-y-3 scrollbar-thin">
                         {/* Main Hub */}
                         <div className="space-y-1">
                             {renderNavLink('/dashboard', <Home className="h-4 w-4" />, 'Overview Dashboard')}
                         </div>
 
-                        {/* Sales & Orders */}
-                        {(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasInvoiceView) && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
-                                        Sales & Operations
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {hasAdminOrderQueue && renderNavLink('/admin/orders', <Layers className="h-4 w-4" />, 'Order Processing')}
-                                    {auth?.user?.role === 'SALESMAN' && renderNavLink('/salesman/orders', <Receipt className="h-4 w-4" />, 'Sales Order History')}
-                                    {hasAdjustReview && renderNavLink('/admin/adjustments', <SlidersHorizontal className="h-4 w-4" />, 'Order Adjustments')}
-                                    {hasReturnReview && renderNavLink('/admin/returns', <RotateCcw className="h-4 w-4" />, 'Reverse Logistics')}
-                                    {hasOrderCreate && renderNavLink('/salesman/orders/create', <PlusCircle className="h-4 w-4" />, 'New Sales Order')}
-                                    {hasInvoiceView && renderNavLink(invoiceUrl, <FileText className="h-4 w-4" />, 'Invoices & Billing')}
-                                </nav>
-                            </div>
-                        )}
+                        {/* Collapsed Rail View (Icons with hover flyouts) */}
+                        {sidebarCollapsed ? (
+                            <div className="space-y-2 pt-2 border-t border-brand-border/60">
+                                {navGroups.filter(g => g.show).map(group => {
+                                    const visibleItems = group.items.filter(i => i.show);
+                                    if (visibleItems.length === 0) return null;
+                                    const hasActiveChild = visibleItems.some(i => isLinkActive(i.href));
 
-                        {/* Customers */}
-                        {hasCustomerView && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
-                                        Customer Accounts
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {renderNavLink('/customers', <Users className="h-4 w-4" />, 'Customer Master')}
-                                    {hasCustomerCreate && renderNavLink('/customers/create', <PlusCircle className="h-4 w-4" />, 'Onboard Customer')}
-                                </nav>
+                                    return (
+                                        <button
+                                            key={group.id}
+                                            type="button"
+                                            onMouseEnter={(e) => handleGroupMouseEnter(e, group)}
+                                            onMouseLeave={handleGroupMouseLeave}
+                                            onClick={() => {
+                                                setSidebarCollapsed(false);
+                                                if (typeof window !== 'undefined') {
+                                                    localStorage.setItem('app_sidebar_collapsed', 'false');
+                                                }
+                                                setExpandedGroups(prev => ({ ...prev, [group.id]: true }));
+                                            }}
+                                            title={group.title}
+                                            className={`group relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-all duration-150 cursor-pointer ${
+                                                hasActiveChild
+                                                    ? 'bg-brand-surface text-brand-surface-foreground shadow-xs'
+                                                    : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
+                                            }`}
+                                        >
+                                            <div className={`shrink-0 transition-transform group-hover:scale-110 ${hasActiveChild ? 'text-action-accent' : 'text-brand-muted group-hover:text-brand-foreground'}`}>
+                                                {group.icon}
+                                            </div>
+                                            {hasActiveChild && (
+                                                <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-action-accent ring-2 ring-brand" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
                             </div>
-                        )}
+                        ) : (
+                            /* Expanded View (Accordion Hierarchical Groups) */
+                            <div className="space-y-3 pt-2 border-t border-brand-border/60">
+                                {navGroups.filter(g => g.show).map(group => {
+                                    const visibleItems = group.items.filter(i => i.show);
+                                    if (visibleItems.length === 0) return null;
+                                    const isExpanded = expandedGroups[group.id] ?? false;
+                                    const hasActiveChild = visibleItems.some(i => isLinkActive(i.href));
 
-                        {/* Products & Pricing */}
-                        {hasProductView && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
-                                        Product Master
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {renderNavLink('/products', <Package className="h-4 w-4" />, 'Product Catalog')}
-                                    {renderNavLink('/categories', <FolderTree className="h-4 w-4" />, 'Categories')}
-                                    {hasTaxManage && renderNavLink('/tax-profiles', <Receipt className="h-4 w-4" />, 'Tax Profiles')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* Warehouse & Inventory */}
-                        {hasInventoryView && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
-                                        Warehouse Inventory
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {renderNavLink('/admin/inventory', <Boxes className="h-4 w-4" />, 'Stock Balances')}
-                                    {renderNavLink('/admin/inventory-exceptions', <ShieldAlert className="h-4 w-4" />, 'Stock Exceptions')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* Payments & Subledgers */}
-                        {(hasPaymentVerify || hasCreditView || hasReceivableView || hasPayableView) && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-brand-muted/70 font-mono">
-                                        Payments & Subledgers
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {hasPaymentVerify && renderNavLink('/admin/payments', <CreditCard className="h-4 w-4" />, 'Payment Verification')}
-                                    {hasCreditView && renderNavLink('/admin/credits', <Receipt className="h-4 w-4" />, 'Credit Notes')}
-                                    {hasReceivableView && renderNavLink('/admin/receivables', <TrendingUp className="h-4 w-4" />, 'Accounts Receivable')}
-                                    {hasPayableView && renderNavLink('/admin/payables', <Scale className="h-4 w-4" />, 'Accounts Payable')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* General Ledger Accounting */}
-                        {hasAccountingView && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
-                                        Financial Accounting
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {renderNavLink('/admin/accounting/general-ledger', <BookOpen className="h-4 w-4" />, 'General Ledger')}
-                                    {renderNavLink('/admin/accounting/trial-balance', <Scale className="h-4 w-4" />, 'Trial Balance')}
-                                    {renderNavLink('/admin/accounting/profit-loss', <TrendingUp className="h-4 w-4" />, 'Profit & Loss')}
-                                    {renderNavLink('/admin/accounting/balance-sheet', <Landmark className="h-4 w-4" />, 'Balance Sheet')}
-                                    {renderNavLink('/admin/accounting/reconciliation', <FileCheck className="h-4 w-4" />, 'Cash Reconciliation')}
-                                    {renderNavLink('/admin/accounting/accounts', <FileSpreadsheet className="h-4 w-4" />, 'Chart of Accounts')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* Reports & Analytics */}
-                        {hasReportingAccess && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
-                                        Analytics & Reports
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {hasOrderView && renderNavLink('/admin/reports/sales', <BarChart3 className="h-4 w-4" />, 'Sales Analysis')}
-                                    {hasCustomerView && renderNavLink('/admin/reports/customers', <Users className="h-4 w-4" />, 'Customer Reports')}
-                                    {(hasOrderView || hasUserView) && renderNavLink('/admin/reports/salesmen', <TrendingUp className="h-4 w-4" />, 'Sales Rep Performance')}
-                                    {hasInventoryView && renderNavLink('/admin/reports/inventory', <Boxes className="h-4 w-4" />, 'Inventory Analytics')}
-                                    {hasDeliveryView && renderNavLink('/admin/reports/delivery', <Truck className="h-4 w-4" />, 'Delivery Performance')}
-                                    {hasAccountingView && renderNavLink('/admin/reports/financial', <Landmark className="h-4 w-4" />, 'Financial Reports')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* Audit & Security */}
-                        {(hasAuditView || hasSecurityView) && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
-                                        Audit & Governance
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {hasAuditView && renderNavLink('/admin/audit/timeline', <History className="h-4 w-4" />, 'Activity Timeline')}
-                                    {hasSecurityView && renderNavLink('/admin/audit/security', <ShieldAlert className="h-4 w-4 text-rose-500" />, 'Security Logs')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* System Administration */}
-                        {(hasUserView || hasRoleManage) && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
-                                        Administration
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {hasUserView && renderNavLink('/salesmen', <Users className="h-4 w-4" />, 'Staff & Sales Reps')}
-                                    {hasRoleManage && renderNavLink('/security/roles', <KeyRound className="h-4 w-4" />, 'Role Governance')}
-                                    {hasRoleManage && renderNavLink('/system/company', <Building2 className="h-4 w-4" />, 'Company Information')}
-                                </nav>
-                            </div>
-                        )}
-
-                        {/* User Security & Preferences */}
-                        {auth?.user && (
-                            <div>
-                                {!sidebarCollapsed && (
-                                    <div className="mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/80 font-mono">
-                                        My Profile & Security
-                                    </div>
-                                )}
-                                <nav className="space-y-0.5">
-                                    {renderNavLink('/notifications', <Bell className="h-4 w-4" />, 'Notification Center')}
-                                    {renderNavLink('/notifications/preferences', <Settings className="h-4 w-4" />, 'Alert Preferences')}
-                                    {renderNavLink('/security/mfa', <Shield className="h-4 w-4" />, 'Two-Factor Auth')}
-                                    {renderNavLink('/security/sessions', <KeyRound className="h-4 w-4" />, 'Active Sessions')}
-                                </nav>
+                                    return (
+                                        <div key={group.id} className="space-y-0.5">
+                                            <button
+                                                type="button"
+                                                onClick={() => toggleGroup(group.id)}
+                                                aria-expanded={isExpanded}
+                                                className={`w-full group flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-150 cursor-pointer ${
+                                                    hasActiveChild
+                                                        ? 'text-white bg-white/5'
+                                                        : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                    <div className={`shrink-0 transition-transform group-hover:scale-105 ${hasActiveChild ? 'text-action-accent' : 'text-brand-muted group-hover:text-brand-foreground'}`}>
+                                                        {group.icon}
+                                                    </div>
+                                                    <span className="truncate tracking-tight font-medium text-[12px]">{group.title}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                                    {hasActiveChild && (
+                                                        <span className="h-1.5 w-1.5 rounded-full bg-action-accent" />
+                                                    )}
+                                                    <ChevronDown
+                                                        className={`h-3.5 w-3.5 text-brand-muted transition-transform duration-200 ${
+                                                            isExpanded ? 'rotate-0 text-white' : '-rotate-90'
+                                                        }`}
+                                                    />
+                                                </div>
+                                            </button>
+                                            {isExpanded && (
+                                                <div className="ml-4 pl-3.5 border-l border-white/10 space-y-0.5 pt-0.5 pb-1">
+                                                    {visibleItems.map(item => renderNavLink(item.href, item.icon, item.label))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
+
+                    {/* Flyout Menu for Collapsed Rail (Immune to clipping via position: fixed) */}
+                    {sidebarCollapsed && flyoutState && (
+                        <div
+                            className="fixed z-50 left-16 ml-1 w-56 rounded-xl border border-brand-border bg-brand text-brand-foreground shadow-2xl p-2 animate-in fade-in-50 zoom-in-95 duration-100"
+                            style={{ top: `${flyoutState.top}px` }}
+                            onMouseEnter={handleFlyoutMouseEnter}
+                            onMouseLeave={handleFlyoutMouseLeave}
+                        >
+                            <div className="px-2.5 py-1.5 mb-1 border-b border-brand-border/60">
+                                <div className="flex items-center gap-2">
+                                    <div className="text-action-accent">{flyoutState.group.icon}</div>
+                                    <span className="text-xs font-semibold text-white truncate">
+                                        {flyoutState.group.title}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="space-y-0.5">
+                                {flyoutState.group.items.filter(i => i.show).map(item => {
+                                    const active = isLinkActive(item.href);
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={() => {
+                                                setFlyoutState(null);
+                                                setSidebarOpen(false);
+                                            }}
+                                            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                                active
+                                                    ? 'bg-brand-surface text-brand-surface-foreground font-semibold'
+                                                    : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
+                                            }`}
+                                        >
+                                            <div className={`shrink-0 ${active ? 'text-action-accent' : 'text-brand-muted'}`}>
+                                                {item.icon}
+                                            </div>
+                                            <span className="truncate">{item.label}</span>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Sidebar Footer with Collapse Toggle */}
                     <div className="p-3 border-t border-white/6 bg-dark-canvas/50 flex items-center justify-between text-xs">
@@ -371,7 +566,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                         <button
                             type="button"
                             onClick={toggleSidebarCollapse}
-                            title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                            title={sidebarCollapsed ? 'Expand Sidebar (Ctrl+B)' : 'Collapse Sidebar (Ctrl+B)'}
                             className={`hidden lg:flex items-center justify-center p-1.5 rounded-xl border border-white/10 bg-dark-surface-elevated hover:bg-white/10 text-muted-foreground hover:text-white transition-colors cursor-pointer ${
                                 sidebarCollapsed ? 'mx-auto' : ''
                             }`}
@@ -393,6 +588,15 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                                 aria-label="Open navigation"
                             >
                                 <Menu className="h-5 w-5" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={toggleSidebarCollapse}
+                                className="hidden lg:flex rounded-xl p-1.5 text-muted-foreground hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                                title={sidebarCollapsed ? 'Expand Sidebar (Ctrl+B)' : 'Collapse Sidebar (Ctrl+B)'}
+                                aria-label={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                            >
+                                {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
                             </button>
                             
                             <div className="flex flex-col min-w-0">
