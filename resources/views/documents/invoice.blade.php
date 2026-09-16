@@ -7,7 +7,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 12mm;
+            margin: 8mm 10mm 8mm 10mm;
         }
 
         *, *::before, *::after {
@@ -17,12 +17,12 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #111827;
             background-color: #ffffff;
-            font-size: 12px;
-            line-height: 1.4;
-            padding: 24px;
+            font-size: 9.5px;
+            line-height: 1.28;
+            padding: 16px;
         }
 
         .invoice-container {
@@ -35,31 +35,33 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .company-identity h1 {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 800;
             color: #0f172a;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
         }
 
         .company-dba {
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             color: #475569;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
         }
 
         .company-details {
-            font-size: 11px;
-            color: #64748b;
-            line-height: 1.35;
+            font-size: 8.5px;
+            color: #475569;
+            line-height: 1.25;
         }
 
         .document-title {
@@ -67,21 +69,21 @@
         }
 
         .document-title h2 {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: 900;
             color: #0f172a;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
         }
 
         .document-meta-table {
             border-collapse: collapse;
             margin-left: auto;
-            font-size: 11px;
+            font-size: 8.5px;
         }
 
         .document-meta-table td {
-            padding: 2px 6px;
+            padding: 1px 4px;
         }
 
         .document-meta-table .meta-label {
@@ -100,8 +102,10 @@
         /* Addresses Grid */
         .address-grid {
             display: flex;
-            gap: 24px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .address-card {
@@ -109,38 +113,43 @@
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 4px;
-            padding: 12px 16px;
+            padding: 6px 10px;
         }
 
         .address-card-title {
-            font-size: 10px;
+            font-size: 8.5px;
             font-weight: 700;
             text-transform: uppercase;
             color: #64748b;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            letter-spacing: 0.4px;
+            margin-bottom: 3px;
             border-bottom: 1px solid #cbd5e1;
-            padding-bottom: 4px;
+            padding-bottom: 2px;
         }
 
         .customer-name {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
             color: #0f172a;
             margin-bottom: 2px;
         }
 
         .address-lines {
-            font-size: 11px;
+            font-size: 8.5px;
             color: #334155;
-            line-height: 1.4;
+            line-height: 1.25;
         }
 
         /* Items Table */
+        .table-responsive {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            font-size: 9px;
         }
 
         .items-table thead {
@@ -148,13 +157,13 @@
         }
 
         .items-table th {
-            background-color: #0f172a;
+            background-color: #1e293b;
             color: #ffffff;
-            font-size: 10px;
+            font-size: 8.5px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 8px 10px;
+            letter-spacing: 0.3px;
+            padding: 4px 6px;
             text-align: left;
         }
 
@@ -177,10 +186,11 @@
         }
 
         .items-table td {
-            padding: 8px 10px;
-            font-size: 11px;
+            padding: 3.5px 6px;
+            font-size: 9px;
             color: #1e293b;
-            vertical-align: top;
+            vertical-align: middle;
+            line-height: 1.22;
         }
 
         .items-table td.text-right {
@@ -198,6 +208,7 @@
         .item-sku {
             font-weight: 700;
             color: #0f172a;
+            font-size: 8.5px;
         }
 
         .item-name {
@@ -210,8 +221,8 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 24px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 8px;
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -224,39 +235,40 @@
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .payment-box h3 {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #475569;
+            padding: 6px 8px;
             margin-bottom: 6px;
         }
 
+        .payment-box h3 {
+            font-size: 8.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 2px;
+        }
+
         .payment-box p {
-            font-size: 11px;
+            font-size: 8.5px;
             color: #334155;
-            line-height: 1.4;
+            line-height: 1.25;
         }
 
         .totals-card {
-            width: 280px;
+            width: 250px;
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #cbd5e1;
             border-radius: 4px;
+            overflow: hidden;
         }
 
         .totals-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 9px;
         }
 
         .totals-table td {
-            padding: 6px 12px;
+            padding: 2.5px 8px;
         }
 
         .totals-table tr:not(:last-child) td {
@@ -276,14 +288,14 @@
         }
 
         .totals-table tr.grand-total {
-            background-color: #0f172a;
+            background-color: #1e293b;
         }
 
         .totals-table tr.grand-total td {
             color: #ffffff;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 8px 12px;
+            padding: 4px 8px;
         }
 
         .totals-table tr.grand-total .total-value {
@@ -291,23 +303,23 @@
         }
 
         .totals-table tr.due-total {
-            background-color: #f8fafc;
+            background-color: #fef2f2;
         }
 
         .totals-table tr.due-total td {
-            font-size: 12px;
+            font-size: 9.5px;
             font-weight: 800;
-            color: #0f172a;
+            color: #991b1b;
         }
 
         /* Footer */
         .invoice-footer {
             border-top: 1px solid #e2e8f0;
-            padding-top: 14px;
-            font-size: 10px;
+            padding-top: 6px;
+            font-size: 8px;
             color: #64748b;
             text-align: center;
-            line-height: 1.5;
+            line-height: 1.3;
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -319,11 +331,11 @@
             right: 0;
             background: #0f172a;
             color: #ffffff;
-            padding: 10px 24px;
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1000;
         }
 
@@ -331,9 +343,9 @@
             background: #2563eb;
             color: #ffffff;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
@@ -351,28 +363,28 @@
 
         @media screen {
             body {
-                padding-top: 60px;
+                padding-top: 50px;
                 background-color: #f1f5f9;
             }
             .invoice-container {
                 background: #ffffff;
-                padding: 32px;
-                border-radius: 8px;
+                padding: 24px;
+                border-radius: 6px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             }
         }
 
         @media screen and (max-width: 640px) {
             body {
-                padding-top: 80px;
+                padding-top: 70px;
             }
             .invoice-container {
-                padding: 16px;
-                margin: 8px auto;
+                padding: 12px;
+                margin: 6px auto;
             }
             .invoice-header {
                 flex-direction: column;
-                gap: 16px;
+                gap: 10px;
             }
             .document-title {
                 text-align: left;
@@ -382,22 +394,19 @@
             }
             .address-grid {
                 flex-direction: column;
-                gap: 12px;
+                gap: 8px;
             }
             .summary-grid {
                 flex-direction: column;
-                gap: 16px;
+                gap: 10px;
             }
             .totals-card {
                 width: 100%;
             }
             .no-print-bar {
-                padding: 8px 12px;
+                padding: 6px 10px;
                 flex-wrap: wrap;
-                gap: 8px;
-            }
-            .no-print-bar .title {
-                font-size: 11px;
+                gap: 6px;
             }
             .table-responsive {
                 overflow-x: auto;
@@ -412,11 +421,32 @@
             body {
                 padding: 0 !important;
                 background: transparent !important;
+                font-size: 9px !important;
             }
             .invoice-container {
                 max-width: 100% !important;
                 padding: 0 !important;
                 box-shadow: none !important;
+            }
+            .table-responsive {
+                overflow: visible !important;
+                display: block !important;
+                width: 100% !important;
+            }
+            .items-table thead {
+                display: table-header-group !important;
+            }
+            .items-table tr {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .summary-grid {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .invoice-footer {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
         }
     </style>
@@ -535,15 +565,15 @@
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th style="width: 32px;" class="text-center">#</th>
-                        <th style="width: 110px;">SKU</th>
+                        <th style="width: 26px;" class="text-center">#</th>
+                        <th style="width: 105px;">SKU</th>
                         <th>Description</th>
-                        <th style="width: 60px;" class="text-center">Unit</th>
-                        <th style="width: 50px;" class="text-right">Qty</th>
-                        <th style="width: 80px;" class="text-right">Unit Price</th>
-                        <th style="width: 85px;" class="text-right">Tax Rate</th>
-                        <th style="width: 80px;" class="text-right">Tax</th>
-                        <th style="width: 90px;" class="text-right">Line Total</th>
+                        <th style="width: 48px;" class="text-center">Unit</th>
+                        <th style="width: 45px;" class="text-right">Qty</th>
+                        <th style="width: 75px;" class="text-right">Unit Price</th>
+                        <th style="width: 65px;" class="text-right">Tax Rate</th>
+                        <th style="width: 65px;" class="text-right">Tax</th>
+                        <th style="width: 80px;" class="text-right">Line Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -577,7 +607,7 @@
                 <div class="payment-box">
                     <h3>Verified Payments Received</h3>
                     @foreach($invoice->order->payments->where('status', \App\Enums\PaymentTransactionStatus::VERIFIED) as $payment)
-                        <div style="font-size: 11px; margin-bottom: 2px;">
+                        <div style="font-size: 8.5px; margin-bottom: 2px;">
                             &bull; <strong>{{ $payment->payment_number }}</strong>: {{ $payment->payment_method->label() }} &mdash; ${{ number_format($payment->amount, 2) }} ({{ $payment->payment_date?->format('M d, Y') ?? 'Payment date unavailable' }})
                         </div>
                     @endforeach
@@ -610,8 +640,8 @@
                         <td class="total-value">${{ number_format($invoice->amount_paid, 2) }}</td>
                     </tr>
                     <tr class="due-total">
-                        <td class="total-label" style="color: #0f172a;">Balance Due:</td>
-                        <td class="total-value" style="color: #b91c1c;">${{ number_format($invoice->amount_due, 2) }}</td>
+                        <td class="total-label">Balance Due:</td>
+                        <td class="total-value">${{ number_format($invoice->amount_due, 2) }}</td>
                     </tr>
                 </table>
             </div>
@@ -622,7 +652,7 @@
             @if($invoice->invoice_footer_note_snapshot)
                 <p>{{ $invoice->invoice_footer_note_snapshot }}</p>
             @endif
-            <p style="margin-top: 4px;">This is an authoritative computer-generated tax invoice. Legal entity: {{ $invoice->company_legal_name_snapshot }}.</p>
+            <p style="margin-top: 2px;">This is an authoritative computer-generated tax invoice. Legal entity: {{ $invoice->company_legal_name_snapshot }}.</p>
         </footer>
     </div>
 
