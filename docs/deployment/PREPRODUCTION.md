@@ -110,7 +110,10 @@ This safely provisions:
 1. Central Distribution Warehouse (`WH-MAIN`)
 2. Standard VAT/GST Tax Profiles (10%, 5%, 0% exempt)
 3. Standard Wholesale Categories (Beverages, Dry Groceries, Canned Goods, Confectionery)
-4. Initial Super Administrator (`admin@uniquedistributors.com`)
+4. Developer / Technical Super Administrator (`admin@uniquedistributors.com`)
+5. Dedicated Client Super Administrator (`client.admin@uniquedistributors.com`)
+6. Field Sales Representative (`salesman@uniquedistributors.com`)
+7. QA Manual Testing Suite Accounts (`*.qa@example.test`)
 
 ---
 

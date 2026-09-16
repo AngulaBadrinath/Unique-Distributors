@@ -104,6 +104,21 @@ class PreproductionSeeder extends Seeder
             ]
         );
 
+        // 4b. Seed Client Super Administrator (Independent Client Account)
+        $clientAdminEmail = env('PREPROD_CLIENT_ADMIN_EMAIL', 'client.admin@uniquedistributors.com');
+        $clientAdminPassword = env('PREPROD_CLIENT_ADMIN_PASSWORD', 'ClientAdminSecure2026!');
+
+        User::firstOrCreate(
+            ['email' => $clientAdminEmail],
+            [
+                'name' => 'Client Super Administrator',
+                'password' => Hash::make($clientAdminPassword),
+                'role' => UserRole::SUPER_ADMIN,
+                'status' => AccountStatus::ACTIVE,
+                'email_verified_at' => now(),
+            ]
+        );
+
         // 5. Seed Initial Pre-Production Sales Representative (Standard Non-Privileged Flow)
         $salesmanEmail = env('PREPROD_SALESMAN_EMAIL', 'salesman@uniquedistributors.com');
         $salesmanPassword = env('PREPROD_SALESMAN_PASSWORD', 'SalesmanSecure2026!');
