@@ -89,7 +89,13 @@ class DeliveryAssignmentService
 
             // Re-read active allocations to determine fulfillable/deliverable items
             $allocations = OrderItemAllocation::where('order_id', $lockedOrder->id)
-                ->whereIn('status', [AllocationStatus::ALLOCATED, AllocationStatus::RESERVED])
+                ->whereIn('status', [
+                    AllocationStatus::ALLOCATED,
+                    AllocationStatus::RESERVED,
+                    AllocationStatus::PICKED,
+                    AllocationStatus::PACKED,
+                    AllocationStatus::DISPATCHED,
+                ])
                 ->lockForUpdate()
                 ->orderBy('id', 'asc')
                 ->with(['orderItem', 'product'])

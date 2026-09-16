@@ -119,6 +119,30 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         Route::patch('/salesmen/{salesman}/status', [\App\Http\Controllers\Salesman\SalesmanController::class, 'updateStatus'])->whereNumber('salesman')->name('salesmen.status');
     });
 
+    // Delivery Partner Management (FEAT-DEL-009)
+    Route::middleware('permission:user.view')->group(function () {
+        Route::get('/admin/delivery-partners', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'index'])->name('admin.delivery-partners.index');
+        Route::get('/delivery-partners', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'index'])->name('delivery-partners.index');
+        Route::get('/admin/delivery-partners/{driver}', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'show'])->whereNumber('driver')->name('admin.delivery-partners.show');
+        Route::get('/delivery-partners/{driver}', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'show'])->whereNumber('driver')->name('delivery-partners.show');
+    });
+
+    Route::middleware('permission:user.create')->group(function () {
+        Route::get('/admin/delivery-partners/create', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'create'])->name('admin.delivery-partners.create');
+        Route::get('/delivery-partners/create', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'create'])->name('delivery-partners.create');
+        Route::post('/admin/delivery-partners', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'store'])->name('admin.delivery-partners.store');
+        Route::post('/delivery-partners', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'store'])->name('delivery-partners.store');
+    });
+
+    Route::middleware('permission:user.update')->group(function () {
+        Route::get('/admin/delivery-partners/{driver}/edit', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'edit'])->whereNumber('driver')->name('admin.delivery-partners.edit');
+        Route::get('/delivery-partners/{driver}/edit', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'edit'])->whereNumber('driver')->name('delivery-partners.edit');
+        Route::put('/admin/delivery-partners/{driver}', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'update'])->whereNumber('driver')->name('admin.delivery-partners.update');
+        Route::put('/delivery-partners/{driver}', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'update'])->whereNumber('driver')->name('delivery-partners.update');
+        Route::patch('/admin/delivery-partners/{driver}/status', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'updateStatus'])->whereNumber('driver')->name('admin.delivery-partners.status');
+        Route::patch('/delivery-partners/{driver}/status', [\App\Http\Controllers\Admin\DeliveryPartnerManagementController::class, 'updateStatus'])->whereNumber('driver')->name('delivery-partners.status');
+    });
+
     // Product Management
     Route::middleware('permission:product.view')->group(function () {
         Route::get('/products', [\App\Http\Controllers\Product\ProductController::class, 'index'])->name('products.index');
@@ -267,6 +291,27 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             ->name('admin.inventory.show');
         Route::get('/admin/inventory-exceptions', [\App\Http\Controllers\Admin\AdminStockExceptionController::class, 'index'])
             ->name('admin.inventory.exceptions.index');
+
+        // Warehouse Operational Fulfillment & Dispatch Workspace (FEAT-FUL-001)
+        Route::get('/admin/warehouse/fulfillment', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'index'])
+            ->name('admin.warehouse.fulfillment.index');
+        Route::get('/warehouse/fulfillment', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'index'])
+            ->name('warehouse.fulfillment.index');
+        Route::get('/admin/warehouse/fulfillment/{order}', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'show'])
+            ->whereNumber('order')
+            ->name('admin.warehouse.fulfillment.show');
+        Route::get('/warehouse/fulfillment/{order}', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'show'])
+            ->whereNumber('order')
+            ->name('warehouse.fulfillment.show');
+        Route::post('/admin/warehouse/fulfillment/{order}/pick', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'pick'])
+            ->whereNumber('order')
+            ->name('admin.warehouse.fulfillment.pick');
+        Route::post('/admin/warehouse/fulfillment/{order}/pack', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'pack'])
+            ->whereNumber('order')
+            ->name('admin.warehouse.fulfillment.pack');
+        Route::post('/admin/warehouse/fulfillment/{order}/dispatch', [\App\Http\Controllers\Warehouse\WarehouseFulfillmentController::class, 'dispatch'])
+            ->whereNumber('order')
+            ->name('admin.warehouse.fulfillment.dispatch');
     });
 
     // Warehouse Stock Exception Reporting & Damage Quarantine (FEAT-INV-005)
