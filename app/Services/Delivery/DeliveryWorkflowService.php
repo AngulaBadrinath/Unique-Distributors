@@ -21,8 +21,10 @@ use App\Models\OrderItemAllocation;
 use App\Models\User;
 use App\Services\Accounting\JournalMappingService;
 use App\Services\Auth\PermissionService;
+use App\Services\Invoices\InvoiceGeneratorService;
 use App\Services\Inventory\InventoryMovementService;
 use App\Services\Inventory\InventoryService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
@@ -39,7 +41,12 @@ class DeliveryWorkflowService
         protected DeliveryEvidenceService $evidenceService,
         protected InventoryMovementService $movementService,
         protected JournalMappingService $journalMappingService,
-    ) {}
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+        protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
+    ) {
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+        $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
+    }
 
     /**
      * Authoritative Warehouse Pickup Confirmation (FEAT-DEL-003).
@@ -197,6 +204,11 @@ class DeliveryWorkflowService
                 'actor_id' => $actor->id,
                 'timestamp' => $now->toIso8601String(),
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedDelivery) {
+                $this->notificationDispatcher->notifyDeliveryOutForDelivery($lockedDelivery);
+            });
 
             return $lockedDelivery->load(['items', 'order', 'customer', 'driver']);
         }, 3);
@@ -394,6 +406,9 @@ class DeliveryWorkflowService
             // Post authoritative COGS to General Ledger
             $this->journalMappingService->postOrderDeliveredCogs($lockedOrder, $actor);
 
+            // Synchronize payment and settlement on invoice if applicable
+            $this->invoiceGeneratorService->syncOnPaymentVerified($lockedOrder, $actor);
+
             Log::info('logistics.delivery_complete', [
                 'delivery_id' => $lockedDelivery->id,
                 'delivery_number' => $lockedDelivery->delivery_number,
@@ -404,6 +419,11 @@ class DeliveryWorkflowService
                 'actor_id' => $actor->id,
                 'timestamp' => $now->toIso8601String(),
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedDelivery) {
+                $this->notificationDispatcher->notifyDeliveryCompleted($lockedDelivery);
+            });
 
             return $lockedDelivery->load(['items', 'order', 'customer', 'driver']);
         }, 3);
@@ -509,6 +529,11 @@ class DeliveryWorkflowService
                 'actor_id' => $actor->id,
                 'timestamp' => $now->toIso8601String(),
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedDelivery, $failureReason, $data) {
+                $this->notificationDispatcher->notifyDeliveryFailed($lockedDelivery, $failureReason->label() . ': ' . $data['driver_notes']);
+            });
 
             return $lockedDelivery->load(['items', 'order', 'customer', 'driver', 'failures', 'events']);
         }, 3);

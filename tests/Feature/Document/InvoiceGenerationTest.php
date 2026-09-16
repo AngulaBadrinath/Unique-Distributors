@@ -242,13 +242,14 @@ class InvoiceGenerationTest extends TestCase
         $generator->generateForOrder($order, $this->admin);
     }
 
-    public function test_invoice_cannot_be_generated_for_submitted_unapproved_order(): void
+    public function test_invoice_can_be_generated_for_submitted_order(): void
     {
         $order = $this->createTestOrder(OrderStatus::SUBMITTED);
         $generator = app(InvoiceGeneratorService::class);
 
-        $this->expectException(ValidationException::class);
-        $generator->generateForOrder($order, $this->admin);
+        $invoice = $generator->generateForOrder($order, $this->admin);
+        $this->assertInstanceOf(Invoice::class, $invoice);
+        $this->assertSame(InvoiceStatus::ISSUED, $invoice->status);
     }
 
     public function test_invoice_cannot_be_generated_for_cancelled_order(): void

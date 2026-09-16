@@ -12,6 +12,8 @@ use App\Models\Payment;
 use App\Models\User;
 use App\Services\Accounting\JournalMappingService;
 use App\Services\Auth\PermissionService;
+use App\Services\Invoices\InvoiceGeneratorService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use App\Services\Receivable\ReceivableLedgerService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -24,9 +26,13 @@ class PaymentVerificationService
     public function __construct(
         protected PermissionService $permissionService,
         protected ReceivableLedgerService $receivableLedgerService,
-        protected ?JournalMappingService $journalMappingService = null
+        protected ?JournalMappingService $journalMappingService = null,
+        protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
     ) {
         $this->journalMappingService ??= app(JournalMappingService::class);
+        $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
     }
 
     /**
@@ -75,6 +81,7 @@ class PaymentVerificationService
             // Reconcile order payment status if linked
             if ($order) {
                 $this->reconcileOrderPaymentStatus($order);
+                $this->invoiceGeneratorService->syncOnPaymentVerified($order, $actor);
             }
 
             // Post authoritative payment credit to customer accounts receivable ledger
@@ -92,6 +99,11 @@ class PaymentVerificationService
                 'verified_by' => $actor->id,
                 'order_id' => $order?->id,
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedPayment) {
+                $this->notificationDispatcher->notifyPaymentVerified($lockedPayment);
+            });
 
             return $lockedPayment->fresh(['customer', 'order', 'recordedBy', 'verifiedBy']);
         }, 3);
@@ -186,6 +198,11 @@ class PaymentVerificationService
                 'reason' => $reason->value,
                 'rejected_by' => $actor->id,
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedPayment, $reason, $notes) {
+                $this->notificationDispatcher->notifyPaymentRejected($lockedPayment, $reason->label() . ': ' . $notes);
+            });
 
             return $lockedPayment->fresh(['customer', 'order', 'recordedBy', 'rejectedBy']);
         }, 3);

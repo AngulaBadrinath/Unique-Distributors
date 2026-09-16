@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\Auth\PermissionService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
@@ -26,7 +27,10 @@ class PaymentService
         protected PaymentNumberGenerator $numberGenerator,
         protected PaymentEvidenceService $evidenceService,
         protected PermissionService $permissionService,
-    ) {}
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+    ) {
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+    }
 
     /**
      * Record a new cash payment entry.
@@ -284,6 +288,11 @@ class PaymentService
                 'order_id' => $order?->id,
                 'recorded_by' => $actor->id,
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($payment) {
+                $this->notificationDispatcher->notifyPaymentRecorded($payment);
+            });
 
             return $payment;
         }, 3);

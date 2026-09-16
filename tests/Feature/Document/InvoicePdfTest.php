@@ -254,12 +254,13 @@ class InvoicePdfTest extends TestCase
         $response->assertHeader('Content-Type', 'application/pdf');
     }
 
-    public function test_salesman_without_download_permission_is_rejected(): void
+    public function test_salesman_can_download_invoice_for_assigned_customer(): void
     {
-        // Salesman role in registry has view & print, but not download
+        // Salesman role has invoice.download for assigned customer invoices
         $response = $this->actingAs($this->salesman1)->get(route('invoices.pdf', $this->invoice1));
 
-        $response->assertStatus(403);
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/pdf');
     }
 
     public function test_salesman_anti_idor_pdf_download_protection(): void

@@ -374,6 +374,7 @@ class AdminOrderController extends Controller
             'creator',
             'approver',
             'canceller',
+            'invoice',
             'activeAdjustment.requester:id,name',
             'activeAdjustment.items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
@@ -434,6 +435,11 @@ class AdminOrderController extends Controller
                     'completed_at' => $order->completed_at?->toIso8601String(),
                     'created_at' => $order->created_at->toIso8601String(),
                     'is_reviewable' => $isReviewable,
+                    'invoice' => $order->invoice ? [
+                        'id' => $order->invoice->id,
+                        'invoice_number' => $order->invoice->invoice_number,
+                        'status' => $order->invoice->status->value,
+                    ] : null,
                 ],
                 'customer' => [
                     'id' => $customer->id,

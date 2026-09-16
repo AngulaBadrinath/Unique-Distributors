@@ -299,6 +299,7 @@ class PermissionService
                 Permission::PAYMENT_CREATE,
                 Permission::INVOICE_VIEW,
                 Permission::INVOICE_PRINT,
+                Permission::INVOICE_DOWNLOAD,
                 Permission::RECEIVABLE_VIEW,
             ],
 

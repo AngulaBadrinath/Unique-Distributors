@@ -580,6 +580,7 @@ class SalesmanOrderController extends Controller
             'creator',
             'approver',
             'canceller',
+            'invoice',
             'activeAdjustment.requester:id,name',
             'activeAdjustment.items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
@@ -732,6 +733,15 @@ class SalesmanOrderController extends Controller
                         'is_case_b' => $ai->affected_allocation_quantity > 0,
                         'projected_line_total_reduction' => (string) $ai->projected_line_total_reduction,
                     ]),
+                ] : null,
+                'invoice' => $order->invoice ? [
+                    'id' => $order->invoice->id,
+                    'invoice_number' => $order->invoice->invoice_number,
+                    'status' => $order->invoice->status->value,
+                    'payment_status' => $order->invoice->payment_status->value,
+                    'amount_paid' => (string) $order->invoice->amount_paid,
+                    'amount_due' => (string) $order->invoice->amount_due,
+                    'grand_total' => (string) $order->invoice->grand_total,
                 ] : null,
                 'timeline' => $this->buildOrderTimeline($order),
                 'can' => [

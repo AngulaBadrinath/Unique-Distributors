@@ -379,10 +379,9 @@ class AdminOrderApprovalTest extends TestCase
 
     public function test_can_approve_order_with_credit_limit_exceeded_soft_warning(): void
     {
-        // Customer credit limit is 5000; set order total to 8000
-        $order = $this->createSubmittedOrder([
-            'grand_total' => 8000.00,
-        ]);
+        // Customer credit limit is 100; order total is 562.90
+        $this->customer->update(['credit_limit' => 100.00]);
+        $order = $this->createSubmittedOrder();
 
         $response = $this->actingAs($this->admin)
             ->post("/admin/orders/{$order->id}/approve");

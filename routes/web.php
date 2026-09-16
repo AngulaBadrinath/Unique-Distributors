@@ -74,6 +74,17 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     Route::delete('/security/mfa', [\App\Http\Controllers\Security\TwoFactorAuthenticationController::class, 'disable'])->name('mfa.disable');
     Route::post('/security/mfa/recovery-codes', [\App\Http\Controllers\Security\TwoFactorAuthenticationController::class, 'regenerateRecoveryCodes'])->name('mfa.recovery-codes');
 
+    // In-App Notification Center & Popover Feed (FEAT-NOTIF-001)
+    Route::get('/notifications', [\App\Http\Controllers\Notification\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/feed', [\App\Http\Controllers\Notification\NotificationController::class, 'feed'])->name('notifications.feed');
+    Route::get('/notifications/unread-count', [\App\Http\Controllers\Notification\NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\Notification\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\Notification\NotificationController::class, 'markAsRead'])->whereNumber('id')->name('notifications.read');
+    Route::delete('/notifications/{id}', [\App\Http\Controllers\Notification\NotificationController::class, 'destroy'])->whereNumber('id')->name('notifications.destroy');
+    Route::get('/notifications/preferences', [\App\Http\Controllers\Notification\NotificationController::class, 'preferences'])->name('notifications.preferences');
+    Route::put('/notifications/preferences', [\App\Http\Controllers\Notification\NotificationController::class, 'updatePreferences'])->name('notifications.preferences.update');
+    Route::post('/notifications/preferences', [\App\Http\Controllers\Notification\NotificationController::class, 'updatePreferences'])->name('notifications.preferences.post');
+
     // System & Role management (requires role.manage permission)
     Route::middleware('permission:role.manage')->group(function () {
         Route::get('/security/roles', [\App\Http\Controllers\Security\RoleAssignmentController::class, 'index'])->name('roles.index');

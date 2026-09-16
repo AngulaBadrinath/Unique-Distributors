@@ -13,7 +13,9 @@ use App\Models\Order;
 use App\Models\OrderItemAllocation;
 use App\Models\User;
 use App\Services\Auth\PermissionService;
+use App\Services\Invoices\InvoiceGeneratorService;
 use App\Services\Inventory\InventoryService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +28,12 @@ class OrderWorkflowService
     public function __construct(
         protected PermissionService $permissionService,
         protected InventoryService $inventoryService,
-    ) {}
+        protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+    ) {
+        $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+    }
 
     /**
      * Authoritatively approve an eligible order.
@@ -170,6 +177,14 @@ class OrderWorkflowService
 
             $reservedItemsCount = $lockedItems->count();
 
+            // Synchronize and post authoritative invoice recognition upon approval
+            $this->invoiceGeneratorService->syncOnOrderApproved($lockedOrder, $actor);
+
+            // Queue domain notifications after transaction commits
+            DB::afterCommit(function () use ($lockedOrder) {
+                $this->notificationDispatcher->notifyOrderApproved($lockedOrder);
+            });
+
             return $lockedOrder;
         }, 3);
 
@@ -242,6 +257,14 @@ class OrderWorkflowService
             $lockedOrder->cancelled_by = $actor->id;
             $lockedOrder->cancellation_reason = $reason;
             $lockedOrder->save();
+
+            // Void attached invoice if exists
+            $this->invoiceGeneratorService->voidInvoiceForOrder($lockedOrder, $actor, $reason);
+
+            // Queue domain notifications after transaction commits
+            DB::afterCommit(function () use ($lockedOrder, $reason) {
+                $this->notificationDispatcher->notifyOrderRejected($lockedOrder, $reason);
+            });
 
             return $lockedOrder;
         }, 3);
@@ -327,6 +350,14 @@ class OrderWorkflowService
             $lockedOrder->cancelled_by = $actor->id;
             $lockedOrder->cancellation_reason = $reason;
             $lockedOrder->save();
+
+            // Void attached invoice if exists
+            $this->invoiceGeneratorService->voidInvoiceForOrder($lockedOrder, $actor, $reason);
+
+            // Queue domain notifications after transaction commits
+            DB::afterCommit(function () use ($lockedOrder, $reason) {
+                $this->notificationDispatcher->notifyOrderCancelled($lockedOrder, $reason);
+            });
 
             return $lockedOrder;
         }, 3);

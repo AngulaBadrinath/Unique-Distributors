@@ -18,6 +18,7 @@ use App\Models\OrderItemAllocation;
 use App\Models\User;
 use App\Services\Auth\PermissionService;
 use App\Services\Delivery\DeliveryNumberGenerator;
+use App\Services\Notification\DomainNotificationDispatcher;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -31,7 +32,10 @@ class WarehouseFulfillmentService
     public function __construct(
         protected PermissionService $permissionService,
         protected DeliveryNumberGenerator $numberGenerator,
-    ) {}
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+    ) {
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+    }
 
     /**
      * Retrieve paginated warehouse fulfillment queue with tab counters.
@@ -424,6 +428,11 @@ class WarehouseFulfillmentService
                 'fulfillment_status' => FulfillmentStatus::DISPATCHED->value,
                 'timestamp' => Carbon::now()->toIso8601String(),
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($lockedOrder, $delivery) {
+                $this->notificationDispatcher->notifyOrderDispatched($lockedOrder, $delivery);
+            });
 
             return [
                 'order' => $lockedOrder->load(['items.product', 'items.allocations', 'customer']),

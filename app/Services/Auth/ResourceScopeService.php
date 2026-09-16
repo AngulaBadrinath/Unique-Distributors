@@ -169,13 +169,21 @@ class ResourceScopeService
         if ($user->role === UserRole::SALESMAN) {
             if ($invoice instanceof Invoice) {
                 $customerSalesmanId = $invoice->customer?->salesman_id ?? Customer::where('id', $invoice->customer_id)->value('salesman_id');
+                if ((int) $customerSalesmanId === (int) $user->id) {
+                    return true;
+                }
 
-                return (int) $customerSalesmanId === (int) $user->id;
+                $orderSalesmanId = $invoice->order?->salesman_id ?? Order::where('id', $invoice->order_id)->value('salesman_id');
+
+                return (int) $orderSalesmanId === (int) $user->id;
             }
 
             return Invoice::query()
                 ->where('id', (int) $invoice)
-                ->whereHas('customer', fn ($cq) => $cq->where('salesman_id', $user->id))
+                ->where(function (Builder $q) use ($user) {
+                    $q->whereHas('customer', fn ($cq) => $cq->where('salesman_id', $user->id))
+                        ->orWhereHas('order', fn ($oq) => $oq->where('salesman_id', $user->id));
+                })
                 ->exists();
         }
 

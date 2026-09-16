@@ -69,17 +69,28 @@ class InvoiceGeneratorService
             }
 
             // 2. Order State Eligibility Validation (RULE-DOC-001)
-            $isEligible = in_array($order->status, [OrderStatus::APPROVED, OrderStatus::COMPLETED], true);
+            $isEligible = in_array($order->status, [
+                OrderStatus::SUBMITTED,
+                OrderStatus::APPROVED,
+                OrderStatus::PROCESSING,
+                OrderStatus::COMPLETED,
+            ], true);
 
             if (! $isEligible) {
-                if ($order->status === OrderStatus::CANCELLED) {
+                if ($order->status === OrderStatus::CANCELLED || $order->status === OrderStatus::REJECTED) {
                     throw ValidationException::withMessages([
-                        'order' => 'Cannot generate invoice for a cancelled order.',
+                        'order' => sprintf('Cannot generate invoice for a %s order.', strtolower($order->status->value ?? (string) $order->status)),
+                    ]);
+                }
+
+                if ($order->status === OrderStatus::DRAFT) {
+                    throw ValidationException::withMessages([
+                        'order' => 'Cannot generate invoice for a draft order. Submit the order first.',
                     ]);
                 }
 
                 throw ValidationException::withMessages([
-                    'order' => sprintf('Only approved or completed orders can be invoiced. Current status: %s.', $order->status->value ?? $order->status),
+                    'order' => sprintf('Only submitted, approved, or completed orders can be invoiced. Current status: %s.', $order->status->value ?? (string) $order->status),
                 ]);
             }
 
@@ -214,15 +225,106 @@ class InvoiceGeneratorService
                 ]);
             }
 
-            // 9. Post authoritative invoice charge to customer accounts receivable ledger
-            $this->receivableLedgerService->recordInvoiceCharge($invoice, $actor);
+            // 9. Post authoritative invoice charge to customer accounts receivable ledger (Only upon approval / active fulfillment)
+            if (in_array($order->status, [OrderStatus::APPROVED, OrderStatus::PROCESSING, OrderStatus::COMPLETED], true)) {
+                $this->receivableLedgerService->recordInvoiceCharge($invoice, $actor);
 
-            // 10. Post authoritative invoice revenue & receivable recognition to General Ledger
-            if ($this->journalMappingService) {
-                $this->journalMappingService->postInvoiceIssued($invoice, $actor);
+                if ($this->journalMappingService) {
+                    $this->journalMappingService->postInvoiceIssued($invoice, $actor);
+                }
             }
 
             return $invoice->load(['items', 'order', 'customer', 'creator']);
+        });
+    }
+
+    /**
+     * Synchronize and post financial recognition when an order is approved.
+     */
+    public function syncOnOrderApproved(Order $order, ?User $actor = null): ?Invoice
+    {
+        return DB::transaction(function () use ($order, $actor) {
+            /** @var Invoice|null $invoice */
+            $invoice = Invoice::where('order_id', $order->id)->lockForUpdate()->first();
+
+            if (! $invoice) {
+                $invoice = $this->generateForOrder($order, $actor);
+            }
+
+            if ($invoice && $invoice->status !== InvoiceStatus::VOID) {
+                // Post AR charge and GL Journal if not yet posted
+                $this->receivableLedgerService->recordInvoiceCharge($invoice, $actor);
+
+                if ($this->journalMappingService) {
+                    $this->journalMappingService->postInvoiceIssued($invoice, $actor);
+                }
+            }
+
+            return $invoice;
+        });
+    }
+
+    /**
+     * Synchronize payment settlement totals on the invoice when a payment is verified.
+     */
+    public function syncOnPaymentVerified(Order $order, ?User $actor = null): ?Invoice
+    {
+        return DB::transaction(function () use ($order) {
+            /** @var Invoice|null $invoice */
+            $invoice = Invoice::where('order_id', $order->id)->lockForUpdate()->first();
+
+            if (! $invoice || $invoice->status === InvoiceStatus::VOID) {
+                return null;
+            }
+
+            $verifiedPaidTotal = (string) Payment::query()
+                ->where('order_id', $order->id)
+                ->where('status', PaymentTransactionStatus::VERIFIED)
+                ->sum('amount');
+
+            $amountPaid = (float) $verifiedPaidTotal;
+            $grandTotal = (float) $invoice->grand_total;
+            $amountDue = max(0.00, round($grandTotal - $amountPaid, 2));
+
+            $paymentStatus = match (true) {
+                $amountPaid >= $grandTotal => PaymentStatus::PAID,
+                $amountPaid > 0.00 => PaymentStatus::PARTIALLY_PAID,
+                default => PaymentStatus::UNPAID,
+            };
+
+            $invoiceStatus = $amountPaid >= $grandTotal ? InvoiceStatus::PAID : InvoiceStatus::ISSUED;
+
+            $invoice->update([
+                'amount_paid' => $amountPaid,
+                'amount_due' => $amountDue,
+                'payment_status' => $paymentStatus,
+                'status' => $invoiceStatus,
+            ]);
+
+            return $invoice;
+        });
+    }
+
+    /**
+     * Void the invoice when an order is cancelled or rejected.
+     */
+    public function voidInvoiceForOrder(Order $order, ?User $actor = null, string $reason = ''): ?Invoice
+    {
+        return DB::transaction(function () use ($order) {
+            /** @var Invoice|null $invoice */
+            $invoice = Invoice::where('order_id', $order->id)->lockForUpdate()->first();
+
+            if (! $invoice) {
+                return null;
+            }
+
+            if ($invoice->status !== InvoiceStatus::VOID) {
+                $invoice->update([
+                    'status' => InvoiceStatus::VOID,
+                ]);
+            }
+
+            return $invoice;
         });
     }
 }

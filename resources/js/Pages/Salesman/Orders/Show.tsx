@@ -27,6 +27,8 @@ import {
     Clock,
     DollarSign,
     FileImage,
+    Printer,
+    Download,
 } from 'lucide-react';
 
 interface OrderShowPageProps {
@@ -66,7 +68,31 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                         </Link>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        {order.invoice && (
+                            <>
+                                <a
+                                    href={`/invoices/${order.invoice.id}/print`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                                        <Printer className="h-3.5 w-3.5" />
+                                        <span>Print Invoice</span>
+                                    </Button>
+                                </a>
+                                <a
+                                    href={`/invoices/${order.invoice.id}/pdf`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                                        <Download className="h-3.5 w-3.5" />
+                                        <span>Download PDF</span>
+                                    </Button>
+                                </a>
+                            </>
+                        )}
                         {order.can?.request_adjustment && (
                             <Button
                                 variant="outline"

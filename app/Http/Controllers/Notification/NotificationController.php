@@ -86,6 +86,7 @@ class NotificationController extends Controller
 
             if ($request->wantsJson()) {
                 return response()->json([
+                    'success' => true,
                     'message' => 'Notification marked as read.',
                     'notification' => $notification,
                     'unread_count' => $this->notificationService->getUnreadCount($user),
@@ -112,6 +113,7 @@ class NotificationController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json([
+                'success' => true,
                 'message' => 'All notifications marked as read.',
                 'updated_count' => $updatedCount,
                 'unread_count' => 0,
@@ -133,6 +135,7 @@ class NotificationController extends Controller
 
             if ($request->wantsJson()) {
                 return response()->json([
+                    'success' => true,
                     'message' => 'Notification deleted.',
                     'unread_count' => $this->notificationService->getUnreadCount($user),
                 ]);

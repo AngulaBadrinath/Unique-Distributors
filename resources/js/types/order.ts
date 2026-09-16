@@ -194,6 +194,15 @@ export interface OrderDetail {
     financial_summary?: OrderFinancialSummary;
     timeline?: OrderTimelineEvent[];
     active_adjustment?: ActiveAdjustmentData | null;
+    invoice?: {
+        id: number;
+        invoice_number: string;
+        status: string;
+        payment_status?: string;
+        amount_paid?: string;
+        amount_due?: string;
+        grand_total?: string;
+    } | null;
     can?: {
         request_adjustment?: boolean;
     };
@@ -643,6 +652,11 @@ export interface AdminOrderDetailData {
         completed_at: string | null;
         created_at: string;
         is_reviewable: boolean;
+        invoice?: {
+            id: number;
+            invoice_number: string;
+            status: string;
+        } | null;
     };
     customer: {
         id: number;

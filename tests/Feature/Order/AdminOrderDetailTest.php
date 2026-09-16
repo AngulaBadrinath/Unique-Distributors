@@ -614,7 +614,7 @@ class AdminOrderDetailTest extends TestCase
         $queries = DB::getQueryLog();
         DB::disableQueryLog();
 
-        // The query count should be bounded and small (typically <= 10 including session/user/order/eager loads)
-        $this->assertLessThanOrEqual(10, count($queries));
+        // The query count should be bounded and small (typically <= 12 including session/user/order/invoice/eager loads)
+        $this->assertLessThanOrEqual(12, count($queries));
     }
 }

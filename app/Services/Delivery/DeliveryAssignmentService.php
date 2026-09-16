@@ -16,6 +16,7 @@ use App\Models\Order;
 use App\Models\OrderItemAllocation;
 use App\Models\User;
 use App\Services\Auth\PermissionService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,10 @@ class DeliveryAssignmentService
     public function __construct(
         protected PermissionService $permissionService,
         protected DeliveryNumberGenerator $numberGenerator,
-    ) {}
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+    ) {
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+    }
 
     /**
      * Authoritatively assign an eligible order to an active delivery partner.
@@ -262,6 +266,11 @@ class DeliveryAssignmentService
                 'scheduled_date' => $scheduledDate,
                 'timestamp' => Carbon::now()->toIso8601String(),
             ]);
+
+            // Queue domain notification after transaction commit
+            DB::afterCommit(function () use ($delivery) {
+                $this->notificationDispatcher->notifyDeliveryAssigned($delivery);
+            });
 
             return $delivery->load(['items', 'driver', 'customer', 'order']);
         }, 3);

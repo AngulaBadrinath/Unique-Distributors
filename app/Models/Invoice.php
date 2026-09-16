@@ -194,8 +194,12 @@ class Invoice extends Model
         }
 
         if ($user->role === UserRole::SALESMAN) {
-            return $query->whereHas('customer', function (Builder $q) use ($user) {
-                $q->where('salesman_id', $user->id);
+            return $query->where(function (Builder $q) use ($user) {
+                $q->whereHas('customer', function (Builder $cq) use ($user) {
+                    $cq->where('salesman_id', $user->id);
+                })->orWhereHas('order', function (Builder $oq) use ($user) {
+                    $oq->where('salesman_id', $user->id);
+                });
             });
         }
 

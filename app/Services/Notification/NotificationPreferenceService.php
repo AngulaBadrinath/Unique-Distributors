@@ -137,7 +137,7 @@ class NotificationPreferenceService
             return true; // Default opt-in
         }
 
-        return (bool) $pref->is_in_app_enabled;
+        return (bool) $pref->is_enabled;
     }
 
     /**

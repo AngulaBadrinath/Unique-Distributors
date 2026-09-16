@@ -40,7 +40,11 @@ export default function OrderDetailHeader({
     onRequestAdjustment,
 }: OrderDetailHeaderProps) {
     const handlePrint = () => {
-        window.print();
+        if (order.invoice?.id) {
+            window.open(`/invoices/${order.invoice.id}/print`, '_blank');
+        } else {
+            window.print();
+        }
     };
 
     const isReviewable = order.is_reviewable;

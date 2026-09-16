@@ -16,6 +16,8 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Auth\PermissionService;
+use App\Services\Invoices\InvoiceGeneratorService;
+use App\Services\Notification\DomainNotificationDispatcher;
 use App\Services\Pricing\PriceBoundaryService;
 use App\Services\Tax\TaxCalculationService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -36,7 +38,12 @@ class OrderService
         protected PriceBoundaryService $priceBoundaryService,
         protected TaxCalculationService $taxCalculationService,
         protected OrderNumberGenerator $orderNumberGenerator,
-    ) {}
+        protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
+        protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+    ) {
+        $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
+        $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+    }
 
     /**
      * Authoritatively create and submit a new wholesale sales order.
@@ -209,7 +216,15 @@ class OrderService
                     // 13. Persist Order Items
                     $order->items()->createMany($orderItemRows);
 
-                    // 14. Emit Structured Audit Event (Exactly once for winning transaction)
+                    // 14. Authoritatively Generate Order Invoice upon Submission
+                    $this->invoiceGeneratorService->generateForOrder($order, $actor);
+
+                    // 15. Queue Domain Notifications (dispatched strictly after transaction commit)
+                    DB::afterCommit(function () use ($order) {
+                        $this->notificationDispatcher->notifyOrderSubmitted($order);
+                    });
+
+                    // 16. Emit Structured Audit Event (Exactly once for winning transaction)
                     Log::info('commerce.order_event', [
                         'action' => 'ORDER_CREATED',
                         'order_id' => $order->id,
@@ -641,7 +656,15 @@ class OrderService
                     $lockedDraft->items()->delete();
                     $lockedDraft->items()->createMany($finalizedItemRows);
 
-                    // 8. Emit ORDER_CREATED audit with was_draft = true
+                    // 8. Authoritatively Generate Order Invoice upon Draft Submission
+                    $this->invoiceGeneratorService->generateForOrder($lockedDraft, $actor);
+
+                    // 9. Queue Domain Notifications (dispatched strictly after transaction commit)
+                    DB::afterCommit(function () use ($lockedDraft) {
+                        $this->notificationDispatcher->notifyOrderSubmitted($lockedDraft);
+                    });
+
+                    // 10. Emit ORDER_CREATED audit with was_draft = true
                     Log::info('commerce.order_event', [
                         'action' => 'ORDER_CREATED',
                         'order_id' => $lockedDraft->id,
