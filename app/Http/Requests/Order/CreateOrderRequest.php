@@ -43,7 +43,7 @@ class CreateOrderRequest extends FormRequest
             'money_order_number' => ['required_if:payment_method,MONEY_ORDER', 'nullable', 'string', 'max:50'],
             'receipt_reference' => ['nullable', 'string', 'max:100'],
             'payment_notes' => ['nullable', 'string', 'max:1000'],
-            'payment_evidence' => ['required_if:payment_method,CHEQUE,MONEY_ORDER', 'nullable', 'file'],
+            'payment_evidence' => ['nullable', 'file'],
 
             // Nested payment object support (if sent as JSON)
             'payment' => ['nullable', 'array'],
@@ -85,7 +85,6 @@ class CreateOrderRequest extends FormRequest
             'cheque_date.required_if' => 'Cheque date is required for cheque payments.',
             'issuer_name.required_if' => 'Issuer name is required for money order payments.',
             'money_order_number.required_if' => 'Money order number is required for money order payments.',
-            'payment_evidence.required_if' => 'Visual JPEG evidence photo/scan is mandatory for cheque and money order payments.',
         ];
     }
 

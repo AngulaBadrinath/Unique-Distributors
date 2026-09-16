@@ -22,13 +22,11 @@ enum PaymentMethod: string
 
     /**
      * Determine whether this payment method mandates visual evidence upload.
+     * Updated per client requirement: image upload is no longer mandatory for any payment method.
      */
     public function requiresEvidence(): bool
     {
-        return match ($this) {
-            self::CASH => false,
-            self::CHEQUE, self::MONEY_ORDER => true,
-        };
+        return false;
     }
 
     /**

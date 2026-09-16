@@ -29,7 +29,7 @@ class CreateChequePaymentRequest extends FormRequest
             'bank_name' => ['required', 'string', 'max:100'],
             'cheque_number' => ['required', 'string', 'max:50'],
             'cheque_date' => ['required', 'date', 'date_format:Y-m-d'],
-            'evidence' => ['required', 'file'],
+            'evidence' => ['nullable', 'file'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -44,7 +44,6 @@ class CreateChequePaymentRequest extends FormRequest
         return [
             'amount.min' => 'Payment amount must be greater than zero.',
             'payment_date.before_or_equal' => 'Payment date cannot be in the future.',
-            'evidence.required' => 'Visual JPEG evidence photo/scan of the physical cheque is mandatory.',
         ];
     }
 }

@@ -127,7 +127,7 @@ class PaymentService
             ]);
         }
 
-        // 4. Method-specific evidence validation
+        // 4. Method-specific evidence validation (Optional upload support, backward-compatible)
         $evidenceMetadata = [];
         if ($method->requiresEvidence()) {
             if (! $evidenceFile) {
@@ -135,6 +135,8 @@ class PaymentService
                     'evidence' => "Visual JPEG evidence is mandatory for {$method->label()} payments.",
                 ]);
             }
+            $evidenceMetadata = $this->evidenceService->validateAndStoreEvidence($evidenceFile);
+        } elseif ($evidenceFile) {
             $evidenceMetadata = $this->evidenceService->validateAndStoreEvidence($evidenceFile);
         }
 

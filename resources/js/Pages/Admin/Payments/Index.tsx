@@ -844,7 +844,7 @@ export default function PaymentsIndex({
                                     Record Inbound Payment
                                 </h2>
                                 <p className="text-xs text-muted-foreground mt-0.5">
-                                    Capture collection details. Cheque and Money Order entries require mandatory JPEG evidence.
+                                    Capture collection details for Cash, Cheque, and Money Order settlements.
                                 </p>
                             </div>
                             <Button
@@ -1006,14 +1006,6 @@ export default function PaymentsIndex({
                                             className="mt-1 h-9 text-xs"
                                         />
                                     </div>
-
-                                    <PaymentEvidenceUploader
-                                        value={evidenceFile}
-                                        onChange={setEvidenceFile}
-                                        required
-                                        error={formErrors.evidence}
-                                        label="Cheque Photo / Scan (JPEG Only)"
-                                    />
                                 </div>
                             )}
 
@@ -1054,14 +1046,6 @@ export default function PaymentsIndex({
                                             )}
                                         </div>
                                     </div>
-
-                                    <PaymentEvidenceUploader
-                                        value={evidenceFile}
-                                        onChange={setEvidenceFile}
-                                        required
-                                        error={formErrors.evidence}
-                                        label="Money Order Receipt Scan (JPEG Only)"
-                                    />
                                 </div>
                             )}
 

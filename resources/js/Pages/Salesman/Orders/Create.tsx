@@ -349,10 +349,6 @@ export default function CreateOrder({
                     setErrorMessage('Cheque date is required for cheque payments.');
                     return;
                 }
-                if (!paymentForm.evidenceFile) {
-                    setErrorMessage('Visual JPEG evidence photo/scan is mandatory for cheque payment.');
-                    return;
-                }
             }
 
             if (paymentForm.paymentMethod === 'MONEY_ORDER') {
@@ -362,10 +358,6 @@ export default function CreateOrder({
                 }
                 if (!paymentForm.issuerName.trim()) {
                     setErrorMessage('Issuer name is required for money order payments.');
-                    return;
-                }
-                if (!paymentForm.evidenceFile) {
-                    setErrorMessage('Visual JPEG evidence photo/scan is mandatory for money order payment.');
                     return;
                 }
             }

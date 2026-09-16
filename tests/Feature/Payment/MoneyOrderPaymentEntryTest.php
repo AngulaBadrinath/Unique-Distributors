@@ -193,7 +193,7 @@ class MoneyOrderPaymentEntryTest extends TestCase
         $response2->assertJsonValidationErrors('money_order_number');
     }
 
-    public function test_money_order_without_evidence_is_rejected(): void
+    public function test_money_order_without_evidence_succeeds(): void
     {
         $payload = [
             'customer_id' => $this->customer1->id,
@@ -205,8 +205,14 @@ class MoneyOrderPaymentEntryTest extends TestCase
 
         $response = $this->actingAs($this->admin)->postJson(route('admin.payments.money-order.store'), $payload);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('evidence');
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('payments', [
+            'customer_id' => $this->customer1->id,
+            'payment_method' => 'MONEY_ORDER',
+            'money_order_number' => 'USPS-001122',
+            'amount' => '300.00',
+            'evidence_object_key' => null,
+        ]);
     }
 
     public function test_salesman_cannot_record_money_order_for_unassigned_customer(): void

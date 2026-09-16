@@ -380,7 +380,7 @@ export const OrderReviewStep: React.FC<OrderReviewStepProps> = ({
                                                     </div>
                                                     <span className="text-xs font-bold">{labels[method]}</span>
                                                     <span className="text-[10px] text-muted-foreground">
-                                                        {method === 'CASH' ? 'Immediate receipt' : 'Requires JPEG evidence'}
+                                                        {method === 'CASH' ? 'Immediate receipt' : 'Recorded instrument'}
                                                     </span>
                                                 </button>
                                             );
@@ -535,63 +535,6 @@ export const OrderReviewStep: React.FC<OrderReviewStepProps> = ({
                                             disabled={isSubmitting}
                                             className="text-xs"
                                         />
-                                    </div>
-                                )}
-
-                                {/* Mandatory Visual JPEG Evidence Upload for Cheque / Money Order */}
-                                {(paymentForm.paymentMethod === 'CHEQUE' || paymentForm.paymentMethod === 'MONEY_ORDER') && (
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-foreground flex items-center justify-between">
-                                            <span>
-                                                Mandatory Visual Evidence (JPEG) <span className="text-destructive">*</span>
-                                            </span>
-                                            <span className="text-[10px] text-muted-foreground font-normal">
-                                                Photo / Scan of instrument (.jpg, .jpeg, max 5MB)
-                                            </span>
-                                        </label>
-
-                                        {paymentForm.evidenceFile ? (
-                                            <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
-                                                <div className="flex items-center gap-2.5">
-                                                    <FileImage className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                                                    <div>
-                                                        <p className="text-xs font-semibold text-foreground">
-                                                            {paymentForm.evidenceFile.name}
-                                                        </p>
-                                                        <p className="text-[10px] text-muted-foreground font-mono">
-                                                            {(paymentForm.evidenceFile.size / 1024).toFixed(1)} KB • JPEG Ready
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={handleRemoveEvidence}
-                                                    disabled={isSubmitting}
-                                                    className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <label className="border-2 border-dashed border-border/80 hover:border-primary/60 hover:bg-muted/20 transition-all rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer gap-2">
-                                                <UploadCloud className="h-6 w-6 text-muted-foreground" />
-                                                <div className="text-center">
-                                                    <span className="text-xs font-semibold text-primary">Click to upload JPEG evidence</span>
-                                                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                                                        Visual scan or photo of the physical cheque / money order
-                                                    </p>
-                                                </div>
-                                                <input
-                                                    type="file"
-                                                    accept=".jpg,.jpeg,image/jpeg"
-                                                    className="hidden"
-                                                    onChange={handleEvidenceFileChange}
-                                                    disabled={isSubmitting}
-                                                />
-                                            </label>
-                                        )}
                                     </div>
                                 )}
 

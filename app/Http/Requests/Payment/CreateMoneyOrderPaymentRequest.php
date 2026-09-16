@@ -28,7 +28,7 @@ class CreateMoneyOrderPaymentRequest extends FormRequest
             'payment_date' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
             'issuer_name' => ['required', 'string', 'max:100'],
             'money_order_number' => ['required', 'string', 'max:50'],
-            'evidence' => ['required', 'file'],
+            'evidence' => ['nullable', 'file'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -43,7 +43,6 @@ class CreateMoneyOrderPaymentRequest extends FormRequest
         return [
             'amount.min' => 'Payment amount must be greater than zero.',
             'payment_date.before_or_equal' => 'Payment date cannot be in the future.',
-            'evidence.required' => 'Visual JPEG evidence photo/scan of the physical money order is mandatory.',
         ];
     }
 }

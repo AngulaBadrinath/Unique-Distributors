@@ -197,7 +197,7 @@ class ChequePaymentEntryTest extends TestCase
         $response2->assertJsonValidationErrors('cheque_number');
     }
 
-    public function test_cheque_payment_without_evidence_is_rejected(): void
+    public function test_cheque_payment_without_evidence_succeeds(): void
     {
         $payload = [
             'customer_id' => $this->customer1->id,
@@ -210,8 +210,14 @@ class ChequePaymentEntryTest extends TestCase
 
         $response = $this->actingAs($this->admin)->postJson(route('admin.payments.cheque.store'), $payload);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('evidence');
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('payments', [
+            'customer_id' => $this->customer1->id,
+            'payment_method' => 'CHEQUE',
+            'cheque_number' => 'BOA-111222',
+            'amount' => '500.00',
+            'evidence_object_key' => null,
+        ]);
     }
 
     public function test_cheque_payment_with_fake_pdf_evidence_is_rejected(): void
