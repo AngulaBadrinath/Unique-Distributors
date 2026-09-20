@@ -1,0 +1,20 @@
+flowchart TD
+    subgraph INVENTORY_BALANCES["Inventory Balance Model"]
+        P["Physical Quantity\n(Stock on Hand in Warehouse)"]
+        R["Reserved Quantity\n(Allocated to Active Orders)"]
+        A["Available Quantity\n(Physical - Reserved)"]
+    end
+
+    subgraph MUTATIONS["Stock Operations & Movements"]
+        M1["Order Approval\nInventoryService::reserveStock"] -->|Available -Qty\nReserved +Qty| R
+        M2["Order Cancellation\nInventoryService::releaseStock"] -->|Available +Qty\nReserved -Qty| R
+        M3["Delivery Completed\nInventoryMovementService::recordMovement"] -->|Physical -Qty\nReserved -Qty\nMovement: SALE_OUT| P
+        M4["Warehouse Adjustment\nInventoryAdjustmentService::apply"] -->|Physical +/-Qty\nMovement: ADJUSTMENT| P
+        M5["RMA Return Restock\nReturnInventoryService::restock"] -->|Physical +Qty\nAvailable +Qty\nMovement: RETURN_IN| P
+    end
+
+    subgraph GL_LINK["General Ledger Accounting Links"]
+        M3 --> GL1["DR 5010 COGS\nCR 1200 Inventory Asset"]
+        M4 --> GL2["DR 5020 Inventory Shrinkage\nCR 1200 Inventory Asset"]
+        M5 --> GL3["DR 1200 Inventory Asset\nCR 5010 COGS (Restock)"]
+    end

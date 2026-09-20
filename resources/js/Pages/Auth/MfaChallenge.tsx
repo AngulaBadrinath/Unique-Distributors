@@ -17,7 +17,7 @@ export default function MfaChallenge({
     manual_key,
 }: MfaChallengeProps) {
     const { appName, identity } = usePage<PageProps>().props;
-    const displayName = identity?.name || appName || 'Unique Distributors';
+    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Wholesale Distribution';
 
     const [useRecoveryCode, setUseRecoveryCode] = useState(false);
     const [copiedKey, setCopiedKey] = useState(false);

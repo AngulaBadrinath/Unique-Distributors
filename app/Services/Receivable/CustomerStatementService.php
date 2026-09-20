@@ -133,7 +133,7 @@ class CustomerStatementService
                 'billing_country' => $customer->billing_country ?? 'US',
             ],
             'company' => [
-                'name' => $company->legal_name ?? $company->company_name ?? 'Unique Distributors Inc.',
+                'name' => $company->legal_name ?? $company->company_name ?? 'Unique Jersey Wholesale',
                 'address' => trim(sprintf('%s, %s, %s %s', $company->address_line1, $company->city, $company->state, $company->postal_code)),
                 'phone' => $company->phone,
                 'email' => $company->email,

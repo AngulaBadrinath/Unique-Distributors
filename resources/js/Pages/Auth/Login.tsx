@@ -14,7 +14,7 @@ interface LoginProps {
 export default function Login({ status }: LoginProps) {
     const { appName, identity } = usePage<PageProps>().props;
     const [showPassword, setShowPassword] = useState(false);
-    const displayName = identity?.name || appName || 'Unique Distributors';
+    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Wholesale Distribution';
     const initials = displayName.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'UD';
 
     const { data, setData, post, processing, errors, reset } = useForm({

@@ -1,0 +1,46 @@
+sequenceDiagram
+    autonumber
+    actor S as Salesman / Customer / Staff
+    actor A as Accountant / Admin
+    participant PC as PaymentController
+    participant PS as PaymentService
+    participant PVS as PaymentVerificationService
+    participant PRS as PaymentReversalService
+    participant P as Payment Model
+    participant I as Invoice Model
+    participant O as Order Model
+    participant RL as ReceivableLedgerService
+    participant GL as JournalMappingService
+
+    Note over S,GL: Step 1: Payment Submission
+    S->>PC: POST /salesman/payments (method, amount, evidence)
+    PC->>PS: recordPaymentInternal(method, data, evidenceFile, actor)
+    PS->>PS: Validate Evidence (RULE-PAY-002: JPEG magic bytes for Cheque/MO)
+    PS->>P: Create Payment (PAY-YYYY-MM-XXXX, Status: SUBMITTED)
+    PS-->>S: Payment Created & Awaiting Accounting Verification
+
+    Note over A,GL: Step 2: Accounting Verification
+    A->>PC: POST /admin/payments/{payment}/verify
+    PC->>PVS: verifyPayment(payment, actor)
+    PVS->>P: lockForUpdate() -> Status: VERIFIED
+    PVS->>I: Update balance_due, payment_status (PAID / PARTIALLY_PAID)
+    PVS->>O: Update payment_status (PAID / PARTIALLY_PAID)
+    PVS->>RL: recordPaymentPosting(payment) -> AR PAYMENT_RECEIVED
+    PVS->>GL: postPaymentReceipt(payment)
+    GL-->>PVS: GL Journal Posted (DR 1010/1020 Cash/Bank / CR 1100 AR)
+    PVS-->>A: Payment Verified & Accounts Reconciled
+
+    opt Rejection Path
+        A->>PC: POST /admin/payments/{payment}/reject (reason, notes)
+        PC->>PVS: rejectPayment(payment, actor, reason, notes)
+        PVS->>P: Status: REJECTED (Reason Code Recorded)
+    end
+
+    opt Reversal Path (Bounced Cheque / NSF)
+        A->>PC: POST /admin/payments/{payment}/reverse (reason, notes)
+        PC->>PRS: reversePayment(payment, actor, reason, notes)
+        PRS->>P: Status: REVERSED
+        PRS->>I: Restore balance_due & payment_status
+        PRS->>O: Restore order payment_status
+        PRS->>GL: postPaymentReversal(payment) -> DR 1100 AR / CR 1010/1020 Cash
+    end

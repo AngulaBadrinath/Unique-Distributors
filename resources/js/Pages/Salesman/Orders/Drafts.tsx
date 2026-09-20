@@ -53,7 +53,7 @@ export default function Drafts({ drafts, filters }: DraftsPageProps) {
 
     return (
         <AppLayout title="Draft Orders">
-            <Head title="My Draft Orders — Unique Distributors" />
+            <Head title="My Draft Orders" />
 
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header & Primary Actions */}

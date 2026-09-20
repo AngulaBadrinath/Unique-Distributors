@@ -69,7 +69,7 @@ class DemoDataGeneratorService
         // Central product representation
         imagestring($image, 5, 80, 160, "SKU: {$sku}", $accentColor);
         imagestring($image, 5, 80, 200, $name, $textColor);
-        imagestring($image, 4, 80, 240, 'Unique Distributors B2B Wholesale Item', $subtextColor);
+        imagestring($image, 4, 80, 240, 'Wholesale Distribution B2B Item', $subtextColor);
         imagestring($image, 3, 80, 280, 'Standard Distribution Pack / Verified Quality', $subtextColor);
 
         // Footer stamp

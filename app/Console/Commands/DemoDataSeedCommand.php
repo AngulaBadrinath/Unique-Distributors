@@ -38,7 +38,7 @@ class DemoDataSeedCommand extends Command
             return 1;
         }
 
-        $this->info('Starting Unique Distributors Demo Data Seeding...');
+        $this->info('Starting Wholesale Distribution Demo Data Seeding...');
 
         if ($this->option('fresh')) {
             $this->warn('Running migrate:fresh...');
@@ -62,7 +62,7 @@ class DemoDataSeedCommand extends Command
             $this->info("Seeded {$evCounts['payments']} payment evidence objects and {$evCounts['deliveries']} delivery signatures/PODs.");
         }
 
-        $this->info('Unique Distributors demo dataset successfully prepared.');
+        $this->info('Wholesale Distribution demo dataset successfully prepared.');
 
         return 0;
     }

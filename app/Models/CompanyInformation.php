@@ -39,6 +39,7 @@ class CompanyInformation extends Model
         'timezone',
         'invoice_footer_note',
         'is_singleton',
+        'is_title_locked',
     ];
 
     /**
@@ -48,6 +49,7 @@ class CompanyInformation extends Model
      */
     protected $casts = [
         'is_singleton' => 'boolean',
+        'is_title_locked' => 'boolean',
     ];
 
     /**
@@ -93,6 +95,7 @@ class CompanyInformation extends Model
             'currency' => $this->currency,
             'timezone' => $this->timezone,
             'invoice_footer_note' => $this->invoice_footer_note,
+            'is_title_locked' => (bool) ($this->is_title_locked ?? true),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }

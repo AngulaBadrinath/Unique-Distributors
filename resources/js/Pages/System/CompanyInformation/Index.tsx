@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Button } from '@/Components/ui/button';
@@ -20,6 +20,8 @@ import {
     Loader2,
     Save,
     RotateCcw,
+    Lock,
+    Unlock,
 } from 'lucide-react';
 
 interface CompanyInformationIndexProps {
@@ -28,6 +30,8 @@ interface CompanyInformationIndexProps {
 }
 
 export default function CompanyInformationIndex({ company, status }: CompanyInformationIndexProps) {
+    const [isTitleLocked, setIsTitleLocked] = useState<boolean>(company.is_title_locked ?? true);
+
     const { data, setData, put, processing, errors, recentlySuccessful, reset } = useForm({
         legal_name: company.legal_name || '',
         dba_name: company.dba_name || '',
@@ -45,13 +49,25 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
         currency: company.currency || 'USD',
         timezone: company.timezone || 'America/New_York',
         invoice_footer_note: company.invoice_footer_note || '',
+        is_title_locked: company.is_title_locked ?? true,
     });
+
+    const handleToggleTitleLock = () => {
+        const nextState = !isTitleLocked;
+        setIsTitleLocked(nextState);
+        setData('is_title_locked', nextState);
+    };
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
         put('/system/company', {
             preserveScroll: true,
         });
+    };
+
+    const handleReset = () => {
+        reset();
+        setIsTitleLocked(company.is_title_locked ?? true);
     };
 
     return (
@@ -67,7 +83,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                 Company Information
                             </h1>
                             <Badge variant="outline" className="text-xs font-mono font-normal">
-                                Singleton Entity
+                                Authoritative Source of Truth
                             </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -115,40 +131,86 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                 <CardTitle className="text-base font-semibold">Legal & Commercial Identity</CardTitle>
                             </div>
                             <CardDescription className="text-xs">
-                                Registered corporate entity name and optional trade / DBA name.
+                                Registered corporate entity name and trade / DBA name.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <label htmlFor="legal_name" className="text-xs font-medium text-foreground">
-                                        Legal Entity Name <span className="text-destructive">*</span>
-                                    </label>
-                                    <Input
-                                        id="legal_name"
-                                        type="text"
-                                        value={data.legal_name}
-                                        onChange={(e) => setData('legal_name', e.target.value)}
-                                        placeholder="e.g. Unique Distributors Inc."
-                                        required
-                                        disabled={processing}
-                                        className={errors.legal_name ? 'border-destructive' : ''}
-                                    />
+                                {/* Legal Entity Name with Title Lock Control */}
+                                <div className="space-y-1.5 sm:col-span-2">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <label htmlFor="legal_name" className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                                            Legal Entity Name (Primary Company Title) <span className="text-destructive">*</span>
+                                            {isTitleLocked ? (
+                                                <Badge variant="secondary" className="text-[10px] py-0 px-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 gap-1">
+                                                    <Lock className="h-3 w-3" /> Locked
+                                                </Badge>
+                                            ) : (
+                                                <Badge variant="secondary" className="text-[10px] py-0 px-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 gap-1">
+                                                    <Unlock className="h-3 w-3" /> Unlocked
+                                                </Badge>
+                                            )}
+                                        </label>
+
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            variant={isTitleLocked ? "outline" : "secondary"}
+                                            onClick={handleToggleTitleLock}
+                                            disabled={processing}
+                                            className="h-7 text-xs px-2.5 gap-1.5"
+                                            title={isTitleLocked ? "Unlock primary company title for editing" : "Lock primary company title"}
+                                        >
+                                            {isTitleLocked ? (
+                                                <>
+                                                    <Lock className="h-3.5 w-3.5 text-amber-500" />
+                                                    <span>Unlock Title</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Unlock className="h-3.5 w-3.5 text-emerald-500" />
+                                                    <span>Lock Title</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                    <div className="relative">
+                                        <Input
+                                            id="legal_name"
+                                            type="text"
+                                            value={data.legal_name}
+                                            onChange={(e) => setData('legal_name', e.target.value)}
+                                            placeholder="e.g. Unique Jersey Wholesale"
+                                            required
+                                            disabled={processing || isTitleLocked}
+                                            className={
+                                                (errors.legal_name ? 'border-destructive ' : '') +
+                                                (isTitleLocked ? 'bg-muted/50 cursor-not-allowed text-muted-foreground font-medium' : 'font-medium')
+                                            }
+                                        />
+                                    </div>
+                                    <p className="text-[11px] text-muted-foreground">
+                                        {isTitleLocked
+                                            ? 'The legal entity name is protected against accidental changes. Click Unlock Title to edit.'
+                                            : 'Title is unlocked. Any changes will update the authoritative company name across the entire application.'}
+                                    </p>
                                     {errors.legal_name && (
                                         <p className="text-xs text-destructive">{errors.legal_name}</p>
                                     )}
                                 </div>
 
-                                <div className="space-y-1.5">
+                                {/* Trade / DBA Name (Freely editable) */}
+                                <div className="space-y-1.5 sm:col-span-2">
                                     <label htmlFor="dba_name" className="text-xs font-medium text-foreground">
-                                        Trade / DBA Name (Optional)
+                                        Doing Business As / Trade Name (DBA) (Optional)
                                     </label>
                                     <Input
                                         id="dba_name"
                                         type="text"
                                         value={data.dba_name}
                                         onChange={(e) => setData('dba_name', e.target.value)}
-                                        placeholder="e.g. Apex Wholesale Logistics"
+                                        placeholder="e.g. Wholesale Distribution"
                                         disabled={processing}
                                         className={errors.dba_name ? 'border-destructive' : ''}
                                     />
@@ -157,79 +219,60 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                     )}
                                 </div>
                             </div>
-
-                            <div className="space-y-1.5">
-                                <label htmlFor="website" className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                                    <Globe className="h-3.5 w-3.5 text-muted-foreground" />
-                                    Corporate Website (Optional)
-                                </label>
-                                <Input
-                                    id="website"
-                                    type="url"
-                                    value={data.website}
-                                    onChange={(e) => setData('website', e.target.value)}
-                                    placeholder="https://example.com"
-                                    disabled={processing}
-                                    className={errors.website ? 'border-destructive' : ''}
-                                />
-                                {errors.website && (
-                                    <p className="text-xs text-destructive">{errors.website}</p>
-                                )}
-                            </div>
                         </CardContent>
                     </Card>
 
-                    {/* Section 2: Operating Address */}
+                    {/* Section 2: Physical & Mailing Address */}
                     <Card>
                         <CardHeader className="pb-4">
                             <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4 text-primary" />
-                                <CardTitle className="text-base font-semibold">Operating Address</CardTitle>
+                                <CardTitle className="text-base font-semibold">Physical & Mailing Address</CardTitle>
                             </div>
                             <CardDescription className="text-xs">
-                                Registered physical headquarters address appearing on formal business documents and invoices.
+                                Operational warehouse or headquarters address appearing on invoices and official documents.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-1.5 sm:col-span-2">
-                                    <label htmlFor="address_line1" className="text-xs font-medium text-foreground">
-                                        Street Address <span className="text-destructive">*</span>
-                                    </label>
-                                    <Input
-                                        id="address_line1"
-                                        type="text"
-                                        value={data.address_line1}
-                                        onChange={(e) => setData('address_line1', e.target.value)}
-                                        placeholder="e.g. 100 Distribution Blvd"
-                                        required
-                                        disabled={processing}
-                                        className={errors.address_line1 ? 'border-destructive' : ''}
-                                    />
-                                    {errors.address_line1 && (
-                                        <p className="text-xs text-destructive">{errors.address_line1}</p>
-                                    )}
-                                </div>
+                            <div className="space-y-1.5">
+                                <label htmlFor="address_line1" className="text-xs font-medium text-foreground">
+                                    Address Line 1 <span className="text-destructive">*</span>
+                                </label>
+                                <Input
+                                    id="address_line1"
+                                    type="text"
+                                    value={data.address_line1}
+                                    onChange={(e) => setData('address_line1', e.target.value)}
+                                    placeholder="100 Distribution Blvd"
+                                    required
+                                    disabled={processing}
+                                    className={errors.address_line1 ? 'border-destructive' : ''}
+                                />
+                                {errors.address_line1 && (
+                                    <p className="text-xs text-destructive">{errors.address_line1}</p>
+                                )}
+                            </div>
 
-                                <div className="space-y-1.5 sm:col-span-2">
-                                    <label htmlFor="address_line2" className="text-xs font-medium text-foreground">
-                                        Suite / Unit / Building (Optional)
-                                    </label>
-                                    <Input
-                                        id="address_line2"
-                                        type="text"
-                                        value={data.address_line2}
-                                        onChange={(e) => setData('address_line2', e.target.value)}
-                                        placeholder="e.g. Suite 400"
-                                        disabled={processing}
-                                        className={errors.address_line2 ? 'border-destructive' : ''}
-                                    />
-                                    {errors.address_line2 && (
-                                        <p className="text-xs text-destructive">{errors.address_line2}</p>
-                                    )}
-                                </div>
+                            <div className="space-y-1.5">
+                                <label htmlFor="address_line2" className="text-xs font-medium text-foreground">
+                                    Address Line 2 (Suite, Unit, Building) (Optional)
+                                </label>
+                                <Input
+                                    id="address_line2"
+                                    type="text"
+                                    value={data.address_line2}
+                                    onChange={(e) => setData('address_line2', e.target.value)}
+                                    placeholder="Suite 400"
+                                    disabled={processing}
+                                    className={errors.address_line2 ? 'border-destructive' : ''}
+                                />
+                                {errors.address_line2 && (
+                                    <p className="text-xs text-destructive">{errors.address_line2}</p>
+                                )}
+                            </div>
 
-                                <div className="space-y-1.5">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div className="space-y-1.5 col-span-2 sm:col-span-1">
                                     <label htmlFor="city" className="text-xs font-medium text-foreground">
                                         City <span className="text-destructive">*</span>
                                     </label>
@@ -238,7 +281,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                         type="text"
                                         value={data.city}
                                         onChange={(e) => setData('city', e.target.value)}
-                                        placeholder="e.g. Atlanta"
+                                        placeholder="Atlanta"
                                         required
                                         disabled={processing}
                                         className={errors.city ? 'border-destructive' : ''}
@@ -257,7 +300,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                         type="text"
                                         value={data.state}
                                         onChange={(e) => setData('state', e.target.value)}
-                                        placeholder="e.g. GA"
+                                        placeholder="GA"
                                         required
                                         disabled={processing}
                                         className={errors.state ? 'border-destructive' : ''}
@@ -276,7 +319,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                         type="text"
                                         value={data.postal_code}
                                         onChange={(e) => setData('postal_code', e.target.value)}
-                                        placeholder="e.g. 30301"
+                                        placeholder="30301"
                                         required
                                         disabled={processing}
                                         className={errors.postal_code ? 'border-destructive' : ''}
@@ -286,9 +329,9 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                     )}
                                 </div>
 
-                                <div className="space-y-1.5">
+                                <div className="space-y-1.5 col-span-2 sm:col-span-1">
                                     <label htmlFor="country" className="text-xs font-medium text-foreground">
-                                        Country Code (2-letter ISO) <span className="text-destructive">*</span>
+                                        Country Code <span className="text-destructive">*</span>
                                     </label>
                                     <Input
                                         id="country"
@@ -309,30 +352,30 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                         </CardContent>
                     </Card>
 
-                    {/* Section 3: Business Contact Details */}
+                    {/* Section 3: Contact & Web Presence */}
                     <Card>
                         <CardHeader className="pb-4">
                             <div className="flex items-center gap-2">
                                 <Phone className="h-4 w-4 text-primary" />
-                                <CardTitle className="text-base font-semibold">Business Contact Details</CardTitle>
+                                <CardTitle className="text-base font-semibold">Contact & Online Presence</CardTitle>
                             </div>
                             <CardDescription className="text-xs">
-                                Primary communication channels for accounting, customer service, and dispatch.
+                                Primary communication channels displayed on outgoing documents and customer portals.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="space-y-1.5">
                                     <label htmlFor="phone" className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                                        <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                                        <Phone className="h-3 w-3 text-muted-foreground" />
                                         Primary Phone <span className="text-destructive">*</span>
                                     </label>
                                     <Input
                                         id="phone"
-                                        type="tel"
+                                        type="text"
                                         value={data.phone}
                                         onChange={(e) => setData('phone', e.target.value)}
-                                        placeholder="e.g. +1 (800) 555-0199"
+                                        placeholder="+1 (800) 555-0199"
                                         required
                                         disabled={processing}
                                         className={errors.phone ? 'border-destructive' : ''}
@@ -344,7 +387,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
 
                                 <div className="space-y-1.5">
                                     <label htmlFor="email" className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                                        <Mail className="h-3 w-3 text-muted-foreground" />
                                         Support / Billing Email <span className="text-destructive">*</span>
                                     </label>
                                     <Input
@@ -352,7 +395,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                         type="email"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
-                                        placeholder="e.g. support@example.com"
+                                        placeholder="support@example.com"
                                         required
                                         disabled={processing}
                                         className={errors.email ? 'border-destructive' : ''}
@@ -361,19 +404,38 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                         <p className="text-xs text-destructive">{errors.email}</p>
                                     )}
                                 </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="website" className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                                        <Globe className="h-3 w-3 text-muted-foreground" />
+                                        Website URL (Optional)
+                                    </label>
+                                    <Input
+                                        id="website"
+                                        type="url"
+                                        value={data.website}
+                                        onChange={(e) => setData('website', e.target.value)}
+                                        placeholder="https://example.com"
+                                        disabled={processing}
+                                        className={errors.website ? 'border-destructive' : ''}
+                                    />
+                                    {errors.website && (
+                                        <p className="text-xs text-destructive">{errors.website}</p>
+                                    )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Section 4: Tax & Registration Identifiers */}
+                    {/* Section 4: Tax & Regulatory Identifiers */}
                     <Card>
                         <CardHeader className="pb-4">
                             <div className="flex items-center gap-2">
                                 <Receipt className="h-4 w-4 text-primary" />
-                                <CardTitle className="text-base font-semibold">Tax & Business Registration</CardTitle>
+                                <CardTitle className="text-base font-semibold">Tax & Regulatory Identifiers</CardTitle>
                             </div>
                             <CardDescription className="text-xs">
-                                Federal and state tax registration numbers for compliance and invoices.
+                                Federal Employer Identification Number (EIN / FEIN) and state reseller registration.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -482,9 +544,10 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                                     onChange={(e) => setData('invoice_footer_note', e.target.value)}
                                     placeholder="e.g. Thank you for your business. Invoices are payable within 30 days."
                                     disabled={processing}
-                                    className={`w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                                        errors.invoice_footer_note ? 'border-destructive' : 'border-input'
-                                    }`}
+                                    className={
+                                        'w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ' +
+                                        (errors.invoice_footer_note ? 'border-destructive' : 'border-input')
+                                    }
                                 />
                                 {errors.invoice_footer_note && (
                                     <p className="text-xs text-destructive">{errors.invoice_footer_note}</p>
@@ -498,7 +561,7 @@ export default function CompanyInformationIndex({ company, status }: CompanyInfo
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => reset()}
+                            onClick={handleReset}
                             disabled={processing}
                             className="w-full sm:w-auto"
                         >

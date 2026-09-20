@@ -50,6 +50,6 @@ class CompanyInformationController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('status', 'Company information updated successfully.');
+        return redirect()->route('system.company.index')->with('status', 'Company information updated successfully.');
     }
 }

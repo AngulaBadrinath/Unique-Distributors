@@ -17,7 +17,7 @@ class HealthCheckController extends Controller
             'status' => 'healthy',
             'timestamp' => now()->toIso8601String(),
             'application' => [
-                'name' => config('app.name', 'Unique Distributors'),
+                'name' => app(\App\Services\System\CompanyInformationService::class)->get()?->legal_name ?? config('app.name', 'Wholesale Distribution'),
                 'environment' => config('app.env'),
             ],
         ], 200);

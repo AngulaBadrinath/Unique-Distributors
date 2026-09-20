@@ -12,8 +12,8 @@ class PickOrderItemsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->canPermission(Permission::ORDER_VIEW)
-            || $this->user()?->canPermission(Permission::INVENTORY_VIEW)
+        return $this->user()?->canPermission(Permission::INVENTORY_VIEW)
+            || $this->user()?->canPermission(Permission::INVENTORY_ADJUST)
             ?? false;
     }
 

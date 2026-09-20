@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph COMMERCIAL_EVENTS["Operational Commercial Triggers"]
+        E1["Invoice Issued\n(InvoiceGeneratorService)"]
+        E2["Delivery Completed\n(DeliveryWorkflowService)"]
+        E3["Payment Received\n(PaymentVerificationService)"]
+        E4["Payment Reversed\n(PaymentReversalService)"]
+        E5["Credit Note Issued\n(CreditNoteService)"]
+        E6["Stock Adjustment\n(InventoryAdjustmentService)"]
+        E7["Supplier Bill\n(PayableLedgerService)"]
+    end
+
+    subgraph JOURNAL_MAPPING["Journal Mapping Service\n(JournalMappingService)"]
+        E1 --> J1["postInvoiceIssued"]
+        E2 --> J2["postOrderDeliveredCogs"]
+        E3 --> J3["postPaymentReceipt"]
+        E4 --> J4["postPaymentReversal"]
+        E5 --> J5["postCreditNoteIssued"]
+        E6 --> J6["postInventoryAdjustment"]
+        E7 --> J7["postSupplierBillIssued"]
+    end
+
+    subgraph GENERAL_LEDGER["General Ledger (Double-Entry Engine)"]
+        J1 --> GL1["DR 1100 Accounts Receivable\nCR 4010 Wholesale Revenue\nCR 2100 Sales Tax Payable"]
+        J2 --> GL2["DR 5010 Cost of Goods Sold\nCR 1200 Inventory Asset"]
+        J3 --> GL3["DR 1010/1020 Cash/Bank\nCR 1100 Accounts Receivable"]
+        J4 --> GL4["DR 1100 Accounts Receivable\nCR 1010/1020 Cash/Bank"]
+        J5 --> GL5["DR 4030 Sales Returns\nDR 2100 Sales Tax Payable\nCR 1100 Accounts Receivable"]
+        J6 --> GL6["DR 5020 Inventory Shrinkage\nCR 1200 Inventory Asset"]
+        J7 --> GL7["DR 1200 Inventory Purchases\nCR 2010 Accounts Payable"]
+    end
+
+    subgraph FINANCIAL_REPORTS["Financial Reporting Engine"]
+        GENERAL_LEDGER --> R1["Trial Balance\n(TrialBalanceService)"]
+        GENERAL_LEDGER --> R2["Profit & Loss\n(ProfitAndLossService)"]
+        GENERAL_LEDGER --> R3["Balance Sheet\n(BalanceSheetService)"]
+    end

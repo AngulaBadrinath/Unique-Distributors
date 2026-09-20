@@ -6,14 +6,14 @@ use App\DTOs\System\ApplicationIdentity;
 
 class ApplicationIdentityService
 {
-    public const DEFAULT_NAME = 'Unique Distributors';
-    public const DEFAULT_COMPANY_NAME = 'Unique Distributors Inc.';
+    public const DEFAULT_NAME = 'Wholesale Distribution';
+    public const DEFAULT_COMPANY_NAME = 'Unique Jersey Wholesale';
     public const DEFAULT_TAGLINE = 'B2B Wholesale Commerce & Distribution Platform';
-    public const DEFAULT_SUPPORT_EMAIL = 'support@uniquedistributors.local';
-    public const DEFAULT_SUPPORT_PHONE = '+1 (555) 019-2834';
+    public const DEFAULT_SUPPORT_EMAIL = 'support@example.com';
+    public const DEFAULT_SUPPORT_PHONE = '+1 (800) 555-0199';
     public const DEFAULT_LOGO_PATH = '/images/brand/logo.svg';
     public const DEFAULT_FAVICON_PATH = '/favicon.ico';
-    public const DEFAULT_FOOTER_TEXT = 'Unique Distributors';
+    public const DEFAULT_FOOTER_TEXT = 'Unique Jersey Wholesale';
 
     /**
      * Resolve the authoritative application identity value object.
@@ -39,7 +39,7 @@ class ApplicationIdentityService
     {
         $name = config('app_identity.name') ?? config('app.name');
 
-        return is_string($name) && trim($name) !== ''
+        return is_string($name) && trim($name) !== '' && $name !== 'Laravel'
             ? trim($name)
             : self::DEFAULT_NAME;
     }

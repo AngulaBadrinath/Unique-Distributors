@@ -11,8 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function (): void {
-            \Illuminate\Support\Facades\Route::get('/health', \App\Http\Controllers\HealthCheckController::class)->name('health');
-            \Illuminate\Support\Facades\Route::get('/ready', \App\Http\Controllers\ReadyCheckController::class)->name('ready');
+            \Illuminate\Support\Facades\Route::get('/health', \App\Http\Controllers\HealthCheckController::class)
+                ->middleware('throttle:60,1')
+                ->name('health');
+            \Illuminate\Support\Facades\Route::get('/ready', \App\Http\Controllers\ReadyCheckController::class)
+                ->middleware('throttle:60,1')
+                ->name('ready');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

@@ -1,0 +1,26 @@
+stateDiagram-v2
+    [*] --> PENDING_ASSIGNMENT : Dispatch from Warehouse
+    PENDING_ASSIGNMENT --> ASSIGNED : Admin assigns Driver\n(DeliveryAssignmentService)
+    ASSIGNED --> PICKED_UP : Driver confirms physical pickup\n(DeliveryWorkflowService::confirmPickup)
+    PICKED_UP --> OUT_FOR_DELIVERY : Driver starts route\n(DeliveryWorkflowService::startTransit)
+
+    OUT_FOR_DELIVERY --> DELIVERED : Delivery Completed\n(POD Signature/Photo Verified)
+    OUT_FOR_DELIVERY --> FAILED : Delivery Attempt Failed\n(Reason Code + Evidence)
+
+    FAILED --> PENDING_ASSIGNMENT : Reassigned for Redelivery
+    FAILED --> RETURNED : Cancelled / Returned to Warehouse
+
+    DELIVERED --> [*]
+    RETURNED --> [*]
+
+    note right of PICKED_UP
+        Order: IN_TRANSIT
+        Custody: Delivery Partner
+    end note
+
+    note right of DELIVERED
+        Order: DELIVERED / COMPLETED
+        Stock: Physical Stock Deducted (SALE_OUT)
+        GL: DR 5010 COGS / CR 1200 Inventory Asset
+        Invoice: Delivered state confirmed
+    end note

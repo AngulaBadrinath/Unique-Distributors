@@ -296,7 +296,7 @@ export default function Show({ creditNote }: Props) {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-slate-500">Company Issuer Profile:</span>
-                                <span className="text-slate-800">{creditNote.company_legal_name_snapshot || 'Unique Distributors Inc.'}</span>
+                                <span className="text-slate-800">{creditNote.company_legal_name_snapshot || 'Unique Jersey Wholesale'}</span>
                             </div>
                         </div>
                     </div>

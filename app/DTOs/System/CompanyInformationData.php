@@ -21,6 +21,7 @@ readonly class CompanyInformationData
         public string $currency,
         public string $timezone,
         public ?string $invoice_footer_note,
+        public ?bool $is_title_locked = null,
     ) {}
 
     /**
@@ -47,6 +48,7 @@ readonly class CompanyInformationData
             currency: strtoupper(trim((string) ($data['currency'] ?? 'USD'))),
             timezone: trim((string) ($data['timezone'] ?? 'America/New_York')),
             invoice_footer_note: isset($data['invoice_footer_note']) && trim((string) $data['invoice_footer_note']) !== '' ? trim((string) $data['invoice_footer_note']) : null,
+            is_title_locked: isset($data['is_title_locked']) ? (bool) $data['is_title_locked'] : null,
         );
     }
 
@@ -57,7 +59,7 @@ readonly class CompanyInformationData
      */
     public function toArray(): array
     {
-        return [
+        $arr = [
             'legal_name' => $this->legal_name,
             'dba_name' => $this->dba_name,
             'address_line1' => $this->address_line1,
@@ -75,5 +77,11 @@ readonly class CompanyInformationData
             'timezone' => $this->timezone,
             'invoice_footer_note' => $this->invoice_footer_note,
         ];
+
+        if ($this->is_title_locked !== null) {
+            $arr['is_title_locked'] = $this->is_title_locked;
+        }
+
+        return $arr;
     }
 }

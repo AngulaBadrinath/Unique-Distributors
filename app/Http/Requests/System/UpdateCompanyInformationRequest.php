@@ -7,7 +7,6 @@ use App\Enums\AccountStatus;
 use App\Enums\Permission;
 use App\Services\Auth\PermissionService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateCompanyInformationRequest extends FormRequest
 {
@@ -67,6 +66,7 @@ class UpdateCompanyInformationRequest extends FormRequest
             'currency' => ['required', 'string', 'size:3'],
             'timezone' => ['required', 'string', 'max:50', 'timezone'],
             'invoice_footer_note' => ['nullable', 'string', 'max:500'],
+            'is_title_locked' => ['nullable', 'boolean'],
         ];
     }
 
@@ -78,7 +78,9 @@ class UpdateCompanyInformationRequest extends FormRequest
         $sanitized = [];
 
         foreach ($this->all() as $key => $value) {
-            if (is_string($value)) {
+            if ($key === 'is_title_locked') {
+                $sanitized[$key] = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            } elseif (is_string($value)) {
                 $trimmed = trim($value);
                 $sanitized[$key] = $trimmed === '' ? null : $trimmed;
             } else {

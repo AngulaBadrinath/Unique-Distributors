@@ -110,7 +110,7 @@ export default function MfaIndex({
     };
 
     const { appName, identity } = usePage<PageProps>().props;
-    const titleName = (identity?.name || appName || 'Unique Distributors').toUpperCase();
+    const titleName = (company?.legal_name || identity?.name || appName || 'Wholesale Distribution').toUpperCase();
 
     const handleDownloadRecoveryCodes = () => {
         if (recovery_codes && recovery_codes.length > 0) {

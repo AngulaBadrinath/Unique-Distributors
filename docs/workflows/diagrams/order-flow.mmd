@@ -1,0 +1,32 @@
+stateDiagram-v2
+    [*] --> DRAFT : Salesman initializes cart
+    DRAFT --> SUBMITTED : Submit Order\n(Idempotency Key, Price Bounds Check)
+    
+    SUBMITTED --> APPROVED : Admin Approves\n(Customer ACTIVE, Stock Reserved,\nInvoice Generated)
+    SUBMITTED --> REJECTED : Admin Rejects\n(Rejection Reason Logged)
+    SUBMITTED --> CANCELLED : Salesman / Admin Cancels\n(Pre-Approval)
+
+    APPROVED --> PROCESSING : Warehouse starts Picking/Packing
+    APPROVED --> CANCELLED : Admin Cancels\n(Releases Reserved Stock,\nVoids/Adjusts Invoice)
+
+    PROCESSING --> COMPLETED : Delivery Completed\n(POD Signed & Stock Deducted)
+    PROCESSING --> CANCELLED : Operational Cancellation\n(Restores Stock & Allocations)
+
+    COMPLETED --> [*]
+    REJECTED --> [*]
+    CANCELLED --> [*]
+
+    note right of APPROVED
+        Fulfillment: ALLOCATED
+        Inventory: Stock Reserved
+        Invoice: INV-YYYY-MM-XXXX Generated
+        AR Ledger: Debit Entry Created
+        GL: DR 1100 AR / CR 4010 Rev
+    end note
+
+    note right of COMPLETED
+        Fulfillment: DISPATCHED
+        Delivery: DELIVERED
+        Inventory: SALE_OUT Movement
+        GL: DR 5010 COGS / CR 1200 Inv
+    end note

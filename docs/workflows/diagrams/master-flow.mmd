@@ -1,0 +1,53 @@
+flowchart TD
+    subgraph SALES["1. Field Sales Domain"]
+        S1["Salesman Cart & Pricing"] -->|Enforce Price Bounds\nPriceBoundaryService| S2["Draft Order Prepared"]
+        S2 -->|Submit Order\nSalesmanOrderController::store\nOrderService::createOrder| S3["Order State:\nSUBMITTED\nUNALLOCATED\nUNPAID"]
+        S3 -->|Domain Notification\nDomainNotificationDispatcher| N1["Notify Admin & WH"]
+    end
+
+    subgraph ADMIN_OPS["2. Operations & Approval Domain"]
+        S3 -->|Review & Approve\nAdminOrderController::approve\nOrderWorkflowService::approveOrder| A1{"Eligibility Checks:\nCustomer ACTIVE?\nProducts ACTIVE?\nStock Available?"}
+        A1 -->|Approved| A2["Order State:\nAPPROVED\nALLOCATED"]
+        A1 -->|Rejected / Ineligible| A_REJ["Order State:\nREJECTED\nAudit Logged"]
+        A2 -->|Reserve Inventory\nInventoryService::reserveStock| INV_RES["Reserved Balance +Qty\nAvailable Balance -Qty"]
+        A2 -->|Create Allocations\nOrderItemAllocation| ALLOC["Allocations Created:\nStatus: ALLOCATED"]
+        A2 -->|Trigger Invoice\nInvoiceGeneratorService::generateForOrder| INV1["Invoice Generated\nINV-YYYY-MM-XXXX"]
+    end
+
+    subgraph INVOICE_AR["3. Invoicing & Receivables"]
+        INV1 -->|Post to AR Ledger\nReceivableLedgerService| AR1["AR Transaction:\nINVOICE_POSTED"]
+        INV1 -->|Post GL Journal\nJournalMappingService::postInvoiceIssued| GL1["GL Journal Entry:\nDR 1100 AR\nCR 4010 Revenue\nCR 2100 Tax Payable"]
+    end
+
+    subgraph WAREHOUSE["4. Warehouse Fulfillment (WMS)"]
+        A2 -->|Pick Order Lines\nWarehouseFulfillmentController::pick\nWarehouseFulfillmentService::pickOrder| W1["Order Status: PROCESSING\nFulfillment: PICKED\nAllocations: PICKED"]
+        W1 -->|Pack Items\nWarehouseFulfillmentController::pack\nWarehouseFulfillmentService::packOrder| W2["Fulfillment: PACKED\nAllocations: PACKED"]
+        W2 -->|Dispatch Order\nWarehouseFulfillmentController::dispatch\nWarehouseFulfillmentService::dispatchOrder| W3["Fulfillment: DISPATCHED\nDelivery: PENDING_ASSIGNMENT"]
+        W3 -->|Create Delivery Record\nDelivery::create| DEL_REC["Delivery Record:\nDEL-YYYY-MM-XXXX\nDeliveryItems Snapshot"]
+    end
+
+    subgraph LOGISTICS["5. Delivery Partner Logistics"]
+        DEL_REC -->|Assign Driver\nDeliveryAssignmentService::assignDriver| D1["Delivery Status: ASSIGNED"]
+        D1 -->|Confirm Pickup\nDeliveryWorkflowService::confirmPickup| D2["Delivery: PICKED_UP\nOrder: IN_TRANSIT"]
+        D2 -->|Start Route\nDeliveryWorkflowService::startTransit| D3["Delivery: OUT_FOR_DELIVERY\nOrder: OUT_FOR_DELIVERY"]
+        D3 -->|Capture Signature/Photo\nDeliveryWorkflowService::completeDelivery| D4["Delivery: DELIVERED\nOrder: DELIVERED / COMPLETED"]
+        D3 -->|Failed Delivery\nDeliveryWorkflowService::recordFailure| D_FAIL["Delivery: FAILED\nDeliveryFailure Logged"]
+        D4 -->|Deduct Physical Stock\nInventoryMovementService::recordMovement| INV_DED["Physical Balance -Qty\nReserved Balance -Qty\nMovement: SALE_OUT"]
+        D4 -->|Post COGS Journal\nJournalMappingService::postOrderDeliveredCogs| GL2["GL Journal Entry:\nDR 5010 COGS\nCR 1200 Inventory Asset"]
+    end
+
+    subgraph PAYMENTS["6. Payments & Reconciliation"]
+        P1["Field / Admin Payment\nPaymentService::recordPaymentInternal"] -->|CASH / CHEQUE / MO\nEvidence Upload| P2["Payment State:\nSUBMITTED"]
+        P2 -->|Verify Payment\nPaymentVerificationService::verifyPayment| P3["Payment State: VERIFIED\nOrder Payment: PAID / PARTIALLY_PAID\nInvoice: PAID / PARTIALLY_PAID"]
+        P3 -->|Post AR Receipt\nReceivableLedgerService::recordPaymentPosting| AR2["AR Transaction:\nPAYMENT_RECEIVED"]
+        P3 -->|Post GL Cash Journal\nJournalMappingService::postPaymentReceipt| GL3["GL Journal Entry:\nDR 1010/1020 Cash/Bank\nCR 1100 AR"]
+        P2 -->|Reject Payment\nPaymentVerificationService::rejectPayment| P_REJ["Payment State: REJECTED"]
+        P3 -->|Reverse Payment\nPaymentReversalService::reversePayment| P_REV["Payment State: REVERSED\nGL Reversal Journal Posted"]
+    end
+
+    subgraph ADJUSTMENTS["7. Order Adjustments & Returns"]
+        ORD_ADJ["Post-Submission Modification\nAdminOrderAdjustmentController::apply\nOrderAdjustmentService::applyAdjustment"] -->|Atomic Calculation| ADJ_RES["Creates OrderAdjustment\nRecalculates Allocations/Taxes\nAdjusts Invoice & AR Balance"]
+        RET_REQ["Customer Return Request\nReturnRequestService::createReturnRequest"] -->|RMA Inspection\nReturnInspectionService::completeInspection| RET_INSP{"Stock Disposition:\nRESTOCK or SCRAP"}
+        RET_INSP -->|Restock| RET_STK["Inventory Returned to WH\nMovement: RETURN_IN"]
+        RET_INSP -->|Issue Credit Note\nCreditNoteService::createCreditNote| CN_REC["Credit Note Issued\nGL Journal: DR 4030 / CR 1100 AR"]
+    end

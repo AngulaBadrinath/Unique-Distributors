@@ -24,10 +24,8 @@ class ReadyCheckController extends Controller
         // 1. PostgreSQL Database Readiness
         try {
             DB::connection()->getPdo();
-            $driver = DB::connection()->getDriverName();
             $dependencies['database'] = [
                 'status' => 'ready',
-                'driver' => $driver,
             ];
         } catch (Throwable $e) {
             $status = 'not_ready';

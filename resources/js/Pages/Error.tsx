@@ -105,7 +105,7 @@ export default function ErrorPage({ status = 500, message }: ErrorPageProps) {
 
                 {/* Footer Note */}
                 <p className="text-[11px] text-muted-foreground/70 font-mono pt-4 border-t border-border">
-                    Unique Distributors &bull; Secure Multi-Role Platform
+                    {company?.legal_name || 'Wholesale Distribution'} &bull; Secure Multi-Role Platform
                 </p>
             </div>
         </div>

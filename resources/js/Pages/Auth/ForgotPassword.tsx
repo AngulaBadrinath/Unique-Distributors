@@ -13,7 +13,7 @@ interface ForgotPasswordProps {
 
 export default function ForgotPassword({ status }: ForgotPasswordProps) {
     const { appName, identity } = usePage<PageProps>().props;
-    const displayName = identity?.name || appName || 'Unique Distributors';
+    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Wholesale Distribution';
 
     const { data, setData, post, processing, errors } = useForm({
         email: '',

@@ -39,6 +39,7 @@ export interface CompanyInformation {
     currency: string;
     timezone: string;
     invoice_footer_note: string | null;
+    is_title_locked?: boolean;
     updated_at: string | null;
 }
 

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Unique Distributors'),
+    'name' => env('APP_NAME', 'Wholesale Distribution'),
 
     /*
     |--------------------------------------------------------------------------

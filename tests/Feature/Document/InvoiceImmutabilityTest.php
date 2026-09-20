@@ -263,4 +263,102 @@ class InvoiceImmutabilityTest extends TestCase
         // Attempting to delete order when invoice exists must violate foreign key ON DELETE RESTRICT
         $this->order->delete();
     }
+
+    /**
+     * Verify that mutating CompanyInformation does NOT alter historical invoice company snapshots,
+     * and that newly generated invoices capture the updated CompanyInformation values.
+     */
+    public function test_company_information_update_preserves_historical_invoice_snapshots_and_applies_to_new_invoices(): void
+    {
+        // 1. Verify original historical invoice company snapshot values
+        $historicalInvoice = Invoice::find($this->invoice->id);
+        $this->assertSame('Original Apex Inc', $historicalInvoice->company_legal_name_snapshot);
+        $this->assertSame('Apex', $historicalInvoice->company_dba_name_snapshot);
+        $this->assertNotEmpty($historicalInvoice->company_address_snapshot);
+        $this->assertSame('+1 800-555-0100', $historicalInvoice->company_phone_snapshot);
+        $this->assertSame('billing@apex.com', $historicalInvoice->company_email_snapshot);
+        $this->assertSame('EIN-001122', $historicalInvoice->company_tax_id_snapshot);
+        $this->assertSame('Original invoice note.', $historicalInvoice->invoice_footer_note_snapshot);
+
+        // 2. Update CompanyInformation in database to new values
+        \App\Services\System\CompanyInformationService::invalidateCache();
+        CompanyInformation::updateOrCreate(
+            ['is_singleton' => true],
+            [
+                'legal_name' => 'Updated Apex Logistics International LLC',
+                'dba_name' => 'Apex Logistics',
+                'address_line1' => '999 Global Trade Way',
+                'city' => 'Savannah',
+                'state' => 'GA',
+                'postal_code' => '31401',
+                'country' => 'US',
+                'phone' => '+1 (912) 555-9988',
+                'email' => 'invoices@apexlogistics.com',
+                'tax_id' => 'EIN-998877',
+                'currency' => 'USD',
+                'timezone' => 'America/New_York',
+                'invoice_footer_note' => 'Updated invoice terms: Net 15 days.',
+            ]
+        );
+        \App\Services\System\CompanyInformationService::invalidateCache();
+
+        // 3. Re-fetch historical invoice and assert snapshots remain completely unchanged
+        $freshHistoricalInvoice = Invoice::find($this->invoice->id);
+        $this->assertSame('Original Apex Inc', $freshHistoricalInvoice->company_legal_name_snapshot);
+        $this->assertSame('Apex', $freshHistoricalInvoice->company_dba_name_snapshot);
+        $this->assertSame($historicalInvoice->company_address_snapshot, $freshHistoricalInvoice->company_address_snapshot);
+        $this->assertSame('+1 800-555-0100', $freshHistoricalInvoice->company_phone_snapshot);
+        $this->assertSame('billing@apex.com', $freshHistoricalInvoice->company_email_snapshot);
+        $this->assertSame('EIN-001122', $freshHistoricalInvoice->company_tax_id_snapshot);
+        $this->assertSame('Original invoice note.', $freshHistoricalInvoice->invoice_footer_note_snapshot);
+
+        // 4. Create a second order and generate a new invoice
+        $newOrder = Order::create([
+            'order_number' => 'ORD-2026-IMMUT-02',
+            'idempotency_key' => (string) \Illuminate\Support\Str::uuid(),
+            'customer_id' => $this->customer->id,
+            'salesman_id' => $this->salesman->id,
+            'created_by' => $this->admin->id,
+            'status' => \App\Enums\OrderStatus::APPROVED,
+            'currency' => 'USD',
+            'subtotal' => 100.00,
+            'tax_total' => 8.00,
+            'adjustment_total' => 0.00,
+            'grand_total' => 108.00,
+            'submitted_at' => \Carbon\Carbon::now(),
+            'approved_at' => \Carbon\Carbon::now(),
+            'approved_by' => $this->admin->id,
+        ]);
+
+        \App\Models\OrderItem::create([
+            'order_id' => $newOrder->id,
+            'product_id' => $this->product->id,
+            'product_name_snapshot' => 'Original Product Name',
+            'sku_snapshot' => 'SKU-IMMUT-01',
+            'unit_snapshot' => 'box',
+            'ordered_quantity' => 1,
+            'cancelled_quantity' => 0,
+            'reserved_quantity' => 1,
+            'unit_price' => 100.00,
+            'tax_profile_id' => $this->taxProfile->id,
+            'tax_profile_code_snapshot' => 'STD_TAX',
+            'tax_profile_name_snapshot' => 'Original Tax Profile',
+            'tax_rate_snapshot' => 0.0800,
+            'taxable_amount' => 100.00,
+            'tax_amount' => 8.00,
+            'line_total' => 108.00,
+        ]);
+
+        $generator = app(\App\Services\Invoices\InvoiceGeneratorService::class);
+        $newInvoice = $generator->generateForOrder($newOrder, $this->admin);
+
+        // 5. Assert the newly generated invoice captured the updated CompanyInformation
+        $this->assertSame('Updated Apex Logistics International LLC', $newInvoice->company_legal_name_snapshot);
+        $this->assertSame('Apex Logistics', $newInvoice->company_dba_name_snapshot);
+        $this->assertSame('999 Global Trade Way Suite 400, Savannah, GA 31401, US', $newInvoice->company_address_snapshot);
+        $this->assertSame('+1 (912) 555-9988', $newInvoice->company_phone_snapshot);
+        $this->assertSame('invoices@apexlogistics.com', $newInvoice->company_email_snapshot);
+        $this->assertSame('EIN-998877', $newInvoice->company_tax_id_snapshot);
+        $this->assertSame('Updated invoice terms: Net 15 days.', $newInvoice->invoice_footer_note_snapshot);
+    }
 }

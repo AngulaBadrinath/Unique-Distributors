@@ -65,9 +65,9 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     const { url: pageUrl } = usePage();
     const currentUrl = pageUrl ? pageUrl.split('?')[0] : (typeof window !== 'undefined' ? window.location.pathname : '');
 
-    const displayName = identity?.name || appName || 'Unique Distributors';
-    const displayCompany = company?.display_name || identity?.company_name || 'Unique Distributors';
-    const initials = displayName.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'UD';
+    const displayName = company?.legal_name || company?.dba_name || identity?.name || appName || 'Wholesale Distribution';
+    const displayCompany = company?.legal_name || company?.dba_name || identity?.company_name || 'Unique Jersey Wholesale';
+    const initials = (company?.legal_name || displayName).split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'W';
 
     const toggleSidebarCollapse = () => {
         const next = !sidebarCollapsed;

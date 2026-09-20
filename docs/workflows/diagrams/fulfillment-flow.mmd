@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    actor W as Warehouse Operator / Admin
+    participant WFC as WarehouseFulfillmentController
+    participant WFS as WarehouseFulfillmentService
+    participant O as Order Model
+    participant OIA as OrderItemAllocation
+    participant D as Delivery Model
+    participant N as DomainNotificationDispatcher
+
+    Note over W,N: Step 1: Picking Process
+    W->>WFC: POST /warehouse/fulfillment/{order}/pick (pickedItems[])
+    WFC->>WFS: pickOrder(order, actor, pickedItems)
+    WFS->>O: lockForUpdate() (Assert status in APPROVED/PROCESSING)
+    WFS->>OIA: Update status = PICKED, picked_quantity = Qty
+    WFS->>O: Update fulfillment_status = PICKED, status = PROCESSING
+    WFS-->>WFC: Order Loaded with Allocations & Items
+
+    Note over W,N: Step 2: Packing Process
+    W->>WFC: POST /warehouse/fulfillment/{order}/pack (notes)
+    WFC->>WFS: packOrder(order, actor, notes)
+    WFS->>O: lockForUpdate()
+    WFS->>OIA: Update status = PACKED
+    WFS->>O: Update fulfillment_status = PACKED
+    WFS-->>WFC: Order Ready for Palletization & Dispatch
+
+    Note over W,N: Step 3: Dispatch & Logistics Handover
+    W->>WFC: POST /warehouse/fulfillment/{order}/dispatch (scheduled_date, instructions)
+    WFC->>WFS: dispatchOrder(order, actor, options)
+    WFS->>O: lockForUpdate()
+    WFS->>OIA: Update status = DISPATCHED, dispatched_quantity = Qty
+    WFS->>O: Update fulfillment_status = DISPATCHED, delivery_status = PENDING_ASSIGNMENT
+    WFS->>D: Create Delivery Record (DEL-YYYY-MM-XXXX) & Snapshot DeliveryItems
+    WFS->>N: notifyOrderDispatched(order, delivery)
+    WFS-->>WFC: Dispatch Completed & Delivery Mission Initialized

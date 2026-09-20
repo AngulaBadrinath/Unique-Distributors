@@ -14,7 +14,7 @@ interface ResetPasswordProps {
 
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
     const { appName, identity } = usePage<PageProps>().props;
-    const displayName = identity?.name || appName || 'Unique Distributors';
+    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Wholesale Distribution';
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);

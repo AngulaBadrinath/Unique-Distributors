@@ -1,0 +1,25 @@
+flowchart TD
+    A["Order Approved / Invoiced Trigger\nOrderWorkflowService::approveOrder"] --> B["InvoiceGeneratorService::generateForOrder"]
+    
+    subgraph INVOICE_GENERATION["Invoice Generation Pipeline"]
+        B --> C{"Eligibility Guard:\nStatus in SUBMITTED/APPROVED/PROCESSING/COMPLETED?"}
+        C -->|No| C_ERR["Throw ValidationException"]
+        C -->|Yes| D["Idempotency Check:\nInvoice already exists?"]
+        D -->|Exists| D_RET["Return Existing Invoice"]
+        D -->|New| E["Generate Number:\nINV-YYYY-MM-XXXX"]
+        E --> F["Snapshot Line Items:\nSKU, Name, Unit Price, Qty, Tax Profile\nRULE-DOC-001: No Product Images"]
+        F --> G["Calculate Subtotal, Tax Breakdown, Grand Total"]
+        G --> H["Save Invoice & InvoiceItem Records"]
+    end
+
+    subgraph DOWNSTREAM_POSTING["Authoritative Downstream Postings"]
+        H --> I["Post to Accounts Receivable\nReceivableLedgerService::recordInvoicePosting"]
+        I --> I_REC["ReceivableTransaction:\nType: INVOICE_POSTED\nDebit: Grand Total"]
+        H --> J["Post to General Ledger\nJournalMappingService::postInvoiceIssued"]
+        J --> J_GL["Journal Entry #GL-XXXX:\nDR 1100 Accounts Receivable\nCR 4010 Wholesale Revenue\nCR 2100 Sales Tax Payable"]
+    end
+
+    subgraph EXPORT_PRINT["Document Delivery & Export"]
+        H --> K["InvoicePdfService::generatePdf"]
+        H --> L["InvoicePrintController::print"]
+    end

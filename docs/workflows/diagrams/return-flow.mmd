@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor S as Salesman / Customer
+    actor W as Warehouse / QA Inspector
+    actor A as Admin / Accountant
+    participant RC as SalesmanReturnController
+    participant RS as ReturnRequestService
+    participant RIS as ReturnInspectionService
+    participant RIV as ReturnInventoryService
+    participant CS as CreditNoteService
+    participant GL as JournalMappingService
+
+    Note over S,GL: Step 1: Return Request Creation
+    S->>RC: POST /salesman/returns (order_id, items[], reason)
+    RC->>RS: createReturnRequest(actor, data, evidence)
+    RS->>RS: Validate delivered order & returnable quantities
+    RS-->>S: Return Request Created (RET-YYYY-MM-XXXX, Status: SUBMITTED)
+
+    Note over W,GL: Step 2: Physical Inspection & Stock Disposition
+    W->>RIS: completeInspection(returnRequest, inspector, itemDispositions[])
+    alt Restockable Units
+        RIS->>RIV: restockItems(items) -> Physical Stock +Qty (Movement: RETURN_IN)
+    else Damaged / Scrap Units
+        RIS->>RIV: writeOffItems(items) -> StockException / Damaged Logged
+    end
+    RIS-->>W: Inspection Completed (Status: INSPECTED / APPROVED)
+
+    Note over A,GL: Step 3: Credit Note Issuance & Accounting
+    A->>CS: createCreditNoteForReturn(returnRequest, actor)
+    CS->>CS: Generate Credit Note (CN-YYYY-MM-XXXX)
+    CS->>GL: postCreditNoteIssued(creditNote)
+    GL-->>CS: GL Journal Posted (DR 4030 Sales Returns / DR 2100 Tax / CR 1100 AR)
+    CS-->>A: Credit Note Issued & Customer AR Credited

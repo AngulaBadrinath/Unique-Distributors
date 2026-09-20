@@ -4,7 +4,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
-const defaultAppName = import.meta.env.VITE_APP_NAME || 'Unique Distributors';
+const defaultAppName = import.meta.env.VITE_APP_NAME || 'Wholesale Distribution';
 
 createInertiaApp({
     title: (title) => {
@@ -19,7 +19,7 @@ createInertiaApp({
     setup({ el, App, props }) {
         if (typeof window !== 'undefined') {
             const pageProps = props.initialPage.props as any;
-            (window as any).__appName = pageProps?.identity?.name || pageProps?.appName || defaultAppName;
+            (window as any).__appName = pageProps?.company?.legal_name || pageProps?.company?.dba_name || pageProps?.identity?.name || pageProps?.appName || defaultAppName;
         }
         const root = createRoot(el);
         root.render(<App {...props} />);
