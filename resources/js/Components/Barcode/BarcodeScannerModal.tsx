@@ -121,6 +121,46 @@ export default function BarcodeScannerModal({
         setCameraError(null);
         await stopCamera();
 
+        // 1. Validate browser support for MediaDevices
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            setCameraError(
+                'Camera access is not supported by this browser or requires a secure (HTTPS/localhost) connection.'
+            );
+            setIsCameraActive(false);
+            return;
+        }
+
+        // 2. Explicitly request camera permission using standard MediaDevices API
+        let permissionCheckStream: MediaStream | null = null;
+        try {
+            permissionCheckStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: 'environment' } },
+            });
+        } catch (permErr: any) {
+            console.warn('Camera permission request result:', permErr);
+            if (permErr?.name === 'NotAllowedError' || permErr?.name === 'PermissionDeniedError') {
+                setCameraError(
+                    'Camera permission was denied. Please allow camera access in your browser settings or switch to manual entry.'
+                );
+            } else if (permErr?.name === 'NotFoundError' || permErr?.name === 'DevicesNotFoundError') {
+                setCameraError('No camera device was detected on this device. Fallback to manual entry.');
+            } else if (permErr?.name === 'NotReadableError' || permErr?.name === 'TrackStartError') {
+                setCameraError('Camera is already in use by another application or tab.');
+            } else {
+                setCameraError(
+                    permErr?.message || 'Camera access unavailable or permission denied. Fallback to manual entry.'
+                );
+            }
+            setIsCameraActive(false);
+            return;
+        } finally {
+            // Stop the pre-flight check stream tracks immediately so Html5Qrcode can bind to the device without resource contention
+            if (permissionCheckStream) {
+                permissionCheckStream.getTracks().forEach((track) => track.stop());
+            }
+        }
+
+        // 3. Start Html5Qrcode scanner with rear/environment camera preference
         try {
             const html5QrCode = new Html5Qrcode(scannerContainerId);
             scannerRef.current = html5QrCode;
