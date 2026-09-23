@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Permission;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Services\Auth\PermissionService;
 use App\Services\Reporting\CustomerReportService;
 use App\Services\Reporting\DeliveryPerformanceReportService;
 use App\Services\Reporting\FinancialReportService;
@@ -27,7 +29,8 @@ class AdminReportingController extends Controller
         protected SalesmanPerformanceReportService $salesmanPerformanceReportService,
         protected InventoryReportService $inventoryReportService,
         protected DeliveryPerformanceReportService $deliveryPerformanceReportService,
-        protected FinancialReportService $financialReportService
+        protected FinancialReportService $financialReportService,
+        protected PermissionService $permissionService
     ) {}
 
     /**
@@ -129,6 +132,8 @@ class AdminReportingController extends Controller
         /** @var User $user */
         $user = $request->user();
         $this->authorizeReportingAccess($user);
+        $this->permissionService->authorize($user, Permission::USER_VIEW);
+
         $filters = $request->only([
             'date_from',
             'date_to',

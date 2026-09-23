@@ -6,6 +6,7 @@ use App\Enums\PaymentRejectionReason;
 use App\Enums\PaymentStatus;
 use App\Enums\PaymentTransactionStatus;
 use App\Enums\Permission;
+use App\Enums\UserRole;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Payment;
@@ -46,7 +47,12 @@ class PaymentVerificationService
         // 1. Authorize payment.verify permission
         $this->permissionService->authorize($actor, Permission::PAYMENT_VERIFY);
 
-        // 2. State machine pre-check
+        // 2. Maker-checker segregation of duties: recorder cannot verify own payment unless Super Admin
+        if ((int) $payment->recorded_by === (int) $actor->id && $actor->role !== UserRole::SUPER_ADMIN) {
+            throw new AuthorizationException('Maker-checker violation: You cannot verify a payment that you recorded.');
+        }
+
+        // 3. State machine pre-check
         if ($payment->status !== PaymentTransactionStatus::PENDING_VERIFICATION) {
             throw new ConflictHttpException("Payment {$payment->payment_number} is in '{$payment->status->label()}' status and cannot be verified.");
         }
@@ -163,6 +169,11 @@ class PaymentVerificationService
         string $notes
     ): Payment {
         $this->permissionService->authorize($actor, Permission::PAYMENT_VERIFY);
+
+        // Maker-checker segregation of duties: recorder cannot reject own payment unless Super Admin
+        if ((int) $payment->recorded_by === (int) $actor->id && $actor->role !== UserRole::SUPER_ADMIN) {
+            throw new AuthorizationException('Maker-checker violation: You cannot reject a payment that you recorded.');
+        }
 
         if ($payment->status !== PaymentTransactionStatus::PENDING_VERIFICATION) {
             throw new ConflictHttpException("Payment {$payment->payment_number} is in '{$payment->status->label()}' status and cannot be rejected.");

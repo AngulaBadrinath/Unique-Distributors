@@ -5,6 +5,7 @@ namespace App\Services\Payment;
 use App\Enums\PaymentReversalReason;
 use App\Enums\PaymentTransactionStatus;
 use App\Enums\Permission;
+use App\Enums\UserRole;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Payment;
@@ -47,7 +48,12 @@ class PaymentReversalService
         // 1. Strictly enforce payment.reverse permission (Accountant & Super Admin only)
         $this->permissionService->authorize($actor, Permission::PAYMENT_REVERSE);
 
-        // 2. State machine gate: Only VERIFIED payments can be reversed
+        // 2. Maker-checker segregation of duties: recorder cannot reverse own payment unless Super Admin
+        if ((int) $payment->recorded_by === (int) $actor->id && $actor->role !== UserRole::SUPER_ADMIN) {
+            throw new AuthorizationException('Maker-checker violation: You cannot reverse a payment that you recorded.');
+        }
+
+        // 3. State machine gate: Only VERIFIED payments can be reversed
         if ($payment->status !== PaymentTransactionStatus::VERIFIED) {
             throw new ConflictHttpException("Payment {$payment->payment_number} is in '{$payment->status->label()}' status and cannot be reversed.");
         }

@@ -686,8 +686,10 @@ Route::middleware(['auth', 'account.active'])->group(function () {
                 ->name('admin.reports.customers');
         });
 
-        Route::get('/admin/reports/salesmen', [\App\Http\Controllers\Admin\AdminReportingController::class, 'salesmen'])
-            ->name('admin.reports.salesmen');
+        Route::middleware('permission:user.view')->group(function () {
+            Route::get('/admin/reports/salesmen', [\App\Http\Controllers\Admin\AdminReportingController::class, 'salesmen'])
+                ->name('admin.reports.salesmen');
+        });
 
         Route::middleware('permission:inventory.view')->group(function () {
             Route::get('/admin/reports/inventory', [\App\Http\Controllers\Admin\AdminReportingController::class, 'inventory'])

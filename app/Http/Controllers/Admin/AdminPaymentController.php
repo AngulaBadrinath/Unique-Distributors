@@ -27,6 +27,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -192,6 +193,8 @@ class AdminPaymentController extends Controller
      */
     public function verify(Request $request, Payment $payment): JsonResponse|RedirectResponse
     {
+        Gate::authorize('verify', $payment);
+
         $actor = $request->user();
         $verifiedPayment = $this->verificationService->verifyPayment($payment, $actor);
 
@@ -212,6 +215,8 @@ class AdminPaymentController extends Controller
      */
     public function reject(RejectPaymentRequest $request, Payment $payment): JsonResponse|RedirectResponse
     {
+        Gate::authorize('reject', $payment);
+
         $actor = $request->user();
         $reason = PaymentRejectionReason::from($request->validated('rejection_reason_code'));
         $notes = (string) $request->validated('rejection_notes');
@@ -235,6 +240,8 @@ class AdminPaymentController extends Controller
      */
     public function correct(CorrectPaymentRequest $request, Payment $payment): JsonResponse|RedirectResponse
     {
+        Gate::authorize('correct', $payment);
+
         $actor = $request->user();
         $evidenceFile = $request->file('evidence');
         $resubmittedPayment = $this->paymentService->correctAndResubmitPayment($payment, $request->validated(), $evidenceFile, $actor);
@@ -256,6 +263,8 @@ class AdminPaymentController extends Controller
      */
     public function reverse(ReversePaymentRequest $request, Payment $payment): JsonResponse|RedirectResponse
     {
+        Gate::authorize('reverse', $payment);
+
         $actor = $request->user();
         $reason = PaymentReversalReason::from($request->validated('reversal_reason_code'));
         $notes = (string) $request->validated('reversal_notes');
@@ -279,17 +288,9 @@ class AdminPaymentController extends Controller
      */
     public function evidenceUrl(Request $request, Payment $payment): JsonResponse
     {
+        Gate::authorize('view', $payment);
+
         $actor = $request->user();
-        $this->permissionService->authorize($actor, Permission::PAYMENT_VIEW);
-
-        if ($actor->role === UserRole::SALESMAN) {
-            $isAssigned = $payment->customer && $payment->customer->salesman_id === $actor->id;
-            $isRecorder = $payment->recorded_by === $actor->id;
-
-            if (! $isAssigned && ! $isRecorder) {
-                throw new AuthorizationException('You are not authorized to access payment evidence for this account.');
-            }
-        }
 
         if (! $payment->hasEvidence() || empty($payment->evidence_object_key)) {
             return response()->json([
@@ -316,17 +317,7 @@ class AdminPaymentController extends Controller
      */
     public function streamEvidence(Request $request, Payment $payment): StreamedResponse
     {
-        $actor = $request->user();
-        $this->permissionService->authorize($actor, Permission::PAYMENT_VIEW);
-
-        if ($actor->role === UserRole::SALESMAN) {
-            $isAssigned = $payment->customer && $payment->customer->salesman_id === $actor->id;
-            $isRecorder = $payment->recorded_by === $actor->id;
-
-            if (! $isAssigned && ! $isRecorder) {
-                throw new AuthorizationException('You are not authorized to stream evidence for this account.');
-            }
-        }
+        Gate::authorize('streamEvidence', $payment);
 
         if (! $payment->hasEvidence() || empty($payment->evidence_object_key)) {
             abort(404, 'No evidence file associated with this payment.');
