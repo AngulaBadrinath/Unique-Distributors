@@ -3,8 +3,9 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import DevAgentation from '@/Components/Dev/DevAgentation';
 
-const defaultAppName = import.meta.env.VITE_APP_NAME || 'Wholesale Distribution';
+const defaultAppName = import.meta.env.VITE_APP_NAME || 'Unique Jersey Wholesale';
 
 createInertiaApp({
     title: (title) => {
@@ -22,7 +23,12 @@ createInertiaApp({
             (window as any).__appName = pageProps?.company?.legal_name || pageProps?.company?.dba_name || pageProps?.identity?.name || pageProps?.appName || defaultAppName;
         }
         const root = createRoot(el);
-        root.render(<App {...props} />);
+        root.render(
+            <>
+                <App {...props} />
+                {import.meta.env.DEV && <DevAgentation />}
+            </>
+        );
     },
     progress: {
         color: '#2563eb',
