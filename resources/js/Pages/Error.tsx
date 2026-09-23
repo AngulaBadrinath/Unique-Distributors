@@ -1,6 +1,7 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
+import { PageProps } from '@/types';
 import { 
     ShieldAlert, 
     FileQuestion, 
@@ -17,6 +18,8 @@ interface ErrorPageProps {
 }
 
 export default function ErrorPage({ status = 500, message }: ErrorPageProps) {
+    const { company, identity } = usePage<PageProps>().props;
+    const companyName = company?.legal_name || identity?.company_name || 'Unique Jersey Wholesale';
     const errorConfigs: Record<number, { title: string; defaultMessage: string; icon: React.ReactNode; badge: string }> = {
         403: {
             title: 'Access Restricted',
@@ -105,7 +108,7 @@ export default function ErrorPage({ status = 500, message }: ErrorPageProps) {
 
                 {/* Footer Note */}
                 <p className="text-[11px] text-muted-foreground/70 font-mono pt-4 border-t border-border">
-                    {company?.legal_name || 'Wholesale Distribution'} &bull; Secure Multi-Role Platform
+                    {companyName} &bull; Secure Multi-Role Platform
                 </p>
             </div>
         </div>

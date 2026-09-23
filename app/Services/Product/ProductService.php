@@ -109,6 +109,8 @@ class ProductService
         return [
             'id' => $product->id,
             'sku' => $product->sku,
+            'barcode' => $product->barcode,
+            'barcode_type' => $product->barcode_type,
             'name' => $product->name,
             'description' => $product->description,
             'category_id' => $product->category_id,

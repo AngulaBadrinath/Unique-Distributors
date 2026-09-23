@@ -271,6 +271,8 @@ export interface TaxProfileStatusOption {
 export interface Product {
     id: number;
     sku: string;
+    barcode?: string | null;
+    barcode_type?: string | null;
     name: string;
     description: string | null;
     category_id: number | null;

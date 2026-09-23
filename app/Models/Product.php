@@ -36,6 +36,8 @@ class Product extends Model
      */
     protected $fillable = [
         'sku',
+        'barcode',
+        'barcode_type',
         'name',
         'description',
         'category_id',
@@ -137,8 +139,17 @@ class Product extends Model
         return $query->where(function (Builder $q) use ($term, $like) {
             $q->where('name', $like, "%{$term}%")
                 ->orWhere('sku', $like, "%{$term}%")
+                ->orWhere('barcode', $like, "%{$term}%")
                 ->orWhere('description', $like, "%{$term}%");
         });
+    }
+
+    /**
+     * Scope query by exact barcode match.
+     */
+    public function scopeWhereBarcode(Builder $query, string $barcode): Builder
+    {
+        return $query->where('barcode', trim($barcode));
     }
 
     /**

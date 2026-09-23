@@ -10,7 +10,7 @@ return [
     | The user-facing name of the software product or platform.
     |
     */
-    'name' => env('APP_NAME', 'Wholesale Distribution'),
+    'name' => env('APP_NAME', 'Unique Distributors'),
 
     /*
     |--------------------------------------------------------------------------
@@ -20,7 +20,7 @@ return [
     | The formal name of the company or operating business entity.
     |
     */
-    'company_name' => env('COMPANY_NAME', 'Unique Jersey Wholesale'),
+    'company_name' => env('COMPANY_NAME', 'Unique Distributors Inc.'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,8 +51,8 @@ return [
     | Public web paths to brand logos and browser icons.
     |
     */
-    'logo_path' => env('APP_LOGO_PATH', '/images/brand/logo.svg'),
-    'favicon_path' => env('APP_FAVICON_PATH', '/favicon.ico'),
+    'logo_path' => env('APP_LOGO_PATH', '/branding/horizontal-dark.svg'),
+    'favicon_path' => env('APP_FAVICON_PATH', '/branding/favicon.ico'),
 
     /*
     |--------------------------------------------------------------------------
@@ -62,6 +62,6 @@ return [
     | Authoritative copyright or footer text displayed across application shells.
     |
     */
-    'footer_text' => env('APP_FOOTER_TEXT', 'Unique Jersey Wholesale'),
+    'footer_text' => env('APP_FOOTER_TEXT', 'Unique Distributors'),
 
 ];

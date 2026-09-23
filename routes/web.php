@@ -157,6 +157,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     // Product Management
     Route::middleware('permission:product.view')->group(function () {
         Route::get('/products', [\App\Http\Controllers\Product\ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/barcode/lookup', [\App\Http\Controllers\Product\ProductBarcodeController::class, 'lookup'])->name('products.barcode.lookup');
         Route::get('/products/{product}', [\App\Http\Controllers\Product\ProductController::class, 'show'])->whereNumber('product')->name('products.show');
 
         // Category Viewing

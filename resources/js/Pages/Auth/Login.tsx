@@ -14,8 +14,7 @@ interface LoginProps {
 export default function Login({ status }: LoginProps) {
     const { appName, identity } = usePage<PageProps>().props;
     const [showPassword, setShowPassword] = useState(false);
-    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Wholesale Distribution';
-    const initials = displayName.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'UD';
+    const displayName = (usePage().props as any)?.company?.legal_name || identity?.name || appName || 'Unique Jersey Wholesale';
 
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
@@ -40,15 +39,21 @@ export default function Login({ status }: LoginProps) {
             <div className="w-full max-w-md space-y-6 relative z-10">
                 {/* Brand Header */}
                 <div className="flex flex-col items-center text-center space-y-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-base shadow-xs">
-                        {initials}
+                    <div className="flex items-center justify-center p-2">
+                        <img
+                            src="/branding/horizontal-light.svg"
+                            alt={displayName}
+                            className="h-12 w-auto object-contain dark:hidden"
+                        />
+                        <img
+                            src="/branding/horizontal-dark.svg"
+                            alt={displayName}
+                            className="h-12 w-auto object-contain hidden dark:block"
+                        />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                            {displayName}
-                        </h1>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            {identity?.tagline || 'Centralized Authentication Gateway • Multi-Portal Access'}
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {identity?.tagline || 'B2B Wholesale Commerce & Distribution Platform'}
                         </p>
                     </div>
                 </div>

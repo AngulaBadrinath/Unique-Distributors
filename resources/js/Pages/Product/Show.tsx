@@ -29,6 +29,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Star,
+    Barcode,
 } from 'lucide-react';
 
 interface ProductShowProps {
@@ -283,6 +284,15 @@ export default function ProductShow({
                                     <span className="font-mono text-sm font-bold text-primary bg-primary/10 px-2.5 py-1 rounded border border-primary/20">
                                         {product.sku}
                                     </span>
+                                    {product.barcode && (
+                                        <span className="font-mono text-xs font-semibold text-foreground bg-accent/60 px-2.5 py-1 rounded border border-border flex items-center gap-1.5" title={`Barcode Format: ${product.barcode_type || 'AUTO'}`}>
+                                            <Barcode className="w-3.5 h-3.5 text-primary" />
+                                            {product.barcode}
+                                            {product.barcode_type && (
+                                                <span className="text-[10px] text-muted-foreground uppercase">({product.barcode_type})</span>
+                                            )}
+                                        </span>
+                                    )}
                                     {getStatusBadge(product.status)}
                                     <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded">
                                         Unit: {product.unit}

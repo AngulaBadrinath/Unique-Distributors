@@ -5,6 +5,7 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Badge } from '@/Components/ui/badge';
 import { Card, CardContent } from '@/Components/ui/card';
+import BarcodeScannerModal from '@/Components/Barcode/BarcodeScannerModal';
 import { Category, PaginatedResponse, PageProps, Product, ProductStatusOption } from '@/types';
 import {
     Package,
@@ -22,6 +23,7 @@ import {
     Layers,
     DollarSign,
     Boxes,
+    Scan,
 } from 'lucide-react';
 
 interface ProductIndexProps {
@@ -50,6 +52,7 @@ export default function ProductIndex({
     can,
 }: ProductIndexProps) {
     const { auth } = usePage<PageProps>().props;
+    const [scannerOpen, setScannerOpen] = useState(false);
     const [search, setSearch] = useState(filters.search || '');
     const [selectedStatus, setSelectedStatus] = useState(filters.status || 'ALL');
     const [selectedCategory, setSelectedCategory] = useState(filters.category_id || 'ALL');
@@ -146,14 +149,25 @@ export default function ProductIndex({
                         </p>
                     </div>
 
-                    {can.create && (
-                        <Link href="/products/create">
-                            <Button className="w-full sm:w-auto shadow-xs gap-2">
-                                <Plus className="h-4 w-4" />
-                                Add New Product
-                            </Button>
-                        </Link>
-                    )}
+                    <div className="flex flex-wrap items-center gap-2.5">
+                        <Button
+                            variant="outline"
+                            onClick={() => setScannerOpen(true)}
+                            className="w-full sm:w-auto shadow-xs gap-2"
+                        >
+                            <Scan className="h-4 w-4 text-primary" />
+                            Scan Barcode
+                        </Button>
+
+                        {can.create && (
+                            <Link href="/products/create">
+                                <Button className="w-full sm:w-auto shadow-xs gap-2">
+                                    <Plus className="h-4 w-4" />
+                                    Add New Product
+                                </Button>
+                            </Link>
+                        )}
+                    </div>
                 </div>
 
                 {/* Filter and Search Bar */}
@@ -358,9 +372,17 @@ export default function ProductIndex({
                                                 )}
                                             </td>
                                             <td className="px-4 py-3.5">
-                                                <span className="font-mono text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
-                                                    {product.sku}
-                                                </span>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="font-mono text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20 w-fit">
+                                                        {product.sku}
+                                                    </span>
+                                                    {product.barcode && (
+                                                        <span className="font-mono text-[10px] text-muted-foreground flex items-center gap-1">
+                                                            <Scan className="h-2.5 w-2.5" />
+                                                            {product.barcode}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-4 py-3.5">
                                                 <div className="flex flex-col">
@@ -551,6 +573,12 @@ export default function ProductIndex({
                         </div>
                     </div>
                 )}
+
+                {/* Barcode Scanner Dialog */}
+                <BarcodeScannerModal
+                    isOpen={scannerOpen}
+                    onClose={() => setScannerOpen(false)}
+                />
             </div>
         </AppLayout>
     );

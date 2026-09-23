@@ -109,8 +109,8 @@ export default function MfaIndex({
         }
     };
 
-    const { appName, identity } = usePage<PageProps>().props;
-    const titleName = (company?.legal_name || identity?.name || appName || 'Wholesale Distribution').toUpperCase();
+    const { appName, identity, company } = usePage<PageProps>().props;
+    const titleName = (company?.legal_name || identity?.company_name || identity?.name || appName || 'Unique Jersey Wholesale').toUpperCase();
 
     const handleDownloadRecoveryCodes = () => {
         if (recovery_codes && recovery_codes.length > 0) {

@@ -19,6 +19,8 @@ readonly class ProductData
         public string $default_selling_price,
         public string $mrp,
         public ?int $tax_profile_id = null,
+        public ?string $barcode = null,
+        public ?string $barcode_type = null,
     ) {}
 
     /**
@@ -33,6 +35,9 @@ readonly class ProductData
             ? $statusValue
             : (ProductStatus::tryFrom((string) $statusValue) ?? ProductStatus::ACTIVE);
 
+        $barcode = isset($data['barcode']) && trim((string) $data['barcode']) !== '' ? trim((string) $data['barcode']) : null;
+        $barcodeType = isset($data['barcode_type']) && trim((string) $data['barcode_type']) !== '' ? trim((string) $data['barcode_type']) : null;
+
         return new self(
             sku: strtoupper(trim((string) ($data['sku'] ?? ''))),
             name: trim((string) ($data['name'] ?? '')),
@@ -45,6 +50,8 @@ readonly class ProductData
             default_selling_price: PriceBoundaryService::normalize($data['default_selling_price'] ?? '0.00', 'default_selling_price', allowZero: true),
             mrp: PriceBoundaryService::normalize($data['mrp'] ?? '0.00', 'mrp', allowZero: true),
             tax_profile_id: isset($data['tax_profile_id']) && $data['tax_profile_id'] !== '' && $data['tax_profile_id'] !== null ? (int) $data['tax_profile_id'] : null,
+            barcode: $barcode,
+            barcode_type: $barcodeType,
         );
     }
 
@@ -57,6 +64,8 @@ readonly class ProductData
     {
         return [
             'sku' => $this->sku,
+            'barcode' => $this->barcode,
+            'barcode_type' => $this->barcode_type,
             'name' => $this->name,
             'description' => $this->description,
             'category_id' => $this->category_id,

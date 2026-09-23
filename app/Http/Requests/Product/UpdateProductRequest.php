@@ -48,6 +48,8 @@ class UpdateProductRequest extends FormRequest
 
         return [
             'sku' => ['required', 'string', 'max:50', Rule::unique('products', 'sku')->ignore($productId)],
+            'barcode' => ['nullable', 'string', 'max:100', Rule::unique('products', 'barcode')->ignore($productId)],
+            'barcode_type' => ['nullable', 'string', 'max:30'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
@@ -77,6 +79,7 @@ class UpdateProductRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'barcode.unique' => 'This barcode is already assigned to another product.',
             'default_selling_price.gte' => 'Default selling price cannot be less than the minimum allowed price.',
             'default_selling_price.lte' => 'Default selling price cannot exceed the MRP / list price.',
             'mrp.gte' => 'MRP / list price cannot be less than the default selling price.',
@@ -90,7 +93,7 @@ class UpdateProductRequest extends FormRequest
     }
 
     /**
-     * Prepare inputs for validation (trim whitespace and normalize SKU).
+     * Prepare inputs for validation (trim whitespace and normalize SKU & barcode).
      */
     protected function prepareForValidation(): void
     {
@@ -109,6 +112,12 @@ class UpdateProductRequest extends FormRequest
 
         if (isset($sanitized['sku']) && is_string($sanitized['sku'])) {
             $sanitized['sku'] = strtoupper(trim((string) $sanitized['sku']));
+        }
+
+        if (isset($sanitized['barcode']) && is_string($sanitized['barcode'])) {
+            $normalizedBarcode = preg_replace('/[\r\n\x00-\x1F\x7F]/', '', $sanitized['barcode']);
+            $normalizedBarcode = trim((string) $normalizedBarcode);
+            $sanitized['barcode'] = $normalizedBarcode === '' ? null : $normalizedBarcode;
         }
 
         $this->merge($sanitized);

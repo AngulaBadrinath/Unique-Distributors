@@ -64,12 +64,14 @@ export default function SalesmanLayout({
                         </Link>
                     ) : (
                         <Link href="/dashboard" className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-xl bg-action-accent text-white flex items-center justify-center font-bold text-xs shadow-neu-dark glow-cyan-subtle">
-                                SW
-                            </div>
+                            <img
+                                src="/branding/icon-dark.svg"
+                                alt="Unique Jersey Wholesale"
+                                className="h-8 w-8 object-contain"
+                            />
                             <div className="hidden sm:block">
                                 <span className="font-semibold text-xs text-white block leading-tight">Sales Workspace</span>
-                                <span className="text-[10px] text-muted-foreground font-mono">{company?.display_name || identity?.company_name || 'Wholesale Portal'}</span>
+                                <span className="text-[10px] text-muted-foreground font-mono">{company?.display_name || identity?.company_name || 'Unique Jersey Wholesale'}</span>
                             </div>
                         </Link>
                     )}

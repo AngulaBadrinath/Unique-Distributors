@@ -395,19 +395,19 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 >
                     {/* Brand header */}
                     <div className="h-16 flex items-center justify-between px-4 border-b border-brand-border bg-brand">
-                        <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-action-accent text-white font-semibold text-sm tracking-tight shadow-neu">
-                                {initials}
-                            </div>
-                            {!sidebarCollapsed && (
-                                <div className="flex flex-col min-w-0">
-                                    <span className="font-semibold text-xs leading-tight truncate text-brand-foreground">
-                                        {displayName}
-                                    </span>
-                                    <span className="text-[10px] text-brand-muted font-mono truncate">
-                                        {displayCompany}
-                                    </span>
-                                </div>
+                        <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0" title={displayName}>
+                            {sidebarCollapsed ? (
+                                <img
+                                    src="/branding/icon-dark.svg"
+                                    alt="Unique Jersey Wholesale"
+                                    className="h-8 w-8 shrink-0 object-contain mx-auto"
+                                />
+                            ) : (
+                                <img
+                                    src="/branding/horizontal-dark.svg"
+                                    alt="Unique Jersey Wholesale"
+                                    className="h-7 w-auto max-w-[190px] object-contain"
+                                />
                             )}
                         </Link>
                         <button

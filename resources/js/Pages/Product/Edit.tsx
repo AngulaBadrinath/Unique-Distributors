@@ -23,7 +23,9 @@ import {
     X,
     FileCheck,
     Receipt,
+    Scan,
 } from 'lucide-react';
+import BarcodeScannerModal from '@/Components/Barcode/BarcodeScannerModal';
 
 interface ProductEditProps {
     product: Product;
@@ -38,6 +40,8 @@ interface ProductEditProps {
 
 interface ProductEditFormData {
     sku: string;
+    barcode: string;
+    barcode_type: string;
     name: string;
     description: string;
     category_id: string;
@@ -57,8 +61,12 @@ export default function ProductEdit({
     statuses,
     can,
 }: ProductEditProps) {
+    const [scannerOpen, setScannerOpen] = useState(false);
+
     const { data, setData, put, processing, errors } = useForm<ProductEditFormData>({
         sku: product.sku || '',
+        barcode: product.barcode || '',
+        barcode_type: product.barcode_type || 'CODE-128',
         name: product.name || '',
         description: product.description || '',
         category_id: product.category_id ? product.category_id.toString() : '',
@@ -335,6 +343,63 @@ export default function ProductEdit({
                                     </select>
                                     {errors.status && (
                                         <p className="text-destructive text-xs mt-1">{errors.status}</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Barcode & Barcode Type */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                                <div className="sm:col-span-2">
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="barcode" className="text-xs font-medium">
+                                            Barcode / UPC / EAN
+                                        </Label>
+                                        <span className="text-[11px] text-muted-foreground">Optional identifier</span>
+                                    </div>
+                                    <div className="flex gap-2 mt-1">
+                                        <Input
+                                            id="barcode"
+                                            type="text"
+                                            value={data.barcode}
+                                            onChange={(e) => setData('barcode', e.target.value.trim())}
+                                            placeholder="e.g. 012345678905 or scan barcode"
+                                            className="font-mono"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setScannerOpen(true)}
+                                            className="gap-1.5 shrink-0 px-3 text-xs"
+                                        >
+                                            <Scan className="h-3.5 w-3.5 text-primary" />
+                                            <span>Scan</span>
+                                        </Button>
+                                    </div>
+                                    {errors.barcode && (
+                                        <p className="text-destructive text-xs mt-1">{errors.barcode}</p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="barcode_type" className="text-xs font-medium">
+                                        Barcode Type
+                                    </Label>
+                                    <select
+                                        id="barcode_type"
+                                        value={data.barcode_type}
+                                        onChange={(e) => setData('barcode_type', e.target.value)}
+                                        className="w-full h-9 mt-1 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    >
+                                        <option value="UPC-A">UPC-A (12 digits)</option>
+                                        <option value="EAN-13">EAN-13 (13 digits)</option>
+                                        <option value="CODE-128">Code 128 (Standard)</option>
+                                        <option value="CODE-39">Code 39</option>
+                                        <option value="ITF-14">ITF-14 (Case barcode)</option>
+                                        <option value="CUSTOM">Custom / Other</option>
+                                    </select>
+                                    {errors.barcode_type && (
+                                        <p className="text-destructive text-xs mt-1">{errors.barcode_type}</p>
                                     )}
                                 </div>
                             </div>
@@ -922,6 +987,19 @@ export default function ProductEdit({
                         </div>
                     </div>
                 )}
+
+                {/* Inline Scanner Modal */}
+                <BarcodeScannerModal
+                    isOpen={scannerOpen}
+                    onClose={() => setScannerOpen(false)}
+                    onProductSelected={(p) => {
+                        if (p.barcode) {
+                            setData('barcode', p.barcode);
+                            if (p.barcode_type) setData('barcode_type', p.barcode_type);
+                        }
+                    }}
+                    autoRedirectToEdit={false}
+                />
             </div>
         </AppLayout>
     );
