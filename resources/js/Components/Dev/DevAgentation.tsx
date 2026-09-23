@@ -1,22 +1,22 @@
-import React, { lazy, Suspense } from 'react';
-
-// Development-only dynamic import of Agentation to guarantee zero production bundle overhead
-const AgentationComponent = import.meta.env.DEV
-    ? lazy(() => import('agentation').then((m) => ({ default: m.Agentation })))
-    : null;
+import React, { useEffect, useState } from 'react';
+import { Agentation } from 'agentation';
 
 export default function DevAgentation() {
-    if (!import.meta.env.DEV || !AgentationComponent) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!import.meta.env.DEV || !isMounted) {
         return null;
     }
 
     return (
-        <Suspense fallback={null}>
-            <AgentationComponent
-                appName="Unique Jersey Wholesale"
-                endpoint="http://localhost:4747"
-                enableKeyboardShortcuts={true}
-            />
-        </Suspense>
+        <Agentation
+            appName="Unique Jersey Wholesale"
+            endpoint="http://localhost:4747"
+            enableKeyboardShortcuts={true}
+        />
     );
 }
