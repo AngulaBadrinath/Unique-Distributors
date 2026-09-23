@@ -76,6 +76,10 @@ class SecurityHeadersMiddleware
             $connectSrc[] = 'http://127.0.0.1:5173';
             $connectSrc[] = 'ws://localhost:5173';
             $connectSrc[] = 'ws://127.0.0.1:5173';
+            $connectSrc[] = 'http://localhost:4747';
+            $connectSrc[] = 'http://127.0.0.1:4747';
+            $connectSrc[] = 'ws://localhost:4747';
+            $connectSrc[] = 'ws://127.0.0.1:4747';
         }
 
         $directives = [

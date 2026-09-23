@@ -7,6 +7,16 @@
         "@playwright/mcp@latest",
         "--cdp-endpoint=http://127.0.0.1:9222"
       ]
+    },
+    "agentation": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "agentation-mcp",
+        "server",
+        "--mcp-only",
+        "--http-url=http://localhost:4747"
+      ]
     }
   }
 }
