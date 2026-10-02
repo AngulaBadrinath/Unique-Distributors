@@ -234,7 +234,9 @@ class ProfitLossReconciliationTest extends TestCase
 
     public function test_profit_and_loss_end_to_end_operational_flow_to_gl(): void
     {
-        $category = Category::create([
+        Carbon::setTestNow('2026-09-05 10:00:00');
+        try {
+            $category = Category::create([
             'name' => 'Beverages',
             'code' => 'BEV',
             'status' => CategoryStatus::ACTIVE,
@@ -366,5 +368,8 @@ class ProfitLossReconciliationTest extends TestCase
         $unauthResponse = $this->actingAs($this->salesman)
             ->get('/admin/accounting/profit-loss');
         $unauthResponse->assertStatus(403);
+        } finally {
+            Carbon::setTestNow();
+        }
     }
 }
