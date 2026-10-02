@@ -45,6 +45,25 @@ When a new business requirement, client change request, or technical modificatio
 
 ## 2. Change Register
 
+### CHANGE-038: Master Inventory Concurrency & Race-Condition Test Suite (QA-005)
+- **Change ID:** `CHANGE-038`
+- **Date:** October 2, 2026
+- **Requested By:** Principal Software Architect / Quality Assurance Lead
+- **Request:** Implement `QA005InventoryConcurrencyTest.php` covering competing orders for scarce physical inventory, multi-product ascending lock ordering deadlock prevention, stock exception damage quarantine isolation, allocation release and re-reservation, atomic reservation failure rollback isolation, mathematical inventory balance conservation, authorized balance adjustment serialization, and double-release guards.
+- **Reason:** Guarantee inventory consistency, prevent over-allocation races, eliminate deadlocks under reverse item orderings, and verify rollback boundaries under peak concurrent ordering.
+- **Status:** `APPROVED & IMPLEMENTED`
+- **Priority:** `P1` (Operational Concurrency Quality Gate)
+- **Affected PRD Requirements:** PRD §17, §18, §19, §38.
+- **Affected Architecture:** Technical Architecture §22, §23, §24.
+- **Affected Security:** Permission enforcement across `Permission::INVENTORY_ADJUST`, `Permission::INVENTORY_EXCEPTION_REPORT`, and `Permission::ORDER_APPROVE`.
+- **Affected Tickets:** `QA-005`.
+- **Inventory Impact:** Formal verification of physical stock invariants `on_hand == reserved + available + damaged` under high concurrency.
+- **Testing Impact:** 7 new automated tests with 61 assertions in `QA005InventoryConcurrencyTest.php`. Full QA suite passing 35/35 tests, Inventory suite passing 107/107 tests.
+- **Approved By:** Lead Architect
+- **Implementation Status:** Verified complete; 100% tests passing.
+
+---
+
 ### CHANGE-001: Baseline Specification Freeze & Project Operating System Initialization
 - **Change ID:** `CHANGE-001`
 - **Date:** September 4, 2026
