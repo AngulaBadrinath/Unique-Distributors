@@ -183,15 +183,34 @@ class PaymentService
                     ]);
                 }
 
-                if ($order->status === OrderStatus::DRAFT) {
+                // Disallow payment recording for prohibited lifecycle states
+                if (in_array($order->status, [OrderStatus::DRAFT, OrderStatus::CANCELLED, OrderStatus::REJECTED], true)) {
+                    $statusLabel = $order->status->label();
                     throw ValidationException::withMessages([
-                        'order_id' => 'Payments cannot be linked to draft orders. The order must be submitted or approved.',
+                        'order_id' => "Payments cannot be recorded against {$statusLabel} orders.",
                     ]);
                 }
 
-                if ($order->status === OrderStatus::CANCELLED) {
+                // Authoritative Overpayment Protection under aggregate lock
+                $existingPaymentsTotal = (float) Payment::where('order_id', $order->id)
+                    ->whereIn('status', [PaymentTransactionStatus::VERIFIED, PaymentTransactionStatus::PENDING_VERIFICATION])
+                    ->lockForUpdate()
+                    ->sum('amount');
+
+                $grandTotal = (float) $order->grand_total;
+                $collectibleOutstanding = max(0.0, $grandTotal - $existingPaymentsTotal);
+
+                if ($collectibleOutstanding <= 0.0) {
                     throw ValidationException::withMessages([
-                        'order_id' => 'Payments cannot be recorded against cancelled orders.',
+                        'amount' => "Order {$order->order_number} has no collectible outstanding balance remaining.",
+                    ]);
+                }
+
+                if (bccomp((string) $amount, (string) $collectibleOutstanding, 2) === 1) {
+                    $formattedOutstanding = number_format($collectibleOutstanding, 2);
+                    $formattedAmount = number_format($amount, 2);
+                    throw ValidationException::withMessages([
+                        'amount' => "Payment amount (\${$formattedAmount}) exceeds the collectible outstanding balance of \${$formattedOutstanding} for Order {$order->order_number}.",
                     ]);
                 }
             }

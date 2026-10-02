@@ -594,6 +594,7 @@ class AdminOrderController extends Controller
                     'review' => $isReviewable && ($this->permissionService->has($actor, Permission::ORDER_APPROVE) || $this->permissionService->has($actor, Permission::ORDER_REJECT)),
                     'print' => true,
                     'request_adjustment' => $actor->can('requestAdjustment', $order),
+                    'record_payment' => $this->permissionService->has($actor, Permission::PAYMENT_CREATE) && !in_array($order->status, [OrderStatus::DRAFT, OrderStatus::CANCELLED, OrderStatus::REJECTED], true),
                 ],
                 'backUrl' => $backUrl,
                 'backLabel' => $backLabel,

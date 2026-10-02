@@ -11,18 +11,26 @@ import {
     Info,
     CheckCircle2,
     Clock,
+    Banknote,
 } from 'lucide-react';
+import { Button } from '@/Components/ui/button';
 
 interface OrderDetailOperationalCardsProps {
     order: AdminOrderDetailData['order'];
     customer: AdminOrderDetailData['customer'];
     fulfillmentSummary: AdminOrderDetailData['fulfillment_summary'];
+    financialSummary?: AdminOrderDetailData['financial_summary'];
+    canRecordPayment?: boolean;
+    onRecordPayment?: () => void;
 }
 
 export default function OrderDetailOperationalCards({
     order,
     customer,
     fulfillmentSummary,
+    financialSummary,
+    canRecordPayment,
+    onRecordPayment,
 }: OrderDetailOperationalCardsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,7 +113,47 @@ export default function OrderDetailOperationalCards({
                             <span className="text-muted-foreground text-[11px]">Payment Status:</span>
                             <span className="font-bold text-foreground">{order.payment_status_label ?? 'Unpaid'}</span>
                         </div>
+                        {financialSummary && (
+                            <div className="pt-2 border-t border-border/40 space-y-1">
+                                <div className="flex justify-between items-center text-[11px]">
+                                    <span className="text-muted-foreground">Grand Total:</span>
+                                    <span className="font-mono font-semibold text-foreground">${financialSummary.grand_total}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-[11px]">
+                                    <span className="text-muted-foreground">Verified Paid:</span>
+                                    <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                                        ${financialSummary.verified_payments_total}
+                                    </span>
+                                </div>
+                                {parseFloat(financialSummary.pending_payments_total) > 0 && (
+                                    <div className="flex justify-between items-center text-[11px]">
+                                        <span className="text-muted-foreground">Pending Verification:</span>
+                                        <span className="font-mono font-semibold text-amber-600 dark:text-amber-400">
+                                            ${financialSummary.pending_payments_total}
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between items-center text-[11px] pt-1 border-t border-dashed">
+                                    <span className="font-bold text-foreground">Outstanding Balance:</span>
+                                    <span className="font-mono font-bold text-foreground">
+                                        ${financialSummary.outstanding_balance}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
+
+                    {canRecordPayment && onRecordPayment && parseFloat(financialSummary?.outstanding_balance ?? order.grand_total) > 0 && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onRecordPayment}
+                            className="w-full gap-1.5 text-xs text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/60"
+                        >
+                            <Banknote className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                            <span>Record Balance Payment</span>
+                        </Button>
+                    )}
 
                     <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground bg-muted/20 p-2 rounded border border-border/30">
                         <Info className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />

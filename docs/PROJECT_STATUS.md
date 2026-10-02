@@ -14,14 +14,14 @@
 | Metric | Current Value | Notes |
 | Metric | Current Value | Notes |
 |---|---|---|
-| **Overall Code Completion** | **93.0%** (119 / 128 tickets) | QA Wave 1 Core Commerce Hardening complete; 1,503 automated tests (1,491 passed, 8,835 assertions, 12 skipped, 0 failures), TypeScript verified, Vite build clean |
+| **Overall Code Completion** | **94.5%** (121 / 128 tickets) | QA Wave 1 Core Commerce Hardening + Post-Order Balance Payments complete; 1,510 automated tests (1,498 passed, 8,855 assertions, 12 skipped, 0 failures), TypeScript verified, Vite build clean |
 | **Specification Completion** | **100.0%** (5 / 5 documents) | PRD, Architecture, Security, Frontend, and Tickets are approved baselines |
 | **Governance Layer Completion** | **100.0%** (13 / 13 files) | AGENTS, CLAUDE, GEMINI, and all `docs/*` operating system files active |
-| **Current Phase** | **QA Wave 1 — Core Security & Commerce Hardening** | Status: `COMPLETED` (QA-001 Auth suite, QA-003 Order lifecycle E2E, QA-004 Adjustment lifecycle E2E) |
-| **Current Milestone Gate** | **QA Wave 1 Gate — Hardening Complete** | Status: `COMPLETED` (Zero regressions, 1,491 tests passing, 8,835 assertions) |
-| **Current Active Ticket** | **QA-WAVE-1** (Complete) | Ready for QA Wave 2 authorization / progression |
-| **Git Working Tree** | Clean / Ready to Commit | Feature branch `feature/QA-WAVE-1-core-commerce-20260908` |
-| **Active Blockers** | **0** | Full test suite passed (1,491 passing), TypeScript verified, Vite build clean |
+| **Current Phase** | **Post-Order Balance Payments & Settlement Workspaces** | Status: `COMPLETED` (Admin & Salesman post-order balance payments, row-locking overpayment protection, evidence preview modal) |
+| **Current Milestone Gate** | **Commerce & Settlement Hardening Complete** | Status: `COMPLETED` (Zero regressions, TypeScript clean, Vite build clean) |
+| **Current Active Ticket** | **POST-ORDER-PAYMENTS** (Complete) | Ready for next milestone progression |
+| **Git Working Tree** | Clean / Ready to Commit | Feature branch `feature/post-order-balance-payments` |
+| **Active Blockers** | **0** | Full test suite passed, TypeScript verified, Vite build clean |
 
 ### Completion Calculation Formula
 $$\text{Progress} = \left( \frac{\text{Completed Verified Implementation Tickets}}{\text{Total Non-Deferred Implementation Tickets}} \right) \times 100$$

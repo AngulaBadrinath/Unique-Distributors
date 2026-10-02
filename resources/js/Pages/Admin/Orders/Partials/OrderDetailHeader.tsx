@@ -16,6 +16,7 @@ import {
     User,
     ListFilter,
     SlidersHorizontal,
+    Banknote,
 } from 'lucide-react';
 
 interface OrderDetailHeaderProps {
@@ -27,6 +28,7 @@ interface OrderDetailHeaderProps {
     backUrl: string;
     backLabel: string;
     onRequestAdjustment?: () => void;
+    onRecordPayment?: () => void;
 }
 
 export default function OrderDetailHeader({
@@ -38,6 +40,7 @@ export default function OrderDetailHeader({
     backUrl,
     backLabel,
     onRequestAdjustment,
+    onRecordPayment,
 }: OrderDetailHeaderProps) {
     const handlePrint = () => {
         if (order.invoice?.id) {
@@ -88,6 +91,18 @@ export default function OrderDetailHeader({
                         >
                             <SlidersHorizontal className="h-3.5 w-3.5 text-amber-600" />
                             <span>Request Adjustment</span>
+                        </Button>
+                    )}
+
+                    {can.record_payment && onRecordPayment && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onRecordPayment}
+                            className="gap-1.5 text-xs text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 shadow-sm"
+                        >
+                            <Banknote className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                            <span>Record Payment</span>
                         </Button>
                     )}
 

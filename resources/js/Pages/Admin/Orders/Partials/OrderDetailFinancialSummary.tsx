@@ -2,16 +2,18 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { AdminOrderDetailData } from '@/types/order';
-import { DollarSign, Receipt, ShieldCheck } from 'lucide-react';
+import { DollarSign, Receipt, ShieldCheck, Clock } from 'lucide-react';
 
 interface OrderDetailFinancialSummaryProps {
     order: AdminOrderDetailData['order'];
     taxBreakdown: AdminOrderDetailData['tax_breakdown'];
+    financialSummary?: AdminOrderDetailData['financial_summary'];
 }
 
 export default function OrderDetailFinancialSummary({
     order,
     taxBreakdown,
+    financialSummary,
 }: OrderDetailFinancialSummaryProps) {
     return (
         <Card className="border shadow-sm">
@@ -50,6 +52,36 @@ export default function OrderDetailFinancialSummary({
                             ${order.grand_total}
                         </span>
                     </div>
+
+                    {financialSummary && (
+                        <div className="pt-2 border-t border-dashed space-y-1.5 text-[11px]">
+                            <div className="flex justify-between items-center text-muted-foreground">
+                                <span>Verified Paid</span>
+                                <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                                    ${financialSummary.verified_payments_total}
+                                </span>
+                            </div>
+
+                            {parseFloat(financialSummary.pending_payments_total) > 0 && (
+                                <div className="flex justify-between items-center text-muted-foreground">
+                                    <span className="flex items-center gap-1">
+                                        <span>Pending Verification</span>
+                                        <Clock className="h-3 w-3 text-amber-500" />
+                                    </span>
+                                    <span className="font-mono font-semibold text-amber-600 dark:text-amber-400">
+                                        ${financialSummary.pending_payments_total}
+                                    </span>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-baseline text-foreground pt-1 border-t">
+                                <span className="font-bold">Outstanding Balance:</span>
+                                <span className="font-mono font-bold text-sm">
+                                    ${financialSummary.outstanding_balance}
+                                </span>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Multi-Line Tax Breakdown */}

@@ -746,6 +746,7 @@ class SalesmanOrderController extends Controller
                 'timeline' => $this->buildOrderTimeline($order),
                 'can' => [
                     'request_adjustment' => $actor->can('requestAdjustment', $order),
+                    'record_payment' => $this->permissionService->has($actor, Permission::PAYMENT_CREATE) && !in_array($order->status, [OrderStatus::DRAFT, OrderStatus::CANCELLED, OrderStatus::REJECTED], true),
                 ],
             ],
         ]);
