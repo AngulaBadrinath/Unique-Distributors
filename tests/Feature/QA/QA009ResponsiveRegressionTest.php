@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\QA;
 
 use App\Enums\AccountStatus;
+use App\Enums\CategoryStatus;
 use App\Enums\CustomerStatus;
 use App\Enums\DeliveryStatus;
 use App\Enums\FulfillmentStatus;
@@ -120,7 +121,7 @@ class QA009ResponsiveRegressionTest extends TestCase
         $this->category = Category::create([
             'name' => 'Produce QA009',
             'code' => 'CAT-PROD-009',
-            'status' => true,
+            'status' => CategoryStatus::ACTIVE,
         ]);
 
         $this->taxProfile = TaxProfile::create([
@@ -209,10 +210,13 @@ class QA009ResponsiveRegressionTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Admin/Orders/Show')
-            ->has('order.items')
-            ->has('order.customer')
-            ->has('financial_summary')
-            ->has('permissions')
+            ->has('orderData.order')
+            ->has('orderData.customer')
+            ->has('orderData.items')
+            ->has('orderData.tax_breakdown')
+            ->has('orderData.fulfillment_summary')
+            ->has('orderData.financial_summary')
+            ->has('orderData.can')
         );
     }
 
@@ -243,7 +247,16 @@ class QA009ResponsiveRegressionTest extends TestCase
             'customer_id' => $this->customer->id,
             'driver_id' => $this->deliveryPartner->id,
             'status' => DeliveryStatus::ASSIGNED,
+            'delivery_contact_name' => $this->customer->contact_name,
+            'delivery_contact_phone' => $this->customer->phone,
+            'delivery_address_line1' => $this->customer->billing_address_line1,
+            'delivery_city' => $this->customer->billing_city,
+            'delivery_state' => $this->customer->billing_state,
+            'delivery_postal_code' => $this->customer->billing_postal_code,
+            'delivery_country_code' => 'US',
+            'scheduled_date' => Carbon::now()->toDateString(),
             'assigned_at' => Carbon::now(),
+            'created_by' => $this->admin->id,
         ]);
 
         $response = $this->actingAs($this->deliveryPartner)->get('/delivery');

@@ -90,15 +90,12 @@ class QA008AccountingIntegrityTest extends TestCase
             'status' => AccountStatus::ACTIVE,
         ]);
 
-        // Seed standard Chart of Accounts
-        $this->accountService->seedDefaultAccounts();
-
-        $this->cashAccount = Account::where('code', '1010')->firstOrFail();
-        $this->arAccount = Account::where('code', '1020')->firstOrFail();
-        $this->inventoryAccount = Account::where('code', '1030')->firstOrFail();
-        $this->taxPayableAccount = Account::where('code', '2020')->firstOrFail();
-        $this->salesRevenueAccount = Account::where('code', '4010')->firstOrFail();
-        $this->cogsAccount = Account::where('code', '5010')->firstOrFail();
+        $this->cashAccount = Account::where('account_code', '1010')->firstOrFail();
+        $this->arAccount = Account::where('account_code', '1100')->firstOrFail();
+        $this->inventoryAccount = Account::where('account_code', '1200')->firstOrFail();
+        $this->taxPayableAccount = Account::where('account_code', '2100')->firstOrFail();
+        $this->salesRevenueAccount = Account::where('account_code', '4010')->firstOrFail();
+        $this->cogsAccount = Account::where('account_code', '5010')->firstOrFail();
     }
 
     /**
@@ -110,7 +107,7 @@ class QA008AccountingIntegrityTest extends TestCase
             [
                 'accounting_date' => Carbon::now()->toDateString(),
                 'description' => 'Direct cash sales receipt',
-                'entry_type' => JournalEntryType::STANDARD,
+                'entry_type' => JournalEntryType::MANUAL,
             ],
             [
                 ['account_id' => $this->cashAccount->id, 'debit' => '1100.00', 'credit' => '0.00', 'description' => 'Cash in Bank'],
@@ -192,17 +189,18 @@ class QA008AccountingIntegrityTest extends TestCase
         $this->assertNotNull($reversalJournal);
         $this->assertEquals(JournalStatus::POSTED, $reversalJournal->status);
         $this->assertEquals(JournalEntryType::REVERSAL, $reversalJournal->entry_type);
-        $this->assertEquals($originalJournal->id, $reversalJournal->reversal_of_id);
+        $this->assertEquals($originalJournal->id, $reversalJournal->reversed_journal_id);
 
         // Original journal must be updated to status REVERSED
         $originalJournal->refresh();
         $this->assertEquals(JournalStatus::REVERSED, $originalJournal->status);
+        $this->assertEquals($reversalJournal->id, $originalJournal->reversal_journal_id);
 
         // 3. Attempting duplicate reversal must be rejected
         try {
             $this->reversalService->reverseJournal($originalJournal, 'Duplicate reversal attempt', $this->accountant);
-            $this->fail('Expected ConflictHttpException on duplicate reversal.');
-        } catch (ConflictHttpException $e) {
+            $this->fail('Expected ValidationException on duplicate reversal.');
+        } catch (ValidationException $e) {
             $this->assertStringContainsString('already been reversed', $e->getMessage());
         }
     }
@@ -240,7 +238,7 @@ class QA008AccountingIntegrityTest extends TestCase
     public function test_balance_sheet_accounting_equation_equilibrium(): void
     {
         // 1. Post initial equity funding
-        $ownersEquity = Account::where('code', '3010')->firstOrFail();
+        $ownersEquity = Account::where('account_code', '3010')->firstOrFail();
         $this->journalService->createAndPostJournal(
             [
                 'accounting_date' => '2026-09-01',
@@ -268,12 +266,12 @@ class QA008AccountingIntegrityTest extends TestCase
 
         $balanceSheet = $this->balanceSheetService->getBalanceSheet('2026-09-30');
 
-        $this->assertArrayHasKey('total_assets', $balanceSheet);
+        $this->assertArrayHasKey('assets', $balanceSheet);
         $this->assertArrayHasKey('total_liabilities_and_equity', $balanceSheet);
         $this->assertArrayHasKey('is_balanced', $balanceSheet);
 
         $this->assertTrue($balanceSheet['is_balanced']);
-        $this->assertEquals($balanceSheet['total_assets'], $balanceSheet['total_liabilities_and_equity']);
+        $this->assertEquals($balanceSheet['assets']['total_assets'], $balanceSheet['total_liabilities_and_equity']);
     }
 
     /**

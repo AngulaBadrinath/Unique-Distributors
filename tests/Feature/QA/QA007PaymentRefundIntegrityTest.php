@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Tests\Feature\QA;
 
 use App\Enums\AccountStatus;
+use App\Enums\CategoryStatus;
 use App\Enums\CreditNoteStatus;
 use App\Enums\CustomerStatus;
 use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
+use App\Enums\PaymentRejectionReason;
 use App\Enums\PaymentReversalReason;
 use App\Enums\PaymentStatus;
 use App\Enums\PaymentTransactionStatus;
@@ -35,6 +37,7 @@ use App\Services\Payment\PaymentService;
 use App\Services\Payment\PaymentVerificationService;
 use App\Services\Refund\RefundWorkflowService;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -143,7 +146,7 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         $this->category = Category::create([
             'name' => 'Beverages QA',
             'code' => 'CAT-BEV-007',
-            'status' => true,
+            'status' => CategoryStatus::ACTIVE,
         ]);
 
         $this->taxProfile = TaxProfile::create([
@@ -217,11 +220,15 @@ class QA007PaymentRefundIntegrityTest extends TestCase
     /**
      * Helper to create an issued credit note with a specified balance.
      */
-    protected function createIssuedCreditNote(string $totalAmount = '500.00'): CreditNote
+    protected function createIssuedCreditNote(string $totalAmount = '500.00', ?Order $order = null): CreditNote
     {
+        $order ??= $this->createApprovedOrder($totalAmount);
+
         return CreditNote::create([
             'credit_number' => 'CR-2026-'.Str::upper(Str::random(6)),
+            'idempotency_key' => (string) Str::uuid(),
             'customer_id' => $this->customer->id,
+            'order_id' => $order->id,
             'status' => CreditNoteStatus::ISSUED,
             'currency' => 'USD',
             'subtotal' => $totalAmount,
@@ -233,6 +240,8 @@ class QA007PaymentRefundIntegrityTest extends TestCase
             'reason' => 'Damaged goods return credit',
             'issued_by' => $this->admin->id,
             'issued_at' => Carbon::now(),
+            'customer_name_snapshot' => $this->customer->name,
+            'customer_code_snapshot' => $this->customer->code,
         ]);
     }
 
@@ -245,13 +254,13 @@ class QA007PaymentRefundIntegrityTest extends TestCase
 
         // Attempting to record $1200 payment against $1000 order balance must fail
         $this->expectException(ValidationException::class);
-        $this->paymentService->recordOrderPayment(
-            $order,
-            '1200.00',
-            PaymentMethod::CASH,
-            $this->salesmanA,
-            ['notes' => 'Attempted overpayment']
-        );
+        $this->paymentService->recordCashPayment([
+            'customer_id' => $order->customer_id,
+            'order_id' => $order->id,
+            'amount' => '1200.00',
+            'payment_date' => Carbon::now()->toDateString(),
+            'notes' => 'Attempted overpayment',
+        ], $this->salesmanA);
     }
 
     /**
@@ -277,15 +286,12 @@ class QA007PaymentRefundIntegrityTest extends TestCase
             'payment_date' => Carbon::now()->toDateString(),
         ]);
 
-        // Admin attempts to verify their own payment: Must throw ConflictHttpException / ValidationException
+        // Admin attempts to verify their own payment: Must throw AuthorizationException
         try {
             $this->verificationService->verifyPayment($payment, $this->admin);
-            $this->fail('Expected Maker-Checker validation exception when recorder verifies own payment.');
+            $this->fail('Expected Maker-Checker authorization exception when recorder verifies own payment.');
         } catch (\Exception $e) {
-            $this->assertTrue(
-                $e instanceof ConflictHttpException || $e instanceof ValidationException,
-                'Must reject self-verification with ConflictHttpException or ValidationException.'
-            );
+            $this->assertInstanceOf(AuthorizationException::class, $e);
         }
 
         // Accountant (different actor) verifies payment: Must succeed
@@ -318,11 +324,13 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         $rejectedPayment = $this->verificationService->rejectPayment(
             $payment,
             $this->accountant,
+            PaymentRejectionReason::SIGNATURE_MISSING,
             'Unsigned cheque; signature missing on face'
         );
 
         $this->assertEquals(PaymentTransactionStatus::REJECTED, $rejectedPayment->status);
-        $this->assertNotEmpty($rejectedPayment->rejection_reason);
+        $this->assertEquals(PaymentRejectionReason::SIGNATURE_MISSING, $rejectedPayment->rejection_reason_code);
+        $this->assertNotEmpty($rejectedPayment->rejection_notes);
     }
 
     /**
@@ -354,9 +362,9 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         // Reverse payment due to bounced cheque
         $reversedPayment = $this->reversalService->reversePayment(
             $payment,
+            $this->superAdmin,
             PaymentReversalReason::BOUNCED_CHEQUE,
-            'Bank notified cheque returned NSF',
-            $this->superAdmin
+            'Bank notified cheque returned NSF'
         );
 
         $this->assertEquals(PaymentTransactionStatus::REVERSED, $reversedPayment->status);
@@ -448,6 +456,7 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         // Attempting to process another refund request against the exhausted credit note must fail
         $secondRequest = RefundRequest::create([
             'refund_number' => 'REF-2026-999999',
+            'idempotency_key' => (string) Str::uuid(),
             'credit_note_id' => $creditNote->id,
             'customer_id' => $this->customer->id,
             'status' => RefundStatus::APPROVED,

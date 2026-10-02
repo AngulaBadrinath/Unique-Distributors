@@ -23,6 +23,10 @@
                                        "args":  [
                                                     "mcp-proxy-for-aws@latest",
                                                     "https://aws-mcp.us-east-1.api.aws/mcp",
+                                                    "--profile",
+                                                    "ujw",
+                                                    "--region",
+                                                    "us-east-1",
                                                     "--metadata",
                                                     "INSTALL_SOURCE=aws-cli"
                                                 ]

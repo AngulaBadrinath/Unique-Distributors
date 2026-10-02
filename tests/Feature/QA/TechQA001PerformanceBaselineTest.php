@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\QA;
 
 use App\Enums\AccountStatus;
+use App\Enums\CategoryStatus;
 use App\Enums\CustomerStatus;
 use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
@@ -97,7 +98,7 @@ class TechQA001PerformanceBaselineTest extends TestCase
         $this->category = Category::create([
             'name' => 'Beverages TechQA',
             'code' => 'CAT-BEV-TQA',
-            'status' => true,
+            'status' => CategoryStatus::ACTIVE,
         ]);
 
         $this->taxProfile = TaxProfile::create([
