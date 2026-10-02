@@ -1,22 +1,31 @@
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp@latest",
-        "--cdp-endpoint=http://127.0.0.1:9222"
-      ]
-    },
-    "agentation": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "agentation-mcp",
-        "server",
-        "--mcp-only",
-        "--http-url=http://localhost:4747"
-      ]
-    }
-  }
+﻿{
+    "mcpServers":  {
+                       "playwright":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "-y",
+                                                       "@playwright/mcp@latest",
+                                                       "--cdp-endpoint=http://127.0.0.1:9222"
+                                                   ]
+                                      },
+                       "agentation":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "-y",
+                                                       "agentation-mcp",
+                                                       "server",
+                                                       "--mcp-only",
+                                                       "--http-url=http://localhost:4747"
+                                                   ]
+                                      },
+                       "aws-mcp":  {
+                                       "command":  "uvx",
+                                       "args":  [
+                                                    "mcp-proxy-for-aws@latest",
+                                                    "https://aws-mcp.us-east-1.api.aws/mcp",
+                                                    "--metadata",
+                                                    "INSTALL_SOURCE=aws-cli"
+                                                ]
+                                   }
+                   }
 }

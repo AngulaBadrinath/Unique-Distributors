@@ -205,6 +205,7 @@ export interface OrderDetail {
     } | null;
     can?: {
         request_adjustment?: boolean;
+        record_payment?: boolean;
     };
 }
 
@@ -710,10 +711,13 @@ export interface AdminOrderDetailData {
     };
     timeline: OrderTimelineEvent[];
     active_adjustment?: ActiveAdjustmentData | null;
+    payments?: OrderPaymentDetail[];
+    financial_summary?: OrderFinancialSummary;
     can: {
         review: boolean;
         print: boolean;
         request_adjustment?: boolean;
+        record_payment?: boolean;
     };
     backUrl: string;
     backLabel: string;

@@ -974,6 +974,33 @@ When a new business requirement, client change request, or technical modificatio
 
 ---
 
+### CHANGE-032: Post-Order Balance Payment Recording & Evidence Inspection across Admin and Salesman Portals
+- **Change ID:** `CHANGE-032`
+- **Date:** October 2, 2026
+- **Requested By:** Lead Software Architect
+- **Request:** Enable salesmen and administrative personnel to record post-order balance payments (Cash, Cheque, Money Order) directly from Order Detail workspaces (`/admin/orders/{id}` and `/salesman/orders/{id}`) with aggregate row-locking overpayment protection and evidence previews.
+- **Reason:** Real-world commercial distribution requires recording partial or full balance collections as customer payments arrive post-order placement, while guaranteeing zero client trust and full server-side overpayment prevention.
+- **Status:** `IMPLEMENTED`
+- **Priority:** `P1`
+- **Affected PRD Requirements:** Section 4.5 (Payment & Financial Workflow), Section 4.6 (Salesman Portal).
+- **Affected Architecture:** Section 5 (Payment Domain Services & Concurrency Locking Hierarchy).
+- **Affected Security:** Section 2 (Zero Client Trust), Section 3 (RBAC & Permissions), Section 7 (Anti-IDOR Portfolio Scoping).
+- **Affected Frontend:** Admin Order Show Workspace (`Admin/Orders/Show.tsx`), Salesman Order Show Workspace (`Salesman/Orders/Show.tsx`), `RecordOrderPaymentModal.tsx`.
+- **Affected Tickets:** `FEAT-PAY-001`, `FEAT-PAY-002`, `FEAT-PAY-003`, `FEAT-ORD-005`.
+- **Inventory Impact:** None.
+- **Order Impact:** Order financial summaries reflect verified paid, pending verification, and outstanding balance in real time; order lifecycle validation prevents payments against `DRAFT`, `CANCELLED`, or `REJECTED` orders.
+- **Payment Impact:** `PaymentService` enforces server-side aggregate row-locks (`lockForUpdate()`) to strictly block payment amounts exceeding remaining outstanding order balance.
+- **Tax Impact:** None.
+- **Accounting Impact:** Payments create immutable ledger entries upon authorized verification.
+- **Data Migration Impact:** None (existing schema supports order-linked payments).
+- **Testing Impact:** `OrderBalancePaymentTest.php` (7 tests, 20 assertions) added; 75 payment tests passing (207 assertions); 221 order tests passing (1,858 assertions); `npm run type-check` (0 errors); `npm run build` (clean build).
+- **Deployment Impact:** None.
+- **Approved By:** Lead Software Architect
+- **Implementation Status:** Complete and verified.
+- **Release/Commit Reference:** Feature branch `feature/post-order-balance-payments`.
+
+---
+
 ## 3. Template for Future Change Requests
 
 ```markdown

@@ -9,6 +9,8 @@ import OrderStatusBadge from './Partials/OrderStatusBadge';
 import OrderTimeline from './Partials/OrderTimeline';
 import PendingAdjustmentBanner from '@/Pages/Admin/Orders/Partials/PendingAdjustmentBanner';
 import RequestAdjustmentModal from '@/Pages/Admin/Orders/Partials/RequestAdjustmentModal';
+import RecordOrderPaymentModal from '@/Components/Order/RecordOrderPaymentModal';
+import { PaymentEvidencePreviewModal } from '@/Components/Payment/PaymentEvidencePreviewModal';
 import {
     CheckCircle2,
     Building,
@@ -39,6 +41,8 @@ interface OrderShowPageProps {
 
 export default function OrderShow({ order, backUrl = '/salesman/orders', backLabel = 'Back to Order History' }: OrderShowPageProps) {
     const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedEvidencePayment, setSelectedEvidencePayment] = useState<any | null>(null);
     const totalUnits = order.items.reduce((sum, item) => sum + item.ordered_quantity, 0);
     const submittedDate = order.submitted_at ? new Date(order.submitted_at) : new Date(order.created_at);
 
@@ -104,6 +108,17 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                                 <span>Request Adjustment</span>
                             </Button>
                         )}
+                        {order.can?.record_payment && parseFloat(finSummary.outstanding_balance) > 0 && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setIsPaymentModalOpen(true)}
+                                className="gap-1.5 text-xs text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 shadow-sm"
+                            >
+                                <Banknote className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                                <span>Record Payment</span>
+                            </Button>
+                        )}
                         <Link href={backUrl}>
                             <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                                 <ListFilter className="h-3.5 w-3.5" />
@@ -135,6 +150,41 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                     orderNumber={order.order_number}
                     items={order.items}
                     onClose={() => setIsAdjustmentModalOpen(false)}
+                />
+
+                {/* Record Balance Payment Modal */}
+                <RecordOrderPaymentModal
+                    isOpen={isPaymentModalOpen}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    orderId={order.id}
+                    orderNumber={order.order_number}
+                    customerId={order.customer.id}
+                    customerName={order.customer.name}
+                    customerCode={order.customer.code}
+                    grandTotal={order.grand_total}
+                    verifiedPaid={finSummary.verified_payments_total}
+                    pendingPaid={finSummary.pending_payments_total}
+                    outstandingBalance={finSummary.outstanding_balance}
+                    portal="salesman"
+                />
+
+                {/* Payment Evidence Preview Modal */}
+                <PaymentEvidencePreviewModal
+                    isOpen={!!selectedEvidencePayment}
+                    onClose={() => setSelectedEvidencePayment(null)}
+                    payment={selectedEvidencePayment ? {
+                        id: selectedEvidencePayment.id,
+                        payment_number: selectedEvidencePayment.payment_number,
+                        payment_method: selectedEvidencePayment.payment_method,
+                        amount: selectedEvidencePayment.amount,
+                        cheque_number: selectedEvidencePayment.cheque_number,
+                        bank_name: selectedEvidencePayment.bank_name,
+                        money_order_number: selectedEvidencePayment.money_order_number,
+                        issuer_name: selectedEvidencePayment.issuer_name,
+                        payment_date: selectedEvidencePayment.payment_date,
+                        customer_name: order.customer.name,
+                        evidence_original_name: selectedEvidencePayment.evidence_original_name,
+                    } : null}
                 />
 
                 {/* Status Notice Banner (When freshly submitted or active) */}
@@ -378,6 +428,7 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                                         <th scope="col" className="py-3 px-3">Date</th>
                                         <th scope="col" className="py-3 px-3">Recorded By</th>
                                         <th scope="col" className="py-3 px-3 text-right">Amount</th>
+                                        <th scope="col" className="py-3 px-3 text-center">Evidence</th>
                                         <th scope="col" className="py-3 px-4 text-center">Status</th>
                                     </tr>
                                 </thead>
@@ -417,6 +468,22 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                                             </td>
                                             <td className="py-3 px-3 text-right font-mono font-bold text-foreground">
                                                 ${parseFloat(pmt.amount).toFixed(2)}
+                                            </td>
+                                            <td className="py-3 px-3 text-center">
+                                                {pmt.has_evidence ? (
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => setSelectedEvidencePayment(pmt)}
+                                                        className="h-7 px-2 text-[11px] gap-1 text-primary hover:text-primary/90"
+                                                    >
+                                                        <FileImage className="h-3.5 w-3.5" />
+                                                        <span>View</span>
+                                                    </Button>
+                                                ) : (
+                                                    <span className="text-muted-foreground text-[10px]">—</span>
+                                                )}
                                             </td>
                                             <td className="py-3 px-4 text-center">
                                                 <Badge
@@ -522,6 +589,20 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                                     </span>
                                 </div>
                             </div>
+
+                            {order.can?.record_payment && parseFloat(finSummary.outstanding_balance) > 0 && (
+                                <div className="pt-2">
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        onClick={() => setIsPaymentModalOpen(true)}
+                                        className="w-full gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                                    >
+                                        <Banknote className="h-4 w-4" />
+                                        <span>Record Balance Payment (${parseFloat(finSummary.outstanding_balance).toFixed(2)})</span>
+                                    </Button>
+                                </div>
+                            )}
 
                             <div className="pt-2 text-[11px] text-muted-foreground flex items-center gap-1">
                                 <ShieldCheck className="h-3.5 w-3.5 text-primary" />
