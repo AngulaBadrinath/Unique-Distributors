@@ -418,7 +418,7 @@ class SalesmanOrderController extends Controller
 
         $draft = $this->orderService->saveDraft($actor, $dto, $order, $request->ip());
 
-        if ($request->wantsJson() || $request->ajax() || $request->header('X-Inertia') === null) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'success' => true,
                 'draft' => [
@@ -712,10 +712,10 @@ class SalesmanOrderController extends Controller
                 'active_adjustment' => $order->hasActiveAdjustment() && $order->activeAdjustment ? [
                     'id' => $order->activeAdjustment->id,
                     'adjustment_number' => $order->activeAdjustment->adjustment_number,
-                    'status' => $order->activeAdjustment->status->value,
-                    'status_label' => $order->activeAdjustment->status->label(),
-                    'reason_code' => $order->activeAdjustment->reason_code->value,
-                    'reason_label' => $order->activeAdjustment->reason_code->label(),
+                    'status' => $order->activeAdjustment->status instanceof OrderAdjustmentStatus ? $order->activeAdjustment->status->value : (string) $order->activeAdjustment->status,
+                    'status_label' => $order->activeAdjustment->status instanceof OrderAdjustmentStatus ? $order->activeAdjustment->status->label() : (string) $order->activeAdjustment->status,
+                    'reason_code' => $order->activeAdjustment->reason_code instanceof AdjustmentReasonCode ? $order->activeAdjustment->reason_code->value : (string) $order->activeAdjustment->reason_code,
+                    'reason_label' => $order->activeAdjustment->reason_code instanceof AdjustmentReasonCode ? $order->activeAdjustment->reason_code->label() : (string) $order->activeAdjustment->reason_code,
                     'notes' => $order->activeAdjustment->notes,
                     'requested_by' => $order->activeAdjustment->requester?->name,
                     'requested_by_id' => $order->activeAdjustment->requested_by,

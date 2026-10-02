@@ -53,6 +53,7 @@ export default function PendingAdjustmentBanner({
                 reason: withdrawalReason.trim() || undefined,
             },
             {
+                preserveScroll: true,
                 onSuccess: () => {
                     setIsWithdrawModalOpen(false);
                     setWithdrawalReason('');

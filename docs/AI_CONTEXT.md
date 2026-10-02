@@ -125,6 +125,11 @@ Independent transaction streams proceed in parallel:
   - *Dev Noise (Ignore):* Call stack originates inside `react-dom-client.development.js` or React scheduler timing hooks with no broken component state or application failure.
   - *Real Defect (Investigate):* TypeError points to an application file in `resources/js/*`, causes an ErrorBoundary trigger, or reproduces in a production build (`npm run build`).
 
+### Inertia Mutation HTTP Response Contract (`CHANGE-040`)
+- **Core Rule:** Every Inertia mutation (`router.post`, `router.put`, `router.patch`, `router.delete`, `useForm().post`, etc.) MUST receive an Inertia-compatible response (such as `redirect()->back()->with('success', ...)` or redirect to a route).
+- **Anti-Pattern:** Never return `response()->json(...)` when `$request->header('X-Inertia')` is present. Doing so causes Inertia's client-side modal error: *"All Inertia requests must receive a valid Inertia response, however a plain JSON response was received."*
+- **Standard Controller Guard:** To support dual Inertia and API access, use `if ($request->wantsJson() && ! $request->header('X-Inertia'))` for JSON responses, defaulting to redirects for web/Inertia requests.
+
 
 
 

@@ -45,6 +45,29 @@ When a new business requirement, client change request, or technical modificatio
 
 ## 2. Change Register
 
+### CHANGE-040: Production Inertia Response Contract Fix for Order Adjustments
+- **Change ID:** `CHANGE-040`
+- **Date:** October 2, 2026
+- **Requested By:** Production Incident Response & Release Engineer
+- **Observed Production Error:** "All Inertia requests must receive a valid Inertia response, however a plain JSON response was received." on `/admin/orders/11`.
+- **Root Cause:**
+  - `OrderAdjustmentRequestController::store()` and `withdraw()` evaluated `$request->ajax()` to `true` for Inertia requests due to `X-Requested-With: XMLHttpRequest`, causing the controller to return a 201/200 plain JSON payload to Inertia rather than an HTTP 302 redirect with session flash data.
+  - In `AdminOrderAdjustmentController.php`, unhandled property access on potentially null requester objects and raw enum accesses risked 500 Application Error responses.
+- **Resolution:**
+  - Corrected the response contract in `OrderAdjustmentRequestController::store()` and `withdraw()` to `if ($request->wantsJson() && ! $request->header('X-Inertia'))`. Inertia requests now authoritatively receive `redirect()->back()->with('success', ...)` preserving the Inertia protocol, closing the modal, refreshing page data, and rendering flash messages without raw JSON dumps or client-side protocol errors.
+  - Harmonized `SalesmanOrderController::saveDraft()` with the same `if ($request->wantsJson() && ! $request->header('X-Inertia'))` contract pattern.
+  - Hardened `AdminOrderAdjustmentController`, `AdminOrderController`, and `SalesmanOrderController` against null requester references and ensured robust handling of `status`, `reason_code`, and `payment_terms` across view models.
+  - Added `preserveScroll: true` to `RequestAdjustmentModal.tsx` and `PendingAdjustmentBanner.tsx`.
+  - Added focused regression tests in `OrderAdjustmentRequestTest.php` covering the Inertia HTTP 302 redirect response contract.
+- **Impacted Components:**
+  - `app/Http/Controllers/Order/OrderAdjustmentRequestController.php`
+  - `app/Http/Controllers/Admin/AdminOrderAdjustmentController.php`
+  - `app/Http/Controllers/Admin/AdminOrderController.php`
+  - `app/Http/Controllers/Salesman/SalesmanOrderController.php`
+  - `resources/js/Pages/Admin/Orders/Partials/RequestAdjustmentModal.tsx`
+  - `resources/js/Pages/Admin/Orders/Partials/PendingAdjustmentBanner.tsx`
+  - `tests/Feature/Adjustment/OrderAdjustmentRequestTest.php`
+
 ### CHANGE-039: Complete Quality Assurance, Security & Deployment Baselines (QA-006..010, TECH-QA-001, DEPLOY-001..005)
 - **Change ID:** `CHANGE-039`
 - **Date:** October 2, 2026

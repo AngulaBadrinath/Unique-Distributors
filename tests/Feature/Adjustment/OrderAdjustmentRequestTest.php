@@ -888,4 +888,88 @@ class OrderAdjustmentRequestTest extends TestCase
         $secondWithdraw->assertStatus(409);
         $this->assertStringContainsString('Cannot withdraw adjustment', $secondWithdraw->json('message'));
     }
+
+    /**
+     * Regression Test: An Inertia mutation request (X-Inertia: true) to /orders/{order}/adjustments
+     * MUST receive an Inertia-compatible 302 redirect response with session flash message,
+     * NOT a plain JSON response (fixes production protocol error).
+     */
+    public function test_inertia_adjustment_request_returns_valid_inertia_redirect_not_plain_json(): void
+    {
+        $order = $this->createOrder($this->customerA, $this->salesmanA, OrderStatus::SUBMITTED);
+        $item = $order->items->first();
+
+        $payload = [
+            'idempotency_key' => 'idemp-inertia-001',
+            'reason_code' => AdjustmentReasonCode::CUSTOMER_REQUEST->value,
+            'notes' => 'Customer requested reduction via Inertia modal.',
+            'items' => [
+                [
+                    'order_item_id' => $item->id,
+                    'requested_quantity_reduction' => 2,
+                ],
+            ],
+        ];
+
+        // Simulate an Inertia form post with X-Inertia header
+        $response = $this->actingAs($this->admin)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->post("/orders/{$order->id}/adjustments", $payload);
+
+        // 1. Must be an HTTP 302 redirect (Inertia mutation protocol)
+        $response->assertStatus(302);
+        $response->assertSessionHas('success');
+
+        // 2. Response MUST NOT be a plain JSON payload
+        $this->assertNotEquals('application/json', $response->headers->get('Content-Type'));
+
+        // 3. Database invariants and adjustment status verified
+        $this->assertDatabaseHas('order_adjustments', [
+            'order_id' => $order->id,
+            'status' => OrderAdjustmentStatus::SUBMITTED->value,
+            'reason_code' => AdjustmentReasonCode::CUSTOMER_REQUEST->value,
+        ]);
+
+        $order->refresh();
+        $this->assertEquals(AdjustmentStatus::REQUESTED, $order->adjustment_status);
+    }
+
+    /**
+     * Regression Test: An Inertia withdrawal request (X-Inertia: true) to /orders/{order}/adjustments/{adjustment}/withdraw
+     * MUST receive an Inertia-compatible 302 redirect response with session flash message,
+     * NOT a plain JSON response.
+     */
+    public function test_inertia_adjustment_withdrawal_returns_valid_inertia_redirect_not_plain_json(): void
+    {
+        $order = $this->createOrder($this->customerA, $this->salesmanA, OrderStatus::SUBMITTED);
+        $item = $order->items->first();
+
+        // Create adjustment
+        $createRes = $this->actingAs($this->salesmanA)->postJson("/orders/{$order->id}/adjustments", [
+            'idempotency_key' => 'idemp-inertia-with-01',
+            'reason_code' => AdjustmentReasonCode::CUSTOMER_REQUEST->value,
+            'items' => [['order_item_id' => $item->id, 'requested_quantity_reduction' => 2]],
+        ]);
+        $adjId = $createRes->json('adjustment.id');
+
+        // Withdraw via Inertia form post
+        $withdrawRes = $this->actingAs($this->salesmanA)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->post("/orders/{$order->id}/adjustments/{$adjId}/withdraw", [
+                'reason' => 'Customer changed their mind.',
+            ]);
+
+        // Must be an HTTP 302 redirect back
+        $withdrawRes->assertStatus(302);
+        $withdrawRes->assertSessionHas('success');
+        $this->assertNotEquals('application/json', $withdrawRes->headers->get('Content-Type'));
+
+        $this->assertEquals(OrderAdjustmentStatus::CANCELLED, OrderAdjustment::find($adjId)->status);
+    }
 }

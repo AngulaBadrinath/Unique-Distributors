@@ -45,7 +45,7 @@ class OrderAdjustmentRequestController extends Controller
 
         $isReplay = ! $adjustment->wasRecentlyCreated;
 
-        if ($request->wantsJson() || $request->ajax() || $request->header('X-Inertia') === null) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'success' => true,
                 'is_replay' => $isReplay,
@@ -98,7 +98,7 @@ class OrderAdjustmentRequestController extends Controller
             clientIp: $request->ip()
         );
 
-        if ($request->wantsJson() || $request->ajax() || $request->header('X-Inertia') === null) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'success' => true,
                 'adjustment' => [

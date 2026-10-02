@@ -188,6 +188,7 @@ export default function RequestAdjustmentModal({
                 items: requestItems,
             },
             {
+                preserveScroll: true,
                 onSuccess: () => {
                     onClose();
                 },
