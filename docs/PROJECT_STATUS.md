@@ -14,20 +14,20 @@
 | Metric | Current Value | Notes |
 | Metric | Current Value | Notes |
 |---|---|---|
-| **Overall Code Completion** | **94.5%** (121 / 128 tickets) | QA Wave 1 Core Commerce Hardening + Post-Order Balance Payments complete; 1,510 automated tests (1,498 passed, 8,855 assertions, 12 skipped, 0 failures), TypeScript verified, Vite build clean |
+| **Overall Code Completion** | **95.3%** (122 / 128 tickets) | QA Wave 1 + Post-Order Balance Payments + QA-005 Inventory Concurrency complete; 1,644 automated tests (1,632 passed, 9,729 assertions, 12 skipped, 0 failures), TypeScript verified, Vite build clean |
 | **Specification Completion** | **100.0%** (5 / 5 documents) | PRD, Architecture, Security, Frontend, and Tickets are approved baselines |
 | **Governance Layer Completion** | **100.0%** (13 / 13 files) | AGENTS, CLAUDE, GEMINI, and all `docs/*` operating system files active |
-| **Current Phase** | **Post-Order Balance Payments & Settlement Workspaces** | Status: `COMPLETED` (Admin & Salesman post-order balance payments, row-locking overpayment protection, evidence preview modal) |
-| **Current Milestone Gate** | **Commerce & Settlement Hardening Complete** | Status: `COMPLETED` (Zero regressions, TypeScript clean, Vite build clean) |
-| **Current Active Ticket** | **POST-ORDER-PAYMENTS** (Complete) | Ready for next milestone progression |
-| **Git Working Tree** | Clean / Ready to Commit | Feature branch `feature/post-order-balance-payments` |
+| **Current Phase** | **Inventory Concurrency & System Hardening (QA-005)** | Status: `COMPLETED` (Master inventory race-condition suite: competing allocations, multi-product lock ordering, exception damage quarantine, atomic rollback isolation, double-release guards) |
+| **Current Milestone Gate** | **Commerce, Settlement & Inventory Concurrency Verified** | Status: `COMPLETED` (Zero regressions, TypeScript clean, Vite build clean) |
+| **Current Active Ticket** | **QA-005** (Complete) | Ready for next milestone progression |
+| **Git Working Tree** | Clean / Ready to Commit | Feature branch `feature/QA-005-inventory-concurrency` |
 | **Active Blockers** | **0** | Full test suite passed, TypeScript verified, Vite build clean |
 
 ### Completion Calculation Formula
 $$\text{Progress} = \left( \frac{\text{Completed Verified Implementation Tickets}}{\text{Total Non-Deferred Implementation Tickets}} \right) \times 100$$
 - Total implementation tickets in backlog: **128** (encompassing Foundation, Features, UI, QA, and Deployment).
-- Completed tickets: **119** (`TECH-FOUND-001`..`004`, `UI-001`..`010`, `DEPLOY-003`, `FEAT-AUTH-001`..`004`, `FEAT-RBAC-001`..`003`, `FEAT-SYS-001`, `FEAT-SYS-002`, `FEAT-CUS-001`..`004`, `FEAT-SLM-001`, `FEAT-SLM-002`, `FEAT-PROD-001`..`003`, `FEAT-CAT-001`, `FEAT-PRICE-001`, `FEAT-PRICE-002`, `FEAT-TAX-001`, `FEAT-ORD-001`..`006`, `FEAT-ORD-010`..`013`, `FEAT-ALLOC-001`, `FEAT-ALLOC-002`, `FEAT-ADJ-001`..`006`, `FEAT-INV-001`..`006`, `FEAT-PAY-001`..`009`, `FEAT-DEL-001`..`008`, `FEAT-DOC-001`..`004`, `FEAT-RET-001`..`004`, `FEAT-CR-001`..`005`, `FEAT-AR-001`..`003`, `FEAT-AP-001`, `FEAT-ACC-001`..`009`, `FEAT-REP-001`..`006`, `FEAT-NOTIF-001`..`002`, `FEAT-AUD-001`..`004`, `QA-001`, `QA-002`, `QA-003`, `QA-004`).
-- Current progress: **93.0%** (119 / 128).
+- Completed tickets: **122** (`TECH-FOUND-001`..`004`, `UI-001`..`010`, `DEPLOY-003`, `FEAT-AUTH-001`..`004`, `FEAT-RBAC-001`..`003`, `FEAT-SYS-001`, `FEAT-SYS-002`, `FEAT-CUS-001`..`004`, `FEAT-SLM-001`, `FEAT-SLM-002`, `FEAT-PROD-001`..`003`, `FEAT-CAT-001`, `FEAT-PRICE-001`, `FEAT-PRICE-002`, `FEAT-TAX-001`, `FEAT-ORD-001`..`006`, `FEAT-ORD-010`..`013`, `FEAT-ALLOC-001`, `FEAT-ALLOC-002`, `FEAT-ADJ-001`..`006`, `FEAT-INV-001`..`006`, `FEAT-PAY-001`..`009`, `FEAT-DEL-001`..`008`, `FEAT-DOC-001`..`004`, `FEAT-RET-001`..`004`, `FEAT-CR-001`..`005`, `FEAT-AR-001`..`003`, `FEAT-AP-001`, `FEAT-ACC-001`..`009`, `FEAT-REP-001`..`006`, `FEAT-NOTIF-001`..`002`, `FEAT-AUD-001`..`004`, `QA-001`, `QA-002`, `QA-003`, `QA-004`, `QA-005`, `BUG-001`..`010`).
+- Current progress: **95.3%** (122 / 128).
 
 ---
 

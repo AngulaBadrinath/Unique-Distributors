@@ -257,7 +257,7 @@
 - [x] `QA-002`: Authorization & IDOR Penetration Test Suite (42 penetration tests, Categories A through L, 100% passing)
 - [x] `QA-003`: Order Lifecycle E2E Test Suite (10 tests in QA003OrderLifecycleE2ETest.php, salesman customer scoping, draft lifecycle, pricing boundaries, multi-line tax snapshotting, submission idempotency, independent Admin & Super Admin approval, stock-insufficient blockers, role authorization, zero cost-price leakage)
 - [x] `QA-004`: Order Adjustment E2E Test Suite (8 tests in QA004OrderAdjustmentE2ETest.php, salesman request flow, over-reduction validation, maker-checker segregation, Case A unallocated reduction, Case B allocation split & release, duplicate apply idempotency, reversal engine, stale version detection)
-- [ ] `QA-005`: Inventory Concurrency & Race-Condition Test Suite
+- [x] `QA-005`: Inventory Concurrency & Race-Condition Test Suite (7 comprehensive tests in QA005InventoryConcurrencyTest.php, competing scarce allocations, multi-product ascending deadlock immunity, stock exception damage quarantine isolation, allocation release & re-reservation, atomic multi-line rollback isolation, inventory balance math conservation, authorized balance adjustment serialization, and double-release guards)
 - [ ] `QA-006`: Payment Evidence Storage Security Test Suite
 - [ ] `QA-007`: Payment & Refund Financial Integrity Test Suite
 - [ ] `QA-008`: General Ledger Accounting Integrity Test Suite
