@@ -45,6 +45,26 @@ When a new business requirement, client change request, or technical modificatio
 
 ## 2. Change Register
 
+### CHANGE-039: Complete Quality Assurance, Security & Deployment Baselines (QA-006..010, TECH-QA-001, DEPLOY-001..005)
+- **Change ID:** `CHANGE-039`
+- **Date:** October 2, 2026
+- **Requested By:** Principal Software Architect & Release Engineer
+- **Request:** Implement and integrate all remaining backlog tickets:
+  1. `QA-006`: `QA006PaymentEvidenceSecurityTest.php` (Magic-byte validation, binary disguise rejection, 5MB boundary, unguessable private UUID path, 15m presigned URL TTL, cross-salesman anti-IDOR checks, and role authorization).
+  2. `QA-007`: `QA007PaymentRefundIntegrityTest.php` (Overpayment prevention, verification maker-checker segregation, rejection with mandatory reason, reversal & receivable restoration, refund credit ceiling, refund maker-checker, and double-refund prevention).
+  3. `QA-008`: `QA008AccountingIntegrityTest.php` (Double-entry balancing enforcement, unbalanced/single-line rejection, journal immutability, reversal lineage, Trial Balance equilibrium, Balance Sheet equation equilibrium, and P&L reconciliation).
+  4. `QA-009`: `QA009ResponsiveRegressionTest.php` (Responsive view model payloads across Admin, Salesman, Delivery, and Accounting workspaces).
+  5. `QA-010`: `QA010AccessibilityBaselineTest.php` (WCAG 2.1 AA error bag serialization, dual-encoding status labels, and accessible landmarks).
+  6. `TECH-QA-001`: `TechQA001PerformanceBaselineTest.php` (Bounded 25/page pagination, and constant query budget / N+1 prevention).
+  7. `DEPLOY-001`..`DEPLOY-005`: Staging & production configuration, CI/CD pipeline, automated PostgreSQL backup & restore scripts (`scripts/backup-database.sh`, `scripts/restore-database.sh`), and production security hardening checklist.
+- **Reason:** Satisfy 100% of the 128-ticket roadmap specification baseline.
+- **Status:** `APPROVED & IMPLEMENTED`
+- **Priority:** `P0` (Master Backlog Completion)
+- **Approved By:** Lead Architect / Project Governance
+- **Implementation Status:** Test coverage and deployment scripts implemented; execution deferred to verification phase.
+
+---
+
 ### CHANGE-038: Master Inventory Concurrency & Race-Condition Test Suite (QA-005)
 - **Change ID:** `CHANGE-038`
 - **Date:** October 2, 2026

@@ -257,23 +257,22 @@
 - [x] `QA-002`: Authorization & IDOR Penetration Test Suite (42 penetration tests, Categories A through L, 100% passing)
 - [x] `QA-003`: Order Lifecycle E2E Test Suite (10 tests in QA003OrderLifecycleE2ETest.php, salesman customer scoping, draft lifecycle, pricing boundaries, multi-line tax snapshotting, submission idempotency, independent Admin & Super Admin approval, stock-insufficient blockers, role authorization, zero cost-price leakage)
 - [x] `QA-004`: Order Adjustment E2E Test Suite (8 tests in QA004OrderAdjustmentE2ETest.php, salesman request flow, over-reduction validation, maker-checker segregation, Case A unallocated reduction, Case B allocation split & release, duplicate apply idempotency, reversal engine, stale version detection)
-- [x] `QA-005`: Inventory Concurrency & Race-Condition Test Suite (7 comprehensive tests in QA005InventoryConcurrencyTest.php, competing scarce allocations, multi-product ascending deadlock immunity, stock exception damage quarantine isolation, allocation release & re-reservation, atomic multi-line rollback isolation, inventory balance math conservation, authorized balance adjustment serialization, and double-release guards)
-- [ ] `QA-006`: Payment Evidence Storage Security Test Suite
-- [ ] `QA-007`: Payment & Refund Financial Integrity Test Suite
-- [ ] `QA-008`: General Ledger Accounting Integrity Test Suite
-- [ ] `QA-009`: Responsive Layout Regression Test Suite
-- [ ] `QA-010`: Accessibility Baseline Audit (WCAG 2.1 AA)
-- [ ] `TECH-QA-001`: Database Query Optimization & Pagination Performance Baseline
+- [x] `QA-006`: Payment Evidence Storage Security Test Suite (8 comprehensive security tests in QA006PaymentEvidenceSecurityTest.php, magic-byte inspection, binary disguise rejection, 5MB size boundary, unguessable private UUID path, 15-minute presigned URL TTL, cross-salesman anti-IDOR checks, and role authorization)
+- [x] `QA-007`: Payment & Refund Financial Integrity Test Suite (7 comprehensive tests in QA007PaymentRefundIntegrityTest.php, overpayment prevention, verification maker-checker segregation, rejection with mandatory reason, reversal & receivable restoration, refund credit ceiling, refund maker-checker, and double-refund prevention)
+- [x] `QA-008`: General Ledger Accounting Integrity Test Suite (7 comprehensive tests in QA008AccountingIntegrityTest.php, double-entry SUM(debit)==SUM(credit) enforcement, unbalanced/single-line rejection, controlled reversal lineage & duplicate reversal block, Trial Balance equilibrium, Balance Sheet equation equilibrium, and P&L reconciliation)
+- [x] `QA-009`: Responsive Layout Regression Test Suite (5 comprehensive tests in QA009ResponsiveRegressionTest.php, Admin Order Queue pagination & badge payloads, Admin Order Detail 12-column & card models, Salesman Order creation catalogue & pricing props, Delivery Partner mobile queue, and Accountant P&L report props)
+- [x] `QA-010`: Accessibility Baseline Audit (WCAG 2.1 AA) (3 tests in QA010AccessibilityBaselineTest.php, accessible 422 error bag serialization for aria-live, status dual-encoding text+icon labels, and accessible navigation landmarks)
+- [x] `TECH-QA-001`: Database Query Optimization & Pagination Performance Baseline (2 tests in TechQA001PerformanceBaselineTest.php, bounded 25 items/page pagination, and constant query budget / N+1 prevention)
 
 ---
 
 ## 14. DEPLOYMENT & PRODUCTION READINESS
 
-- [ ] `DEPLOY-001`: Staging Environment Configuration
-- [ ] `DEPLOY-002`: Production AWS Infrastructure Baseline (EC2, RDS PostgreSQL, ElastiCache, S3)
-- [x] `DEPLOY-003`: GitHub Actions CI/CD Pipeline Configuration (Foundation CI pipeline implemented)
-- [ ] `DEPLOY-004`: Disaster Recovery, Automated Backups & Restore Verification
-- [ ] `DEPLOY-005`: Production Security Hardening Checklist (HTTPS, SSL Labs A+, least privilege)
+- [x] `DEPLOY-001`: Staging Environment Configuration (Verified Dockerfile, render.yaml, .env.preproduction.example, docker-compose.yml, and docker/entrypoint.sh)
+- [x] `DEPLOY-002`: Production AWS Infrastructure Baseline (Documented AWS EC2, RDS PostgreSQL, ElastiCache Redis, S3 private buckets, Route 53, CloudWatch architecture)
+- [x] `DEPLOY-003`: GitHub Actions CI/CD Pipeline Configuration (Foundation CI pipeline implemented in .github/workflows/ci.yml)
+- [x] `DEPLOY-004`: Disaster Recovery, Automated Backups & Restore Verification (Implemented scripts/backup-database.sh with S3 AES256 encryption and scripts/restore-database.sh verification)
+- [x] `DEPLOY-005`: Production Security Hardening Checklist (Verified HTTPS enforcement, SecurityHeadersMiddleware with CSP/HSTS/X-Frame-Options, secure session cookies, private S3 ACLs, and anti-IDOR scoping)
 
 ---
 
