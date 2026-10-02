@@ -310,4 +310,154 @@ class OrderBalancePaymentTest extends TestCase
         $this->order1->refresh();
         $this->assertEquals(PaymentStatus::PAID, $this->order1->payment_status);
     }
+
+    public function test_admin_cash_payment_via_inertia_returns_redirect_and_not_plain_json(): void
+    {
+        $response = $this->actingAs($this->admin)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Accept' => 'text/html, application/xhtml+xml',
+            ])
+            ->from(route('admin.orders.show', $this->order1->id))
+            ->post('/admin/payments/cash', [
+                'customer_id' => $this->customer1->id,
+                'order_id' => $this->order1->id,
+                'amount' => 250.00,
+                'payment_date' => now()->toDateString(),
+                'receipt_reference' => 'ADM-INERTIA-01',
+                'notes' => 'Inertia test cash payment',
+            ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('admin.orders.show', $this->order1->id));
+        $response->assertSessionHas('success');
+        $this->assertFalse(str_starts_with($response->headers->get('content-type', ''), 'application/json'));
+
+        $this->assertDatabaseHas('payments', [
+            'order_id' => $this->order1->id,
+            'customer_id' => $this->customer1->id,
+            'payment_method' => PaymentMethod::CASH->value,
+            'amount' => 250.00,
+            'recorded_by' => $this->admin->id,
+        ]);
+    }
+
+    public function test_admin_cash_payment_pessimistic_lock_aggregates_without_sql_aggregate_for_update_error(): void
+    {
+        // Pre-create an existing verified payment and a pending payment
+        Payment::create([
+            'payment_number' => 'PAY-PRE-01',
+            'order_id' => $this->order1->id,
+            'customer_id' => $this->customer1->id,
+            'recorded_by' => $this->admin->id,
+            'payment_method' => PaymentMethod::CASH,
+            'amount' => '150.00',
+            'payment_date' => now()->toDateString(),
+            'status' => PaymentTransactionStatus::VERIFIED,
+        ]);
+
+        Payment::create([
+            'payment_number' => 'PAY-PRE-02',
+            'order_id' => $this->order1->id,
+            'customer_id' => $this->customer1->id,
+            'recorded_by' => $this->admin->id,
+            'payment_method' => PaymentMethod::CASH,
+            'amount' => '100.00',
+            'payment_date' => now()->toDateString(),
+            'status' => PaymentTransactionStatus::PENDING_VERIFICATION,
+        ]);
+
+        // Total existing: 250.00. Order total: 500.00. Collectible remaining: 250.00.
+        // Record 250.00 - should succeed without PostgreSQL 0A000 error
+        $response = $this->actingAs($this->admin)->post('/admin/payments/cash', [
+            'customer_id' => $this->customer1->id,
+            'order_id' => $this->order1->id,
+            'amount' => 250.00,
+            'payment_date' => now()->toDateString(),
+            'receipt_reference' => 'ADM-REC-LOCK',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+
+        // Now collectible remaining is 0.00. Another payment must be rejected.
+        $overpayResponse = $this->actingAs($this->admin)->post('/admin/payments/cash', [
+            'customer_id' => $this->customer1->id,
+            'order_id' => $this->order1->id,
+            'amount' => 10.00,
+            'payment_date' => now()->toDateString(),
+        ]);
+
+        $overpayResponse->assertSessionHasErrors(['amount']);
+    }
+
+    public function test_inertia_cheque_and_money_order_mutations_preserve_inertia_contract(): void
+    {
+        $jpegFile = $this->createValidJpeg();
+
+        // Cheque via Inertia
+        $responseCheque = $this->actingAs($this->admin)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->from(route('admin.orders.show', $this->approvedOrder->id))
+            ->post('/admin/payments/cheque', [
+                'customer_id' => $this->customer1->id,
+                'order_id' => $this->approvedOrder->id,
+                'amount' => 300.00,
+                'payment_date' => now()->toDateString(),
+                'bank_name' => 'TD Bank',
+                'cheque_number' => 'CHK-INERTIA-01',
+                'cheque_date' => now()->toDateString(),
+                'evidence' => $jpegFile,
+            ]);
+
+        $responseCheque->assertStatus(302);
+        $responseCheque->assertRedirect(route('admin.orders.show', $this->approvedOrder->id));
+        $responseCheque->assertSessionHas('success');
+
+        // Money Order via Inertia
+        $jpegFile2 = $this->createValidJpeg();
+        $responseMO = $this->actingAs($this->admin)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->from(route('admin.orders.show', $this->approvedOrder->id))
+            ->post('/admin/payments/money-order', [
+                'customer_id' => $this->customer1->id,
+                'order_id' => $this->approvedOrder->id,
+                'amount' => 200.00,
+                'payment_date' => now()->toDateString(),
+                'issuer_name' => 'US Postal Service',
+                'money_order_number' => 'MO-INERTIA-01',
+                'evidence' => $jpegFile2,
+            ]);
+
+        $responseMO->assertStatus(302);
+        $responseMO->assertRedirect(route('admin.orders.show', $this->approvedOrder->id));
+        $responseMO->assertSessionHas('success');
+    }
+
+    public function test_salesman_inertia_cash_payment_returns_redirect_and_not_plain_json(): void
+    {
+        $response = $this->actingAs($this->salesman1)
+            ->withHeaders([
+                'X-Inertia' => 'true',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->from(route('salesman.orders.show', $this->order1->id))
+            ->post('/salesman/payments/cash', [
+                'customer_id' => $this->customer1->id,
+                'order_id' => $this->order1->id,
+                'amount' => 100.00,
+                'payment_date' => now()->toDateString(),
+            ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('salesman.orders.show', $this->order1->id));
+        $response->assertSessionHas('success');
+    }
 }

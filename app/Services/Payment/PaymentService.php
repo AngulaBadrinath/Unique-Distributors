@@ -192,10 +192,15 @@ class PaymentService
                 }
 
                 // Authoritative Overpayment Protection under aggregate lock
-                $existingPaymentsTotal = (float) Payment::where('order_id', $order->id)
+                $existingPayments = Payment::where('order_id', $order->id)
                     ->whereIn('status', [PaymentTransactionStatus::VERIFIED, PaymentTransactionStatus::PENDING_VERIFICATION])
                     ->lockForUpdate()
-                    ->sum('amount');
+                    ->get(['id', 'amount']);
+
+                $existingPaymentsTotal = 0.0;
+                foreach ($existingPayments as $existingPayment) {
+                    $existingPaymentsTotal = (float) bcadd((string) $existingPaymentsTotal, (string) $existingPayment->amount, 2);
+                }
 
                 $grandTotal = (float) $order->grand_total;
                 $collectibleOutstanding = max(0.0, $grandTotal - $existingPaymentsTotal);

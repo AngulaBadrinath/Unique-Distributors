@@ -106,7 +106,7 @@ class AdminPaymentController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'payments' => $payments,
                 'counts' => $badgeCounts,
@@ -138,14 +138,16 @@ class AdminPaymentController extends Controller
         $actor = $request->user();
         $payment = $this->paymentService->recordCashPayment($request->validated(), $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Cash payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Cash payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('admin.orders.show', $payment->order_id) : route('admin.payments.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Cash payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -157,14 +159,16 @@ class AdminPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $payment = $this->paymentService->recordChequePayment($request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Cheque payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Cheque payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('admin.orders.show', $payment->order_id) : route('admin.payments.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Cheque payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -176,14 +180,16 @@ class AdminPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $payment = $this->paymentService->recordMoneyOrderPayment($request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Money order payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Money order payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('admin.orders.show', $payment->order_id) : route('admin.payments.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Money order payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -198,14 +204,14 @@ class AdminPaymentController extends Controller
         $actor = $request->user();
         $verifiedPayment = $this->verificationService->verifyPayment($payment, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Payment {$verifiedPayment->payment_number} successfully verified.",
                 'payment' => $verifiedPayment,
             ]);
         }
 
-        return redirect()->back()->with('success', "Payment {$verifiedPayment->payment_number} verified and reconciled.");
+        return redirect()->back(fallback: route('admin.payments.index'))->with('success', "Payment {$verifiedPayment->payment_number} verified and reconciled.");
     }
 
     /**
@@ -223,14 +229,14 @@ class AdminPaymentController extends Controller
 
         $rejectedPayment = $this->verificationService->rejectPayment($payment, $actor, $reason, $notes);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Payment {$rejectedPayment->payment_number} has been rejected.",
                 'payment' => $rejectedPayment,
             ]);
         }
 
-        return redirect()->back()->with('success', "Payment {$rejectedPayment->payment_number} rejected.");
+        return redirect()->back(fallback: route('admin.payments.index'))->with('success', "Payment {$rejectedPayment->payment_number} rejected.");
     }
 
     /**
@@ -246,14 +252,14 @@ class AdminPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $resubmittedPayment = $this->paymentService->correctAndResubmitPayment($payment, $request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Payment {$resubmittedPayment->payment_number} corrected and resubmitted for verification.",
                 'payment' => $resubmittedPayment,
             ]);
         }
 
-        return redirect()->back()->with('success', "Payment {$resubmittedPayment->payment_number} corrected and resubmitted.");
+        return redirect()->back(fallback: route('admin.payments.index'))->with('success', "Payment {$resubmittedPayment->payment_number} corrected and resubmitted.");
     }
 
     /**
@@ -271,14 +277,14 @@ class AdminPaymentController extends Controller
 
         $reversedPayment = $this->reversalService->reversePayment($payment, $actor, $reason, $notes);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Payment {$reversedPayment->payment_number} has been reversed.",
                 'payment' => $reversedPayment,
             ]);
         }
 
-        return redirect()->back()->with('success', "Payment {$reversedPayment->payment_number} reversed.");
+        return redirect()->back(fallback: route('admin.payments.index'))->with('success', "Payment {$reversedPayment->payment_number} reversed.");
     }
 
     /**

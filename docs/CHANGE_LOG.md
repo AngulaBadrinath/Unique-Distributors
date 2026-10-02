@@ -45,6 +45,20 @@ When a new business requirement, client change request, or technical modificatio
 
 ## 2. Change Register
 
+### CHANGE-041: Critical Production 500 Fix for Admin & Salesman Cash Payment Workflow (PostgreSQL Aggregate Lock & Inertia Contract)
+- **Change ID:** `CHANGE-041`
+- **Date:** October 2, 2026
+- **Requested By:** Production Incident Response & Critical Release Engineering
+- **Observed Production Error:** HTTP 500 Application Error ("An unexpected server error occurred.") on `POST /admin/payments/cash` (`https://unique-distributors.onrender.com/admin/payments/cash`).
+- **Root Cause:**
+  - In `app/Services/Payment/PaymentService.php`, line 198 executed `Payment::where('order_id', $order->id)->whereIn(...)->lockForUpdate()->sum('amount')`. Under PostgreSQL (Render/Neon DB), applying row-level pessimistic locking (`FOR UPDATE`) on a SQL query containing an aggregate function (`sum()`) is strictly prohibited and throws database exception `SQLSTATE[0A000]: Feature not supported: 7 ERROR: FOR UPDATE is not allowed with aggregate functions`. SQLite silently ignored this in local feature tests, masking the error until production deployment.
+  - In `AdminPaymentController.php` and `SalesmanPaymentController.php`, mutation endpoints (`storeCash`, `storeCheque`, `storeMoneyOrder`, `verify`, `reject`, `correct`, `reverse`) evaluated `if ($request->expectsJson() || $request->wantsJson())`. Because Inertia submits via XHR (`X-Requested-With: XMLHttpRequest`), `expectsJson()` evaluated to `true`, causing the controller to return a 201/200 plain JSON payload rather than an Inertia redirect back with session flash data, which would trigger Inertia's client-side modal error upon resolving the 500 error.
+- **Resolution:**
+  - In `PaymentService.php`, eliminated the aggregate query with `lockForUpdate()`. Instead, row-locked existing payment rows individually using `->lockForUpdate()->get(['id', 'amount'])` (with the parent `Order` already row-locked) and authoritatively computed the total existing payments in PHP using exact `bcadd` arithmetic.
+  - In `AdminPaymentController.php` and `SalesmanPaymentController.php`, hardened all payment entry and lifecycle endpoints (`storeCash`, `storeCheque`, `storeMoneyOrder`, `verify`, `reject`, `correct`, `reverse`) to check `if ($request->wantsJson() && ! $request->header('X-Inertia'))` before emitting JSON. Inertia mutations now authoritatively receive `redirect()->back(fallback: ...)->with('success', ...)` with fallback routes to order detail or payment index, preserving the Inertia protocol and session flash messages.
+  - Added focused regression tests in `tests/Feature/Payment/OrderBalancePaymentTest.php` covering Inertia response contract, PostgreSQL lock-safe aggregation without SQL aggregate errors, sibling cheque and money order flows, and anti-overpayment validation under pessimistic lock.
+  - Verified 79/79 payment feature tests and 221/221 order feature tests passing, TypeScript check clean, and Vite production bundle passing.
+
 ### CHANGE-040: Production Inertia Response Contract Fix for Order Adjustments
 - **Change ID:** `CHANGE-040`
 - **Date:** October 2, 2026

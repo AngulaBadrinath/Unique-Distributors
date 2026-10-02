@@ -26,14 +26,16 @@ class SalesmanPaymentController extends Controller
         $actor = $request->user();
         $payment = $this->paymentService->recordCashPayment($request->validated(), $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Cash payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Cash payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('salesman.orders.show', $payment->order_id) : route('salesman.orders.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Cash payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -45,14 +47,16 @@ class SalesmanPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $payment = $this->paymentService->recordChequePayment($request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Cheque payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Cheque payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('salesman.orders.show', $payment->order_id) : route('salesman.orders.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Cheque payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -64,14 +68,16 @@ class SalesmanPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $payment = $this->paymentService->recordMoneyOrderPayment($request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Money order payment {$payment->payment_number} recorded successfully.",
                 'payment' => $payment->load(['customer', 'order']),
             ], 201);
         }
 
-        return redirect()->back()->with('success', "Money order payment {$payment->payment_number} recorded successfully.");
+        $fallback = $payment->order_id ? route('salesman.orders.show', $payment->order_id) : route('salesman.orders.index');
+
+        return redirect()->back(fallback: $fallback)->with('success', "Money order payment {$payment->payment_number} recorded successfully.");
     }
 
     /**
@@ -83,13 +89,13 @@ class SalesmanPaymentController extends Controller
         $evidenceFile = $request->file('evidence');
         $resubmittedPayment = $this->paymentService->correctAndResubmitPayment($payment, $request->validated(), $evidenceFile, $actor);
 
-        if ($request->expectsJson() || $request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "Payment {$resubmittedPayment->payment_number} corrected and resubmitted for verification.",
                 'payment' => $resubmittedPayment,
             ]);
         }
 
-        return redirect()->back()->with('success', "Payment {$resubmittedPayment->payment_number} corrected and resubmitted.");
+        return redirect()->back(fallback: route('salesman.orders.index'))->with('success', "Payment {$resubmittedPayment->payment_number} corrected and resubmitted.");
     }
 }
