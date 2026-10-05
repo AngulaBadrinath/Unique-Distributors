@@ -1,7 +1,7 @@
 {
-  "runId": "RUN-PARALLEL-20260912125150",
-  "gitSha": "2cbca5583bb3cb2f9251e3e7a44f57abd2745dfb",
-  "timestamp": "2026-09-12T12:51:50.302Z",
+  "runId": "RUN-PARALLEL-20261005223319",
+  "gitSha": "b02096813c203a0930c9c20c7f1dbc92ab7476cf",
+  "timestamp": "2026-10-05T22:33:19.332Z",
   "totalItems": 999,
   "governanceMeta": 90,
   "applicableItems": 909,
