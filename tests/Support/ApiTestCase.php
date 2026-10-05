@@ -13,11 +13,12 @@ abstract class ApiTestCase extends TestCase
     /**
      * Authenticate as a specific role user.
      */
-    protected function authenticateRole(string $role): User
+    protected function authenticateRole(string|\App\Enums\UserRole $role): User
     {
+        $roleEnum = is_string($role) ? \App\Enums\UserRole::tryFrom($role) ?? \App\Enums\UserRole::from($role) : $role;
         $user = User::factory()->create([
-            'role' => $role,
-            'is_active' => true,
+            'role' => $roleEnum,
+            'status' => \App\Enums\AccountStatus::ACTIVE,
         ]);
 
         $this->actingAs($user);

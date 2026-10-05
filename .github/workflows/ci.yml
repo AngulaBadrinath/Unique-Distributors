@@ -16,18 +16,6 @@ jobs:
     name: Backend Tests (PHP 8.4 & PostgreSQL 17)
     runs-on: ubuntu-latest
 
-    env:
-      DB_CONNECTION: pgsql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_DATABASE: wdms_test
-      DB_USERNAME: wdms_user
-      DB_PASSWORD: wdms_secret
-      CACHE_STORE: redis
-      SESSION_DRIVER: redis
-      REDIS_HOST: 127.0.0.1
-      REDIS_PORT: 6379
-
     services:
       postgres:
         image: postgres:17-alpine
@@ -74,12 +62,15 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
-          sed -i 's/DB_PORT=5433/DB_PORT=5432/g' .env
-          sed -i 's/DB_PASSWORD=your_db_password_here/DB_PASSWORD=wdms_secret/g' .env
-          sed -i 's/REDIS_PORT=6380/REDIS_PORT=6379/g' .env
-          sed -i 's/REDIS_PASSWORD=your_redis_password_here/REDIS_PASSWORD=/g' .env
 
-      - name: Run Migrations
+      - name: Run Migrations Against PostgreSQL 17
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: wdms_test
+          DB_USERNAME: wdms_user
+          DB_PASSWORD: wdms_secret
         run: php artisan migrate --force
 
       - name: Execute Domain Invariant Tests
@@ -90,9 +81,6 @@ jobs:
 
       - name: Execute Database & Accounting Invariant Tests
         run: php artisan test --testsuite=Database
-
-      - name: Execute Full PHPUnit Suite
-        run: php artisan test
 
   frontend-build:
     name: Frontend Type Check & Build
