@@ -10,6 +10,12 @@ abstract class ApiTestCase extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutVite();
+    }
+
     /**
      * Authenticate as a specific role user.
      */
