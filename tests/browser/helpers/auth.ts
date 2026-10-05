@@ -80,8 +80,8 @@ function getStoredUserMfaSecret(email: string): string {
         return mfaSecretCache[email];
     }
     try {
-        const cmd = `php artisan tinker --execute="echo \\App\\Models\\User::where('email', '${email}')->first()?->two_factor_secret;"`;
-        const output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
+        const cmd = `php scripts/get_mfa_secret.php "${email}"`;
+        const output = execSync(cmd, { encoding: 'utf-8', timeout: 10000 });
         const secret = output.trim().replace(/[^A-Za-z0-9]/g, '');
         if (secret) {
             mfaSecretCache[email] = secret;

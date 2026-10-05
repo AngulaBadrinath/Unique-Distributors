@@ -209,30 +209,29 @@ export default function Create({
     };
 
     return (
-        <AppLayout>
+        <AppLayout title="Initiate Return Request">
             <Head title="Initiate Return Request" />
 
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex items-center gap-3">
-                    <Link
-                        href={backUrl}
-                        className="inline-flex items-center justify-center h-9 px-3 rounded-md text-sm font-medium border border-input bg-background hover:bg-accent text-slate-800 dark:text-slate-200"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-1.5" />
-                        Back to Returns
+                    <Link href={backUrl}>
+                        <Button variant="outline" size="sm" className="gap-1.5 h-9">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Returns
+                        </Button>
                     </Link>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Initiate Return Request</h1>
-                        <p className="text-xs text-slate-500">Create a merchandise return request against delivered customer orders.</p>
+                        <h1 className="text-xl font-bold text-foreground tracking-tight">Initiate Return Request</h1>
+                        <p className="text-xs text-muted-foreground">Create a merchandise return request against delivered customer orders.</p>
                     </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Step 1: Select Delivered Order */}
-                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                            <PackageCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                        <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                            <PackageCheck className="w-4 h-4 text-primary" />
                             1. Select Delivered Order
                         </h2>
 
@@ -243,7 +242,7 @@ export default function Create({
                                     id="order_select"
                                     value={selectedOrderId}
                                     onChange={e => handleOrderSelect(e.target.value)}
-                                    className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                     required
                                 >
                                     <option value="">-- Choose delivered order --</option>
@@ -253,7 +252,7 @@ export default function Create({
                                         </option>
                                     ))}
                                 </select>
-                                {errors.order_id && <p className="text-xs text-rose-600">{errors.order_id}</p>}
+                                {errors.order_id && <p className="text-xs text-destructive">{errors.order_id}</p>}
                             </div>
 
                             {!isSalesmanView && warehouses.length > 0 && (
@@ -263,7 +262,7 @@ export default function Create({
                                         id="warehouse_select"
                                         value={data.warehouse_id}
                                         onChange={e => setData('warehouse_id', parseInt(e.target.value, 10))}
-                                        className="w-full h-10 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                         required
                                     >
                                         {warehouses.map(w => (
@@ -279,18 +278,18 @@ export default function Create({
 
                     {/* Step 2: Line Items Selection */}
                     {selectedOrder && itemsList.length > 0 && (
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                    <RotateCcw className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                                <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                                    <RotateCcw className="w-4 h-4 text-primary" />
                                     2. Returnable Line Items ({selectedOrder.order_number})
                                 </h2>
-                                <span className="text-xs text-slate-500">
+                                <span className="text-xs text-muted-foreground">
                                     Only previously delivered and unreturned quantities are eligible.
                                 </span>
                             </div>
 
-                            <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden divide-y divide-slate-200 dark:divide-slate-700">
+                            <div className="border border-border rounded-lg overflow-hidden divide-y divide-border">
                                 {itemsList.map(item => {
                                     const formItem = data.items.find(i => i.order_item_id === item.order_item_id);
                                     const isEligible = item.returnable_quantity > 0;
@@ -298,24 +297,24 @@ export default function Create({
                                     return (
                                         <div
                                             key={item.order_item_id}
-                                            className={`p-4 space-y-3 ${!isEligible ? 'bg-slate-50/70 dark:bg-slate-900/40 opacity-60' : 'bg-white dark:bg-slate-800'}`}
+                                            className={`p-4 space-y-3 ${!isEligible ? 'bg-muted/40 opacity-60' : 'bg-card'}`}
                                         >
                                             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                                                 <div>
-                                                    <p className="font-semibold text-slate-900 dark:text-slate-100">{item.product_name}</p>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400">SKU: {item.sku} • Unit Price: ${parseFloat(item.unit_price).toFixed(2)}</p>
+                                                    <p className="font-semibold text-foreground">{item.product_name}</p>
+                                                    <p className="text-xs text-muted-foreground">SKU: {item.sku} • Unit Price: ${parseFloat(item.unit_price).toFixed(2)}</p>
                                                 </div>
                                                 <div className="flex items-center gap-3 text-xs">
-                                                    <span className="text-slate-500 dark:text-slate-400">Delivered: <strong className="text-slate-700 dark:text-slate-200">{item.delivered_quantity}</strong></span>
-                                                    <span className="text-slate-500 dark:text-slate-400">Already Returned: <strong className="text-slate-700 dark:text-slate-200">{item.returned_quantity}</strong></span>
-                                                    <Badge variant="outline" className={isEligible ? 'border-indigo-300 text-indigo-700 dark:text-indigo-400 font-bold' : 'text-slate-400'}>
+                                                    <span className="text-muted-foreground">Delivered: <strong className="text-foreground">{item.delivered_quantity}</strong></span>
+                                                    <span className="text-muted-foreground">Already Returned: <strong className="text-foreground">{item.returned_quantity}</strong></span>
+                                                    <Badge variant={isEligible ? 'brand' : 'secondary'}>
                                                         Returnable: {item.returnable_quantity} units
                                                     </Badge>
                                                 </div>
                                             </div>
 
                                             {isEligible ? (
-                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-border">
                                                     <div className="space-y-1">
                                                         <Label htmlFor={`req-qty-${item.order_item_id}`} className="text-xs">
                                                             Quantity to Return
@@ -339,7 +338,7 @@ export default function Create({
                                                             id={`reason-${item.order_item_id}`}
                                                             value={formItem?.reason_code || (reasons[0]?.value ?? 'DEFECTIVE')}
                                                             onChange={e => handleItemReasonChange(item.order_item_id, e.target.value)}
-                                                            className="w-full h-9 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-2 py-1 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                            className="w-full h-9 rounded-md border border-input bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                         >
                                                             {reasons.map(r => (
                                                                 <option key={r.value} value={r.value}>
@@ -364,7 +363,7 @@ export default function Create({
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <p className="text-xs text-slate-400 italic">No returnable units remaining for this line.</p>
+                                                <p className="text-xs text-muted-foreground italic">No returnable units remaining for this line.</p>
                                             )}
                                         </div>
                                     );
@@ -375,7 +374,7 @@ export default function Create({
 
                     {/* Step 3: Notes and Financial Summary */}
                     {selectedOrder && (
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
                             <div className="space-y-1.5">
                                 <Label htmlFor="notes">Return Request Notes & RMA Explanation</Label>
                                 <textarea
@@ -384,33 +383,33 @@ export default function Create({
                                     placeholder="State the reason for return, authorization details, or customer feedback..."
                                     value={data.notes}
                                     onChange={e => setData('notes', e.target.value)}
-                                    className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 p-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full rounded-md border border-input bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                 />
                             </div>
 
                             {/* Live Financial Projection */}
-                            <div className="p-4 bg-slate-900 text-white rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div className="p-4 bg-muted/60 text-foreground rounded-lg border border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
-                                    <span className="text-xs text-slate-400 block">Total Units to Return</span>
-                                    <span className="text-xl font-bold text-indigo-300">{totalUnitsRequested} units</span>
+                                    <span className="text-xs text-muted-foreground block">Total Units to Return</span>
+                                    <span className="text-xl font-bold text-primary">{totalUnitsRequested} units</span>
                                 </div>
                                 <div className="flex gap-6 text-right">
                                     <div>
-                                        <span className="text-xs text-slate-400 block">Subtotal</span>
-                                        <span className="font-semibold text-slate-200">${estimatedSubtotal.toFixed(2)}</span>
+                                        <span className="text-xs text-muted-foreground block">Subtotal</span>
+                                        <span className="font-semibold text-foreground">${estimatedSubtotal.toFixed(2)}</span>
                                     </div>
                                     <div>
-                                        <span className="text-xs text-slate-400 block">Est. Tax</span>
-                                        <span className="font-semibold text-slate-200">${estimatedTax.toFixed(2)}</span>
+                                        <span className="text-xs text-muted-foreground block">Est. Tax</span>
+                                        <span className="font-semibold text-foreground">${estimatedTax.toFixed(2)}</span>
                                     </div>
-                                    <div className="border-l border-slate-700 pl-6">
-                                        <span className="text-xs text-slate-400 block">Estimated Credit Total</span>
+                                    <div className="border-l border-border pl-6">
+                                        <span className="text-xs text-muted-foreground block">Estimated Credit Total</span>
                                         <span className="text-2xl font-black text-emerald-400">${estimatedTotal.toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-border">
                                 <Link href={backUrl}>
                                     <Button type="button" variant="outline">
                                         Cancel
@@ -418,7 +417,6 @@ export default function Create({
                                 </Link>
                                 <Button
                                     type="submit"
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white"
                                     disabled={processing || totalUnitsRequested === 0}
                                 >
                                     {processing ? 'Submitting Return...' : 'Submit Return Request'}

@@ -126,17 +126,17 @@ export default function Index({
     const getStatusBadge = (statusVal: string) => {
         switch (statusVal) {
             case 'REQUESTED':
-                return <Badge className="bg-amber-100 text-amber-800 border-amber-300">Requested</Badge>;
+                return <Badge variant="warning">Requested</Badge>;
             case 'UNDER_REVIEW':
-                return <Badge className="bg-sky-100 text-sky-800 border-sky-300">Under Review</Badge>;
+                return <Badge variant="info">Under Review</Badge>;
             case 'INSPECTED':
-                return <Badge className="bg-purple-100 text-purple-800 border-purple-300">Inspected</Badge>;
+                return <Badge variant="brand">Inspected</Badge>;
             case 'APPROVED':
-                return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300">Approved</Badge>;
+                return <Badge variant="success">Approved</Badge>;
             case 'REJECTED':
-                return <Badge className="bg-rose-100 text-rose-800 border-rose-300">Rejected</Badge>;
+                return <Badge variant="destructive">Rejected</Badge>;
             case 'CANCELLED':
-                return <Badge className="bg-slate-100 text-slate-700 border-slate-300">Cancelled</Badge>;
+                return <Badge variant="secondary">Cancelled</Badge>;
             default:
                 return <Badge variant="outline">{statusVal}</Badge>;
         }

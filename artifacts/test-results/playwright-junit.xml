@@ -1,6 +1,6 @@
-<testsuites id="" name="" tests="9" failures="0" skipped="0" errors="0" time="342.275962">
-<testsuite name="e2e\prompt2_targeted_regression.spec.ts" timestamp="2026-10-05T19:34:19.109Z" hostname="default" tests="9" failures="0" skipped="0" time="339.791" errors="0">
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 1. Invoice Print HTML: Renders canonical invoice layout with full details and A4 layout" classname="e2e\prompt2_targeted_regression.spec.ts" time="42.219">
+<testsuites id="" name="" tests="9" failures="0" skipped="0" errors="0" time="345.78479000000004">
+<testsuite name="e2e\prompt2_targeted_regression.spec.ts" timestamp="2026-10-05T20:30:25.880Z" hostname="default" tests="9" failures="0" skipped="0" time="343.588" errors="0">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 1. Invoice Print HTML: Renders canonical invoice layout with full details and A4 layout" classname="e2e\prompt2_targeted_regression.spec.ts" time="50.332">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -12,14 +12,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 396903 (attempt 1)
+[loginAs] Generated TOTP code: 731361 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 2 &amp; 3. Invoice Download PDF &amp; Layout Comparison: Unbranded copy retains financial data and returns application/pdf" classname="e2e\prompt2_targeted_regression.spec.ts" time="37.408">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 2 &amp; 3. Invoice Download PDF &amp; Layout Comparison: Unbranded copy retains financial data and returns application/pdf" classname="e2e\prompt2_targeted_regression.spec.ts" time="35.897">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -31,14 +31,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 584378 (attempt 1)
+[loginAs] Generated TOTP code: 788396 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 4. Invoice Favicon: Document page references UJW favicon asset" classname="e2e\prompt2_targeted_regression.spec.ts" time="33.774">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 4. Invoice Favicon: Document page references UJW favicon asset" classname="e2e\prompt2_targeted_regression.spec.ts" time="33.914">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -50,14 +50,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 187783 (attempt 1)
+[loginAs] Generated TOTP code: 017377 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 5. Dashboard KPI Rendering: Renders authoritative data-derived metrics" classname="e2e\prompt2_targeted_regression.spec.ts" time="38.959">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 5. Dashboard KPI Rendering: Renders authoritative data-derived metrics" classname="e2e\prompt2_targeted_regression.spec.ts" time="40.371">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -69,14 +69,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 213460 (attempt 1)
+[loginAs] Generated TOTP code: 500892 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 6. Warehouse Health KPI: Truthful data-derived Stock Health without hardcoded placeholders" classname="e2e\prompt2_targeted_regression.spec.ts" time="42.591">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 6. Warehouse Health KPI: Truthful data-derived Stock Health without hardcoded placeholders" classname="e2e\prompt2_targeted_regression.spec.ts" time="42.427">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -88,14 +88,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 713354 (attempt 1)
+[loginAs] Generated TOTP code: 752666 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 7. Branding &amp; Footer: Shows authoritative company name and no developer framework text" classname="e2e\prompt2_targeted_regression.spec.ts" time="42.261">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 7. Branding &amp; Footer: Shows authoritative company name and no developer framework text" classname="e2e\prompt2_targeted_regression.spec.ts" time="40.824">
 <system-out>
 <![CDATA[[loginAs] Logging in as ADMIN (admin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -107,14 +107,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for admin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 663150 (attempt 1)
+[loginAs] Generated TOTP code: 426786 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 8. Role Governance &amp; Lifecycle Controls: Displays status and role management options" classname="e2e\prompt2_targeted_regression.spec.ts" time="40.124">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 8. Role Governance &amp; Lifecycle Controls: Displays status and role management options" classname="e2e\prompt2_targeted_regression.spec.ts" time="38.526">
 <system-out>
 <![CDATA[[loginAs] Logging in as SUPER_ADMIN (superadmin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -126,14 +126,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for superadmin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 403104 (attempt 1)
+[loginAs] Generated TOTP code: 255940 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 9. Super Admin Delete Protection: Self-deletion is disabled and protected" classname="e2e\prompt2_targeted_regression.spec.ts" time="34.606">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 9. Super Admin Delete Protection: Self-deletion is disabled and protected" classname="e2e\prompt2_targeted_regression.spec.ts" time="33.702">
 <system-out>
 <![CDATA[[loginAs] Logging in as SUPER_ADMIN (superadmin.qa@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
@@ -145,14 +145,14 @@
 [loginAs] Checking if MFA is required: http://localhost:8000/login/mfa
 [loginAs] Entering MFA handler for superadmin.qa@example.test
 [loginAs] Resolved secretKey: "EXISTS"
-[loginAs] Generated TOTP code: 258710 (attempt 1)
+[loginAs] Generated TOTP code: 603454 (attempt 1)
 [loginAs] Clicking MFA submit button
 [loginAs] Waiting for navigation after MFA submit
 [loginAs] MFA success! Current URL is http://localhost:8000/dashboard
 ]]>
 </system-out>
 </testcase>
-<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 10. Non-Super-Admin Delete Denial: Salesman cannot delete users and receives 403 if attempted" classname="e2e\prompt2_targeted_regression.spec.ts" time="27.849">
+<testcase name="UJW God Prompt 2 — Targeted Production Fix Batch E2E Verification › 10. Non-Super-Admin Delete Denial: Salesman cannot delete users and receives 403 if attempted" classname="e2e\prompt2_targeted_regression.spec.ts" time="27.595">
 <system-out>
 <![CDATA[[loginAs] Logging in as SALESMAN (salesman.a@example.test) at http://localhost:8000/login
 [loginAs] Navigating to http://localhost:8000/login
