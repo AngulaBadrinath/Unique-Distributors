@@ -16,7 +16,8 @@ import {
     FileText,
     Menu,
     X,
-    TrendingUp
+    TrendingUp,
+    RotateCcw
 } from 'lucide-react';
 import NotificationBell from '@/Components/Notifications/NotificationBell';
 
@@ -42,7 +43,7 @@ export default function SalesmanLayout({
         router.post('/logout');
     };
 
-    const allNavHrefs = ['/dashboard', '/customers', '/salesman/orders', '/products'];
+    const allNavHrefs = ['/dashboard', '/customers', '/salesman/orders', '/salesman/returns', '/salesman/invoices', '/products'];
 
     const isLinkActive = (path: string) => {
         if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
@@ -125,6 +126,22 @@ export default function SalesmanLayout({
                         Order History
                     </Link>
                     <Link
+                        href="/salesman/returns"
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/salesman/returns') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                        }`}
+                    >
+                        Returns
+                    </Link>
+                    <Link
+                        href="/salesman/invoices"
+                        className={`px-3 py-1.5 rounded-xl transition-all ${
+                            isLinkActive('/salesman/invoices') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                        }`}
+                    >
+                        Invoices
+                    </Link>
+                    <Link
                         href="/products"
                         className={`px-3 py-1.5 rounded-xl transition-all ${
                             isLinkActive('/products') ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30' : 'text-muted-foreground hover:bg-white/5 hover:text-white'
@@ -172,6 +189,22 @@ export default function SalesmanLayout({
                                             </span>
                                         </div>
                                         <div className="py-1 space-y-0.5">
+                                            <Link
+                                                href="/salesman/returns"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                <RotateCcw className="h-3.5 w-3.5" />
+                                                Reverse Logistics
+                                            </Link>
+                                            <Link
+                                                href="/salesman/invoices"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                <FileText className="h-3.5 w-3.5" />
+                                                Invoices & Billing
+                                            </Link>
                                             <Link
                                                 href="/notifications/preferences"
                                                 onClick={() => setUserMenuOpen(false)}

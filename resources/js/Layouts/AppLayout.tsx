@@ -100,7 +100,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     const hasReceivableView = auth?.user?.permissions?.includes('receivable.view') || ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTANT', 'SALESMAN'].includes(auth?.user?.role || '');
     const hasPayableView = auth?.user?.permissions?.includes('payable.view') || ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTANT'].includes(auth?.user?.role || '');
     const hasAccountingView = auth?.user?.permissions?.includes('accounting.view') || ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTANT'].includes(auth?.user?.role || '');
-    const hasInventoryView = auth?.user?.permissions?.includes('inventory.view') || ['SUPER_ADMIN', 'ADMIN', 'WAREHOUSE_MANAGER'].includes(auth?.user?.role || '');
+    const hasInventoryView = (auth?.user?.permissions?.includes('inventory.view') || ['SUPER_ADMIN', 'ADMIN', 'WAREHOUSE_MANAGER'].includes(auth?.user?.role || '')) && auth?.user?.role !== 'SALESMAN';
     const hasDeliveryView = auth?.user?.permissions?.includes('delivery.view') || ['SUPER_ADMIN', 'ADMIN', 'DELIVERY_PARTNER', 'WAREHOUSE_MANAGER'].includes(auth?.user?.role || '');
     const hasInvoiceView = auth?.user?.permissions?.includes('invoice.view') || ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTANT', 'SALESMAN'].includes(auth?.user?.role || '');
     const invoiceUrl = auth?.user?.role === 'SALESMAN' ? '/salesman/invoices' : '/admin/invoices';
@@ -129,7 +129,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             id: 'sales_ops',
             title: 'Sales & Operations',
             icon: <Layers className="h-4 w-4" />,
-            show: Boolean(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasInvoiceView || hasDeliveryView),
+            show: Boolean(hasOrderView || hasOrderCreate || hasAdjustReview || hasReturnReview || hasReturnRequest || hasInvoiceView || hasDeliveryView),
             items: [
                 { href: '/admin/orders', label: 'Order Processing', icon: <Layers className="h-3.5 w-3.5" />, show: Boolean(hasAdminOrderQueue) },
                 { href: '/salesman/orders', label: 'Sales Order History', icon: <Receipt className="h-3.5 w-3.5" />, show: Boolean(auth?.user?.role === 'SALESMAN') },
@@ -137,7 +137,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                 { href: '/admin/deliveries', label: 'Logistics & Dispatch', icon: <Truck className="h-3.5 w-3.5" />, show: Boolean(hasDeliveryView && auth?.user?.role !== 'DELIVERY_PARTNER') },
                 { href: '/delivery', label: 'My Delivery Missions', icon: <Truck className="h-3.5 w-3.5" />, show: Boolean(auth?.user?.role === 'DELIVERY_PARTNER') },
                 { href: '/admin/adjustments', label: 'Order Adjustments', icon: <SlidersHorizontal className="h-3.5 w-3.5" />, show: Boolean(hasAdjustReview) },
-                { href: '/admin/returns', label: 'Reverse Logistics', icon: <RotateCcw className="h-3.5 w-3.5" />, show: Boolean(hasReturnReview) },
+                { href: auth?.user?.role === 'SALESMAN' ? '/salesman/returns' : '/admin/returns', label: 'Reverse Logistics', icon: <RotateCcw className="h-3.5 w-3.5" />, show: Boolean(hasReturnReview || (hasReturnRequest && auth?.user?.role === 'SALESMAN')) },
                 { href: invoiceUrl, label: 'Invoices & Billing', icon: <FileText className="h-3.5 w-3.5" />, show: Boolean(hasInvoiceView) },
             ]
         },
@@ -166,9 +166,9 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             id: 'inventory',
             title: 'Warehouse Inventory',
             icon: <Boxes className="h-4 w-4" />,
-            show: Boolean(hasInventoryView || hasOrderView),
+            show: Boolean(hasInventoryView && auth?.user?.role !== 'SALESMAN'),
             items: [
-                { href: '/admin/warehouse/fulfillment', label: 'Fulfillment Workspace', icon: <Package className="h-3.5 w-3.5" />, show: Boolean(hasInventoryView || hasOrderView) },
+                { href: '/admin/warehouse/fulfillment', label: 'Fulfillment Workspace', icon: <Package className="h-3.5 w-3.5" />, show: Boolean(hasInventoryView) },
                 { href: '/admin/inventory', label: 'Stock Balances', icon: <Boxes className="h-3.5 w-3.5" />, show: Boolean(hasInventoryView) },
                 { href: '/admin/inventory-exceptions', label: 'Stock Exceptions', icon: <ShieldAlert className="h-3.5 w-3.5" />, show: Boolean(hasInventoryView) },
             ]
