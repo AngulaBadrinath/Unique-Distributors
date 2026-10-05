@@ -7157,7 +7157,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Valid price selection",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7185,7 +7185,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "MRP ceiling",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7213,7 +7213,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Minimum-price enforcement",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7241,7 +7241,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Price override permission",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7269,7 +7269,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Override reason",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7297,7 +7297,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Unauthorized override blocked",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7325,7 +7325,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Historical price preserved",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7353,7 +7353,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Product tax",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7381,7 +7381,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Mixed-tax order",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7409,7 +7409,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Line tax",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7437,7 +7437,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Tax snapshot",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7465,7 +7465,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Historical tax preserved",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7493,7 +7493,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Currency formatting",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7521,7 +7521,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Percentage formatting",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7549,7 +7549,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Boundary values",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7577,7 +7577,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Decimal precision",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7605,7 +7605,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Zero tax",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -7633,7 +7633,7 @@
     "domain": "PRICING_TAX_CATALOG",
     "description": "Tax change does not rewrite history",
     "testType": "DOMAIN_UNIT_PHP",
-    "testFile": "tests/domain/PricingInvariantsTest.php",
+    "testFile": "tests/Domain/PricingInvariantsTest.php",
     "testCase": null,
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23531,7 +23531,7 @@
     "domain": "CUSTOMERS",
     "description": "Customer selected/created",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23561,7 +23561,7 @@
     "domain": "CUSTOMERS",
     "description": "Salesman assignment confirmed",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23591,7 +23591,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Salesman creates order",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23621,7 +23621,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Multiple products",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23651,7 +23651,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Quantities",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23681,7 +23681,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Price",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23711,7 +23711,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Tax",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23741,7 +23741,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Total",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23771,7 +23771,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Order submitted",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23801,7 +23801,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Partial payment",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23831,7 +23831,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Pending state",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23861,7 +23861,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Evidence where required",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23891,7 +23891,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Operational outstanding",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23921,7 +23921,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Payment appears in verification",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23951,7 +23951,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Evidence view works",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -23981,7 +23981,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Maker-checker enforced",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24011,7 +24011,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Payment verified",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24041,7 +24041,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Verified state",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24071,7 +24071,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Outstanding recalculates",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24101,7 +24101,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "AR recalculates",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24131,7 +24131,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Statement updates",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24161,7 +24161,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Invoice/order financial state correct",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24191,7 +24191,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "GL posting correct",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24221,7 +24221,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Trial balance remains balanced",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24251,7 +24251,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "P&L/BS effects correct",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24281,7 +24281,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Second payment",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24311,7 +24311,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Fully paid",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24341,7 +24341,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "No double counting",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24371,7 +24371,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Adjustment requested",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24401,7 +24401,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Approval",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24431,7 +24431,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Inventory consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24461,7 +24461,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Tax consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24491,7 +24491,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Financial consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24521,7 +24521,7 @@
     "domain": "ORDERS_ADJUSTMENTS",
     "description": "Audit trail",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24551,7 +24551,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Return",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24581,7 +24581,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Credit/refund consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24611,7 +24611,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "AR consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24641,7 +24641,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "Accounting consequence",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [
@@ -24671,7 +24671,7 @@
     "domain": "FINANCIAL_GOLDEN",
     "description": "No duplicated effect",
     "testType": "COMPOSITE_FINANCIAL_E2E",
-    "testFile": "tests/domain/FinancialGoldenScenarioTest.php",
+    "testFile": "tests/Domain/FinancialGoldenScenarioTest.php",
     "testCase": "14.1 Cross-module financial verification",
     "sourceOfTruth": "docs/FULL_EXHAUSTIVE_REAL_BROWSER_AUDIT_ZERO_FALSE_PASSES.md",
     "assertions": [

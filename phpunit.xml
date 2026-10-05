@@ -12,13 +12,13 @@
             <directory>tests/Feature</directory>
         </testsuite>
         <testsuite name="Domain">
-            <directory>tests/domain</directory>
+            <directory>tests/Domain</directory>
         </testsuite>
         <testsuite name="API">
-            <directory>tests/api</directory>
+            <directory>tests/Api</directory>
         </testsuite>
         <testsuite name="Database">
-            <directory>tests/database</directory>
+            <directory>tests/Database</directory>
         </testsuite>
     </testsuites>
     <source>
