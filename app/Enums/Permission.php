@@ -86,6 +86,7 @@ enum Permission: string
     case USER_CREATE = 'user.create';
     case USER_UPDATE = 'user.update';
     case USER_SUSPEND = 'user.suspend';
+    case USER_DELETE = 'user.delete';
 
     // Audit & Security Logging
     case AUDIT_VIEW = 'audit.view';
@@ -169,6 +170,7 @@ enum Permission: string
             self::USER_CREATE => 'Create System Users',
             self::USER_UPDATE => 'Update System Users',
             self::USER_SUSPEND => 'Suspend System Users',
+            self::USER_DELETE => 'Permanently Delete System Users',
 
             self::AUDIT_VIEW => 'View Business Audit Logs',
             self::AUDIT_SECURITY_VIEW => 'View Security Event Logs',
@@ -250,6 +252,7 @@ enum Permission: string
             self::USER_CREATE => 'Create staff user identities and trigger activation invitations.',
             self::USER_UPDATE => 'Modify staff user profiles, contact information, and account settings.',
             self::USER_SUSPEND => 'Suspend or disable system user accounts to revoke platform access.',
+            self::USER_DELETE => 'Permanently delete or safely retire system user identities (Super Admin only).',
 
             self::AUDIT_VIEW => 'Inspect business audit trail events, timeline, and entity change history.',
             self::AUDIT_SECURITY_VIEW => 'Inspect sensitive security events, authentication logs, and access failures.',

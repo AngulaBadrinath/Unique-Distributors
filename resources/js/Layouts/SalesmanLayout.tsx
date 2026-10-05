@@ -42,11 +42,28 @@ export default function SalesmanLayout({
         router.post('/logout');
     };
 
+    const allNavHrefs = ['/dashboard', '/customers', '/salesman/orders', '/products'];
+
     const isLinkActive = (path: string) => {
         if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
         if (path === currentUrl) return true;
-        if (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(`${path}/`)) return true;
-        return false;
+        if (path === '/dashboard' || path === '/') return false;
+
+        if (!currentUrl.startsWith(`${path}/`)) {
+            return false;
+        }
+
+        if (allNavHrefs.some(href => href === currentUrl)) {
+            return false;
+        }
+
+        const hasMoreSpecificMatch = allNavHrefs.some(href =>
+            href !== path &&
+            href.length > path.length &&
+            (currentUrl === href || currentUrl.startsWith(`${href}/`))
+        );
+
+        return !hasMoreSpecificMatch;
     };
 
     return (

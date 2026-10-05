@@ -67,8 +67,11 @@ class CustomerController extends Controller
     /**
      * Show the form for creating a new customer.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $user = $request->user();
+        $isSalesman = $user && $user->role === UserRole::SALESMAN;
+
         return Inertia::render('Customer/Create', [
             'suggestedCode' => $this->customerService->generateNextCustomerCode(),
             'statuses' => collect(CustomerStatus::cases())->map(fn (CustomerStatus $s) => [
@@ -79,7 +82,8 @@ class CustomerController extends Controller
                 'value' => $p->value,
                 'label' => $p->label(),
             ]),
-            'eligibleSalesmen' => $this->customerService->getEligibleSalesmen(),
+            'eligibleSalesmen' => $isSalesman ? [] : $this->customerService->getEligibleSalesmen(),
+            'isSalesman' => $isSalesman,
         ]);
     }
 

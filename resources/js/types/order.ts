@@ -852,6 +852,9 @@ export interface OrderAdjustmentItemReviewData {
     allocated_quantity_snapshot: number;
     unallocated_quantity_snapshot: number;
     requested_quantity_reduction: number;
+    action_type?: 'DECREASE' | 'INCREASE';
+    requested_quantity_increase?: number;
+    requested_quantity_delta?: number;
     snapshot_affected_allocation_quantity: number;
     current_ordered_quantity: number;
     current_cancelled_quantity: number;

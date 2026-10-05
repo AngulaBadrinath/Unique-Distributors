@@ -43,9 +43,11 @@ class DeliveryWorkflowService
         protected JournalMappingService $journalMappingService,
         protected ?DomainNotificationDispatcher $notificationDispatcher = null,
         protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
+        protected ?\App\Services\Order\OrderWorkflowService $orderWorkflowService = null,
     ) {
         $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
         $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
+        $this->orderWorkflowService ??= app(\App\Services\Order\OrderWorkflowService::class);
     }
 
     /**
@@ -408,6 +410,9 @@ class DeliveryWorkflowService
 
             // Synchronize payment and settlement on invoice if applicable
             $this->invoiceGeneratorService->syncOnPaymentVerified($lockedOrder, $actor);
+
+            // Authoritatively evaluate whether order is now fully completed
+            $this->orderWorkflowService->evaluateAndCompleteOrder($lockedOrder, $actor);
 
             Log::info('logistics.delivery_complete', [
                 'delivery_id' => $lockedDelivery->id,

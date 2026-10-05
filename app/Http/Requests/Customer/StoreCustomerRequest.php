@@ -7,6 +7,7 @@ use App\Enums\AccountStatus;
 use App\Enums\CustomerStatus;
 use App\Enums\PaymentTerms;
 use App\Enums\Permission;
+use App\Enums\UserRole;
 use App\Services\Auth\PermissionService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -70,7 +71,7 @@ class StoreCustomerRequest extends FormRequest
     }
 
     /**
-     * Prepare inputs for validation (trim whitespace).
+     * Prepare inputs for validation (trim whitespace and enforce salesman ownership).
      */
     protected function prepareForValidation(): void
     {
@@ -85,6 +86,10 @@ class StoreCustomerRequest extends FormRequest
             }
         }
 
+        if ($this->user()?->role === UserRole::SALESMAN) {
+            $sanitized['salesman_id'] = $this->user()->id;
+        }
+
         $this->merge($sanitized);
     }
 
@@ -93,6 +98,11 @@ class StoreCustomerRequest extends FormRequest
      */
     public function toDto(): CustomerData
     {
-        return CustomerData::fromArray($this->validated());
+        $validated = $this->validated();
+        if ($this->user()?->role === UserRole::SALESMAN) {
+            $validated['salesman_id'] = $this->user()->id;
+        }
+
+        return CustomerData::fromArray($validated);
     }
 }

@@ -24,6 +24,7 @@ class OrderItem extends Model
         'unit_snapshot',
         'ordered_quantity',
         'cancelled_quantity',
+        'increased_quantity',
         'reserved_quantity',
         'picked_quantity',
         'dispatched_quantity',
@@ -50,6 +51,7 @@ class OrderItem extends Model
     protected $casts = [
         'ordered_quantity' => 'integer',
         'cancelled_quantity' => 'integer',
+        'increased_quantity' => 'integer',
         'reserved_quantity' => 'integer',
         'picked_quantity' => 'integer',
         'dispatched_quantity' => 'integer',
@@ -128,12 +130,12 @@ class OrderItem extends Model
     }
 
     /**
-     * Calculate current fulfillable quantity adhering to conservation rule.
-     * ordered_quantity = cancelled_quantity + fulfillable_quantity
+     * Calculate current fulfillable quantity adhering to formal quantity delta conservation rule.
+     * fulfillable_quantity = ordered_quantity + increased_quantity - cancelled_quantity
      */
     public function fulfillableQuantity(): int
     {
-        return max(0, $this->ordered_quantity - $this->cancelled_quantity);
+        return max(0, ($this->ordered_quantity + ($this->increased_quantity ?? 0)) - $this->cancelled_quantity);
     }
 
     /**

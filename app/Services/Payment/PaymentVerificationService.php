@@ -30,10 +30,12 @@ class PaymentVerificationService
         protected ?JournalMappingService $journalMappingService = null,
         protected ?InvoiceGeneratorService $invoiceGeneratorService = null,
         protected ?DomainNotificationDispatcher $notificationDispatcher = null,
+        protected ?\App\Services\Order\OrderWorkflowService $orderWorkflowService = null,
     ) {
         $this->journalMappingService ??= app(JournalMappingService::class);
         $this->invoiceGeneratorService ??= app(InvoiceGeneratorService::class);
         $this->notificationDispatcher ??= app(DomainNotificationDispatcher::class);
+        $this->orderWorkflowService ??= app(\App\Services\Order\OrderWorkflowService::class);
     }
 
     /**
@@ -88,6 +90,7 @@ class PaymentVerificationService
             if ($order) {
                 $this->reconcileOrderPaymentStatus($order);
                 $this->invoiceGeneratorService->syncOnPaymentVerified($order, $actor);
+                $this->orderWorkflowService->evaluateAndCompleteOrder($order, $actor);
             }
 
             // Post authoritative payment credit to customer accounts receivable ledger

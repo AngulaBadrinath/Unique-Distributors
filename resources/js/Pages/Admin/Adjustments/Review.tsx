@@ -551,7 +551,12 @@ export default function AdjustmentReview({
                                         </div>
 
                                         <div className="flex items-center gap-2">
-                                            {line.current_case === 'CASE_B' ? (
+                                            {line.action_type === 'INCREASE' || ((line.requested_quantity_increase ?? 0) > 0) ? (
+                                                <Badge variant="outline" className="text-xs gap-1 text-blue-600 dark:text-blue-400 border-blue-500/30 bg-blue-500/10">
+                                                    <Boxes className="h-3 w-3" />
+                                                    <span>Stock Increase (+ Reservation)</span>
+                                                </Badge>
+                                            ) : line.current_case === 'CASE_B' ? (
                                                 <Badge variant="destructive" className="text-xs gap-1 bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
                                                     <AlertTriangle className="h-3 w-3" />
                                                     <span>Case B: {line.current_affected_allocation_quantity} alloc. affected</span>
@@ -598,10 +603,21 @@ export default function AdjustmentReview({
                                                 </div>
                                             </div>
                                             <div className="border-t border-border/60 pt-2 flex justify-between items-center text-xs">
-                                                <span className="text-muted-foreground font-medium">Requested Reduction:</span>
-                                                <span className="font-mono font-bold text-destructive">
-                                                    -{line.requested_quantity_reduction} units
-                                                </span>
+                                                {line.action_type === 'INCREASE' || ((line.requested_quantity_increase ?? 0) > 0) ? (
+                                                    <>
+                                                        <span className="text-muted-foreground font-medium">Requested Increase:</span>
+                                                        <span className="font-mono font-bold text-blue-600 dark:text-blue-400">
+                                                            +{line.requested_quantity_increase ?? line.requested_quantity_delta} units
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-muted-foreground font-medium">Requested Reduction:</span>
+                                                        <span className="font-mono font-bold text-destructive">
+                                                            -{line.requested_quantity_reduction} units
+                                                        </span>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
 

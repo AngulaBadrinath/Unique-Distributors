@@ -179,7 +179,6 @@ class CustomerCrudTest extends TestCase
     {
         $unauthorizedRoles = [
             UserRole::ACCOUNTANT,
-            UserRole::SALESMAN,
             UserRole::WAREHOUSE_MANAGER,
             UserRole::DELIVERY_PARTNER,
         ];
@@ -637,7 +636,7 @@ class CustomerCrudTest extends TestCase
 
         $salesman = $this->createUserWithRole(UserRole::SALESMAN);
         $this->assertTrue($salesman->can('customer.view'));
-        $this->assertFalse($salesman->can('customer.create'));
+        $this->assertTrue($salesman->can('customer.create'));
         $this->assertFalse($salesman->can('customer.update'));
 
         $delivery = $this->createUserWithRole(UserRole::DELIVERY_PARTNER);

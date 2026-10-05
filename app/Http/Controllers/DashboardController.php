@@ -49,6 +49,8 @@ class DashboardController extends Controller
         // Authoritative operational overview for Admin, Super Admin, and Accountant
         $todayStart = Carbon::today()->startOfDay();
         $todayEnd = Carbon::today()->endOfDay();
+        $yesterdayStart = Carbon::yesterday()->startOfDay();
+        $yesterdayEnd = Carbon::yesterday()->endOfDay();
 
         // 1. Order Queue Metrics
         $pendingApprovalOrdersCount = Order::query()
@@ -59,27 +61,88 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->count();
 
-        $todaySalesVolume = Order::query()
-            ->whereIn('status', [OrderStatus::APPROVED->value, OrderStatus::COMPLETED->value])
+        $todaySalesVolume = (float) Order::query()
+            ->whereIn('status', [OrderStatus::APPROVED->value, OrderStatus::PROCESSING->value, OrderStatus::COMPLETED->value])
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->sum('grand_total');
 
-        // 2. Customer Master
+        $yesterdaySalesVolume = (float) Order::query()
+            ->whereIn('status', [OrderStatus::APPROVED->value, OrderStatus::PROCESSING->value, OrderStatus::COMPLETED->value])
+            ->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])
+            ->sum('grand_total');
+
+        if ($yesterdaySalesVolume > 0) {
+            $salesChangePct = round((($todaySalesVolume - $yesterdaySalesVolume) / $yesterdaySalesVolume) * 100, 1);
+        } else {
+            $salesChangePct = $todaySalesVolume > 0 ? 100.0 : 0.0;
+        }
+        $salesChangeFormatted = ($salesChangePct >= 0 ? '+' : '').$salesChangePct.'%';
+
+        // 2. Fulfillment Rate
+        $totalEligibleOrders = Order::query()
+            ->whereIn('status', [OrderStatus::APPROVED->value, OrderStatus::PROCESSING->value, OrderStatus::COMPLETED->value])
+            ->count();
+
+        $deliveredOrders = Order::query()
+            ->where(function ($q) {
+                $q->where('fulfillment_status', \App\Enums\FulfillmentStatus::DELIVERED->value)
+                    ->orWhere('status', OrderStatus::COMPLETED->value);
+            })
+            ->count();
+
+        $fulfillmentRatePct = $totalEligibleOrders > 0
+            ? round(($deliveredOrders / $totalEligibleOrders) * 100, 1)
+            : 100.0;
+
+        // 3. Customer Master
         $activeCustomersCount = Customer::query()
             ->where('status', 'ACTIVE')
             ->count();
 
-        // 3. Inventory Alerts
-        $lowStockCount = InventoryBalance::query()
-            ->where('available_quantity', '<=', 10)
-            ->count();
+        // 4. Warehouse / Stock Health & Inventory Balances
+        $balances = InventoryBalance::query()->get([
+            'on_hand_quantity',
+            'reserved_quantity',
+            'damaged_quantity',
+            'available_quantity',
+            'reorder_point',
+        ]);
 
-        // 4. Payment Verification Queue
+        $totalSkus = $balances->count();
+        $totalOnHand = (int) $balances->sum('on_hand_quantity');
+        $totalReserved = (int) $balances->sum('reserved_quantity');
+        $totalAvailable = (int) $balances->sum('available_quantity');
+        $totalDamaged = (int) $balances->sum('damaged_quantity');
+
+        $healthySkus = $balances->filter(fn ($b) => $b->available_quantity > ($b->reorder_point ?? 10))->count();
+        $warehouseHealthPct = $totalSkus > 0
+            ? (int) round(($healthySkus / $totalSkus) * 100)
+            : 100;
+
+        $warehouseHealthStatus = $warehouseHealthPct >= 80 ? 'Optimal' : ($warehouseHealthPct >= 50 ? 'Warning' : 'Critical');
+
+        $lowStockCount = $balances->filter(fn ($b) => $b->available_quantity <= ($b->reorder_point ?? 10))->count();
+
+        // 5. Trajectory Percentages (Past 7 Days data)
+        $trajectory = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dayStart = Carbon::today()->subDays($i)->startOfDay();
+            $dayEnd = Carbon::today()->subDays($i)->endOfDay();
+            $dayVolume = (float) Order::query()
+                ->whereIn('status', [OrderStatus::APPROVED->value, OrderStatus::PROCESSING->value, OrderStatus::COMPLETED->value])
+                ->whereBetween('created_at', [$dayStart, $dayEnd])
+                ->sum('grand_total');
+            $trajectory[] = $dayVolume;
+        }
+        $maxTrajectory = max(max($trajectory), 1.0);
+        $trajectoryPercentages = array_map(fn ($val) => max((int) round(($val / $maxTrajectory) * 100), 12), $trajectory);
+
+        // 6. Payment Verification Queue
         $pendingPaymentsCount = Payment::query()
             ->where('status', PaymentTransactionStatus::PENDING_VERIFICATION->value)
             ->count();
 
-        // 5. Active In-Transit Logistics
+        // 7. Active In-Transit Logistics
         $activeDeliveriesCount = Delivery::query()
             ->whereIn('status', [
                 DeliveryStatus::ASSIGNED->value,
@@ -88,7 +151,7 @@ class DashboardController extends Controller
             ])
             ->count();
 
-        // 6. Recent Orders for Operational Feed
+        // 8. Recent Orders for Operational Feed
         $recentOrders = Order::query()
             ->with(['customer:id,name,code', 'salesman:id,name'])
             ->orderBy('created_at', 'desc')
@@ -113,10 +176,19 @@ class DashboardController extends Controller
                 'pending_approval_orders' => $pendingApprovalOrdersCount,
                 'today_orders_count' => $todayOrdersCount,
                 'today_sales_volume' => number_format((float) $todaySalesVolume, 2, '.', ''),
+                'sales_change_percentage' => $salesChangeFormatted,
+                'fulfillment_rate_percentage' => $fulfillmentRatePct,
+                'warehouse_health_percentage' => $warehouseHealthPct,
+                'warehouse_health_status' => $warehouseHealthStatus,
+                'total_on_hand_units' => $totalOnHand,
+                'total_available_units' => $totalAvailable,
+                'total_reserved_units' => $totalReserved,
+                'total_damaged_units' => $totalDamaged,
                 'active_customers_count' => $activeCustomersCount,
                 'low_stock_items_count' => $lowStockCount,
                 'pending_payments_count' => $pendingPaymentsCount,
                 'active_deliveries_count' => $activeDeliveriesCount,
+                'trajectory_percentages' => $trajectoryPercentages,
             ],
             'recentOrders' => $recentOrders,
         ]);

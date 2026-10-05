@@ -340,7 +340,7 @@ export default function InvoiceIndex({
                                         <td className="px-4 py-3.5 font-mono text-xs text-muted-foreground">
                                             {inv.order ? (
                                                 <Link
-                                                    href={`/orders/${inv.order.id}`}
+                                                    href={isSalesmanView ? `/salesman/orders/${inv.order.id}` : `/admin/orders/${inv.order.id}`}
                                                     className="hover:underline text-primary flex items-center gap-1"
                                                 >
                                                     {inv.order.order_number}

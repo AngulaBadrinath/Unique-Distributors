@@ -9,6 +9,7 @@ use App\Enums\OrderAdjustmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\Permission;
 use App\Enums\UserRole;
+use App\Models\InventoryBalance;
 use App\Models\Order;
 use App\Models\OrderAdjustment;
 use App\Models\OrderAdjustmentItem;
@@ -188,73 +189,151 @@ class OrderAdjustmentService
                 $totalSubtotalReduction = '0.00';
                 $totalTaxReduction = '0.00';
                 $totalGrandTotalReduction = '0.00';
+                $totalSubtotalAddition = '0.00';
+                $totalTaxAddition = '0.00';
+                $totalGrandTotalAddition = '0.00';
                 $totalUnitsReduced = 0;
+                $totalUnitsIncreased = 0;
 
                 foreach ($dto->items as $itemDto) {
                     /** @var OrderItem $item */
                     $item = $lockedItems->get($itemDto->orderItemId);
-                    $reduction = $itemDto->reductionQuantity;
+                    $actionType = $itemDto->actionType;
 
-                    if ($reduction <= 0 || $reduction > 999999) {
-                        throw ValidationException::withMessages([
-                            "items.{$item->id}" => "Reduction quantity for {$item->product_name_snapshot} must be between 1 and 999,999.",
-                        ]);
+                    if ($actionType === 'INCREASE') {
+                        $increase = $itemDto->increaseQuantity;
+
+                        if ($increase <= 0 || $increase > 999999) {
+                            throw ValidationException::withMessages([
+                                "items.{$item->id}" => "Increase quantity for {$item->product_name_snapshot} must be between 1 and 999,999.",
+                            ]);
+                        }
+
+                        // Verify available stock on inventory balance with row lock
+                        $balance = InventoryBalance::where('product_id', $item->product_id)
+                            ->lockForUpdate()
+                            ->first();
+
+                        $available = $balance ? (int) $balance->available_quantity : 0;
+                        if ($available < $increase) {
+                            throw ValidationException::withMessages([
+                                "items.{$item->id}" => "Insufficient available stock for {$item->product_name_snapshot}. Available: {$available}, Requested increase: {$increase}.",
+                            ]);
+                        }
+
+                        $fulfillable = $item->fulfillableQuantity();
+
+                        // Financial additions reusing authoritative TaxCalculationService rounding
+                        $taxRate = TaxCalculationService::normalizeRate($item->tax_rate_snapshot, 'tax_rate');
+                        $lineTaxableAddition = bcmul((string) $item->unit_price, (string) $increase, 2);
+                        $rawTaxAddition = bcdiv(bcmul($lineTaxableAddition, $taxRate, 8), '100', 8);
+                        $lineTaxAddition = TaxCalculationService::roundHalfUp($rawTaxAddition, 2);
+                        $lineTotalAddition = bcadd($lineTaxableAddition, $lineTaxAddition, 2);
+
+                        $totalSubtotalAddition = bcadd($totalSubtotalAddition, $lineTaxableAddition, 2);
+                        $totalTaxAddition = bcadd($totalTaxAddition, $lineTaxAddition, 2);
+                        $totalGrandTotalAddition = bcadd($totalGrandTotalAddition, $lineTotalAddition, 2);
+                        $totalUnitsIncreased += $increase;
+
+                        $adjustmentItemRows[] = [
+                            'order_item_id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'product_name_snapshot' => $item->product_name_snapshot,
+                            'sku_snapshot' => $item->sku_snapshot,
+                            'unit_price_snapshot' => $item->unit_price,
+                            'tax_rate_snapshot' => $item->tax_rate_snapshot,
+                            'tax_profile_code_snapshot' => $item->tax_profile_code_snapshot,
+                            'ordered_quantity_snapshot' => $item->ordered_quantity,
+                            'cancelled_quantity_snapshot' => $item->cancelled_quantity,
+                            'fulfillable_quantity_snapshot' => $fulfillable,
+                            'allocated_quantity_snapshot' => $item->allocatedQuantity(),
+                            'unallocated_quantity_snapshot' => $item->unallocatedQuantity(),
+                            'action_type' => 'INCREASE',
+                            'requested_quantity_reduction' => 0,
+                            'requested_quantity_increase' => $increase,
+                            'requested_quantity_delta' => $increase,
+                            'projected_fulfillable_quantity' => $fulfillable + $increase,
+                            'projected_cancelled_quantity' => $item->cancelled_quantity,
+                            'affected_allocation_quantity' => 0,
+                            'projected_taxable_amount_reduction' => '0.00',
+                            'projected_tax_amount_reduction' => '0.00',
+                            'projected_line_total_reduction' => '0.00',
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ];
+                    } else {
+                        $reduction = $itemDto->reductionQuantity;
+
+                        if ($reduction <= 0 || $reduction > 999999) {
+                            throw ValidationException::withMessages([
+                                "items.{$item->id}" => "Reduction quantity for {$item->product_name_snapshot} must be between 1 and 999,999.",
+                            ]);
+                        }
+
+                        $fulfillable = $item->fulfillableQuantity();
+
+                        if ($fulfillable <= 0) {
+                            throw ValidationException::withMessages([
+                                "items.{$item->id}" => "Line item #{$item->id} ({$item->product_name_snapshot}) has no fulfillable units remaining to adjust.",
+                            ]);
+                        }
+
+                        if ($reduction > $fulfillable) {
+                            throw ValidationException::withMessages([
+                                "items.{$item->id}" => "Cannot reduce line item #{$item->id} ({$item->product_name_snapshot}) by {$reduction} units. Only {$fulfillable} fulfillable units remain.",
+                            ]);
+                        }
+
+                        // Partition into Case A (Unallocated) vs Case B (Allocation-impacting)
+                        $unallocated = $item->unallocatedQuantity();
+                        $affectedAllocations = max(0, $reduction - $unallocated);
+
+                        // Financial projections reusing authoritative TaxCalculationService rounding
+                        $taxRate = TaxCalculationService::normalizeRate($item->tax_rate_snapshot, 'tax_rate');
+                        $lineTaxableReduction = bcmul((string) $item->unit_price, (string) $reduction, 2);
+                        $rawTaxReduction = bcdiv(bcmul($lineTaxableReduction, $taxRate, 8), '100', 8);
+                        $lineTaxReduction = TaxCalculationService::roundHalfUp($rawTaxReduction, 2);
+                        $lineTotalReduction = bcadd($lineTaxableReduction, $lineTaxReduction, 2);
+
+                        $totalSubtotalReduction = bcadd($totalSubtotalReduction, $lineTaxableReduction, 2);
+                        $totalTaxReduction = bcadd($totalTaxReduction, $lineTaxReduction, 2);
+                        $totalGrandTotalReduction = bcadd($totalGrandTotalReduction, $lineTotalReduction, 2);
+                        $totalUnitsReduced += $reduction;
+
+                        $adjustmentItemRows[] = [
+                            'order_item_id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'product_name_snapshot' => $item->product_name_snapshot,
+                            'sku_snapshot' => $item->sku_snapshot,
+                            'unit_price_snapshot' => $item->unit_price,
+                            'tax_rate_snapshot' => $item->tax_rate_snapshot,
+                            'tax_profile_code_snapshot' => $item->tax_profile_code_snapshot,
+                            'ordered_quantity_snapshot' => $item->ordered_quantity,
+                            'cancelled_quantity_snapshot' => $item->cancelled_quantity,
+                            'fulfillable_quantity_snapshot' => $fulfillable,
+                            'allocated_quantity_snapshot' => $item->allocatedQuantity(),
+                            'unallocated_quantity_snapshot' => $unallocated,
+                            'action_type' => 'DECREASE',
+                            'requested_quantity_reduction' => $reduction,
+                            'requested_quantity_increase' => 0,
+                            'requested_quantity_delta' => -$reduction,
+                            'projected_fulfillable_quantity' => max(0, $fulfillable - $reduction),
+                            'projected_cancelled_quantity' => $item->cancelled_quantity + $reduction,
+                            'affected_allocation_quantity' => $affectedAllocations,
+                            'projected_taxable_amount_reduction' => $lineTaxableReduction,
+                            'projected_tax_amount_reduction' => $lineTaxReduction,
+                            'projected_line_total_reduction' => $lineTotalReduction,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ];
                     }
-
-                    $fulfillable = $item->fulfillableQuantity();
-
-                    if ($fulfillable <= 0) {
-                        throw ValidationException::withMessages([
-                            "items.{$item->id}" => "Line item #{$item->id} ({$item->product_name_snapshot}) has no fulfillable units remaining to adjust.",
-                        ]);
-                    }
-
-                    if ($reduction > $fulfillable) {
-                        throw ValidationException::withMessages([
-                            "items.{$item->id}" => "Cannot reduce line item #{$item->id} ({$item->product_name_snapshot}) by {$reduction} units. Only {$fulfillable} fulfillable units remain.",
-                        ]);
-                    }
-
-                    // Partition into Case A (Unallocated) vs Case B (Allocation-impacting)
-                    $unallocated = $item->unallocatedQuantity();
-                    $affectedAllocations = max(0, $reduction - $unallocated);
-
-                    // Financial projections reusing authoritative TaxCalculationService rounding
-                    $taxRate = TaxCalculationService::normalizeRate($item->tax_rate_snapshot, 'tax_rate');
-                    $lineTaxableReduction = bcmul((string) $item->unit_price, (string) $reduction, 2);
-                    $rawTaxReduction = bcdiv(bcmul($lineTaxableReduction, $taxRate, 8), '100', 8);
-                    $lineTaxReduction = TaxCalculationService::roundHalfUp($rawTaxReduction, 2);
-                    $lineTotalReduction = bcadd($lineTaxableReduction, $lineTaxReduction, 2);
-
-                    $totalSubtotalReduction = bcadd($totalSubtotalReduction, $lineTaxableReduction, 2);
-                    $totalTaxReduction = bcadd($totalTaxReduction, $lineTaxReduction, 2);
-                    $totalGrandTotalReduction = bcadd($totalGrandTotalReduction, $lineTotalReduction, 2);
-                    $totalUnitsReduced += $reduction;
-
-                    $adjustmentItemRows[] = [
-                        'order_item_id' => $item->id,
-                        'product_id' => $item->product_id,
-                        'product_name_snapshot' => $item->product_name_snapshot,
-                        'sku_snapshot' => $item->sku_snapshot,
-                        'unit_price_snapshot' => $item->unit_price,
-                        'tax_rate_snapshot' => $item->tax_rate_snapshot,
-                        'tax_profile_code_snapshot' => $item->tax_profile_code_snapshot,
-                        'ordered_quantity_snapshot' => $item->ordered_quantity,
-                        'cancelled_quantity_snapshot' => $item->cancelled_quantity,
-                        'fulfillable_quantity_snapshot' => $fulfillable,
-                        'allocated_quantity_snapshot' => $item->allocatedQuantity(),
-                        'unallocated_quantity_snapshot' => $unallocated,
-                        'requested_quantity_reduction' => $reduction,
-                        'projected_fulfillable_quantity' => $fulfillable - $reduction,
-                        'projected_cancelled_quantity' => $item->cancelled_quantity + $reduction,
-                        'affected_allocation_quantity' => $affectedAllocations,
-                        'projected_taxable_amount_reduction' => $lineTaxableReduction,
-                        'projected_tax_amount_reduction' => $lineTaxReduction,
-                        'projected_line_total_reduction' => $lineTotalReduction,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ];
                 }
+
+                $adjustmentType = match (true) {
+                    $totalUnitsIncreased > 0 && $totalUnitsReduced === 0 => 'QUANTITY_INCREASE',
+                    $totalUnitsIncreased === 0 && $totalUnitsReduced > 0 => 'QUANTITY_REDUCTION',
+                    default => 'QUANTITY_ADJUSTMENT',
+                };
 
                 // 10. Persist Order Adjustment Aggregate
                 /** @var OrderAdjustment $adjustment */
@@ -267,7 +346,7 @@ class OrderAdjustmentService
                     'order_subtotal_snapshot' => $lockedOrder->subtotal,
                     'order_tax_total_snapshot' => $lockedOrder->tax_total,
                     'order_grand_total_snapshot' => $lockedOrder->grand_total,
-                    'type' => 'QUANTITY_REDUCTION',
+                    'type' => $adjustmentType,
                     'status' => OrderAdjustmentStatus::SUBMITTED,
                     'reason_code' => $dto->reasonCode,
                     'notes' => $dto->notes,
@@ -276,6 +355,9 @@ class OrderAdjustmentService
                     'projected_subtotal_reduction' => $totalSubtotalReduction,
                     'projected_tax_reduction' => $totalTaxReduction,
                     'projected_grand_total_reduction' => $totalGrandTotalReduction,
+                    'projected_subtotal_addition' => $totalSubtotalAddition,
+                    'projected_tax_addition' => $totalTaxAddition,
+                    'projected_grand_total_addition' => $totalGrandTotalAddition,
                     'idempotency_key' => $dto->idempotencyKey,
                     'request_fingerprint' => $dto->canonicalFingerprint(),
                 ]);

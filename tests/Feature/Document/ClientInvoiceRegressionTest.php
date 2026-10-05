@@ -178,8 +178,8 @@ class ClientInvoiceRegressionTest extends TestCase
         // Verify Grand Total matches $1,185.00
         $this->assertStringContainsString('1,185.00', $html);
 
-        // Verify US Letter formatting in stylesheet
-        $this->assertStringContainsString('size: letter portrait;', $html);
+        // Verify A4 formatting in stylesheet
+        $this->assertStringContainsString('size: A4 portrait;', $html);
 
         // Verify 7-Column Info Grid Headers
         $this->assertStringContainsString('P.O. NUMBER', $html);

@@ -25,10 +25,26 @@ class CreateOrderAdjustmentRequest extends FormRequest
         if (is_array($items)) {
             foreach ($items as $idx => $item) {
                 if (is_array($item)) {
-                    if (isset($item['requested_quantity_reduction']) && ! isset($item['reduction_quantity'])) {
-                        $items[$idx]['reduction_quantity'] = $item['requested_quantity_reduction'];
-                    } elseif (isset($item['reduction_quantity']) && ! isset($item['requested_quantity_reduction'])) {
-                        $items[$idx]['requested_quantity_reduction'] = $item['reduction_quantity'];
+                    $actionType = strtoupper(trim((string) ($item['action_type'] ?? '')));
+                    if ($actionType === 'INCREASE') {
+                        if (isset($item['requested_quantity_increase']) && ! isset($item['increase_quantity'])) {
+                            $items[$idx]['increase_quantity'] = $item['requested_quantity_increase'];
+                        } elseif (isset($item['increase_quantity']) && ! isset($item['requested_quantity_increase'])) {
+                            $items[$idx]['requested_quantity_increase'] = $item['increase_quantity'];
+                        } elseif (isset($item['quantity']) && ! isset($item['increase_quantity'])) {
+                            $items[$idx]['increase_quantity'] = $item['quantity'];
+                            $items[$idx]['requested_quantity_increase'] = $item['quantity'];
+                        }
+                    } else {
+                        // DECREASE default / legacy
+                        if (isset($item['requested_quantity_reduction']) && ! isset($item['reduction_quantity'])) {
+                            $items[$idx]['reduction_quantity'] = $item['requested_quantity_reduction'];
+                        } elseif (isset($item['reduction_quantity']) && ! isset($item['requested_quantity_reduction'])) {
+                            $items[$idx]['requested_quantity_reduction'] = $item['reduction_quantity'];
+                        } elseif (isset($item['quantity']) && ! isset($item['reduction_quantity'])) {
+                            $items[$idx]['reduction_quantity'] = $item['quantity'];
+                            $items[$idx]['requested_quantity_reduction'] = $item['quantity'];
+                        }
                     }
                 }
             }
@@ -55,9 +71,39 @@ class CreateOrderAdjustmentRequest extends FormRequest
             'idempotency_key' => ['required', 'string', 'max:64'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.order_item_id' => ['required', 'integer', 'exists:order_items,id'],
-            'items.*.reduction_quantity' => ['required', 'integer', 'min:1', 'max:999999'],
+            'items.*.action_type' => ['nullable', 'string', Rule::in(['DECREASE', 'INCREASE'])],
+            'items.*.reduction_quantity' => ['nullable', 'integer', 'min:1', 'max:999999'],
             'items.*.requested_quantity_reduction' => ['nullable', 'integer', 'min:1', 'max:999999'],
+            'items.*.increase_quantity' => ['nullable', 'integer', 'min:1', 'max:999999'],
+            'items.*.requested_quantity_increase' => ['nullable', 'integer', 'min:1', 'max:999999'],
+            'items.*.quantity' => ['nullable', 'integer', 'min:1', 'max:999999'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $items = $this->input('items', []);
+            if (is_array($items)) {
+                foreach ($items as $idx => $item) {
+                    $actionType = strtoupper(trim((string) ($item['action_type'] ?? 'DECREASE')));
+                    if ($actionType === 'INCREASE') {
+                        $inc = (int) ($item['increase_quantity'] ?? $item['requested_quantity_increase'] ?? $item['quantity'] ?? 0);
+                        if ($inc <= 0) {
+                            $validator->errors()->add("items.{$idx}.increase_quantity", 'Increase quantity must be at least 1 unit.');
+                        }
+                    } else {
+                        $red = (int) ($item['reduction_quantity'] ?? $item['requested_quantity_reduction'] ?? $item['quantity'] ?? 0);
+                        if ($red <= 0) {
+                            $validator->errors()->add("items.{$idx}.reduction_quantity", 'Reduction quantity must be at least 1 unit.');
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -74,6 +120,7 @@ class CreateOrderAdjustmentRequest extends FormRequest
             'items' => 'adjusted items',
             'items.*.order_item_id' => 'line item',
             'items.*.reduction_quantity' => 'reduction quantity',
+            'items.*.increase_quantity' => 'increase quantity',
         ];
     }
 
@@ -90,6 +137,7 @@ class CreateOrderAdjustmentRequest extends FormRequest
             'notes.max' => 'Adjustment notes may not exceed 2000 characters.',
             'items.required' => 'At least one line item must be selected for adjustment.',
             'items.*.reduction_quantity.min' => 'Reduction quantity must be at least 1 unit.',
+            'items.*.increase_quantity.min' => 'Increase quantity must be at least 1 unit.',
         ];
     }
 }

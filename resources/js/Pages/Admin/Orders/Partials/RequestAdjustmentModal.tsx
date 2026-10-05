@@ -72,7 +72,9 @@ export default function RequestAdjustmentModal({
     items,
     onClose,
 }: RequestAdjustmentModalProps) {
-    const [reductions, setReductions] = useState<Record<number, number>>({});
+    const [adjustments, setAdjustments] = useState<
+        Record<number, { type: 'DECREASE' | 'INCREASE'; qty: number }>
+    >({});
     const [reasonCode, setReasonCode] = useState<AdjustmentReasonCode>('CUSTOMER_REQUEST');
     const [notes, setNotes] = useState('');
     const [idempotencyKey, setIdempotencyKey] = useState('');
@@ -82,7 +84,7 @@ export default function RequestAdjustmentModal({
     // Initialize/reset form state whenever opened
     useEffect(() => {
         if (isOpen) {
-            setReductions({});
+            setAdjustments({});
             setReasonCode('CUSTOMER_REQUEST');
             setNotes('');
             setSubmitError(null);
@@ -96,13 +98,23 @@ export default function RequestAdjustmentModal({
 
     if (!isOpen) return null;
 
-    // Filter to items that can actually be reduced (fulfillable > 0)
-    const eligibleItems = items.filter((i) => i.fulfillable_quantity > 0);
+    // All items can be adjusted (either decreased if fulfillable > 0, or increased)
+    const eligibleItems = items;
+
+    const handleTypeChange = (itemId: number, type: 'DECREASE' | 'INCREASE') => {
+        setAdjustments((prev) => {
+            const current = prev[itemId] || { type: 'DECREASE', qty: 0 };
+            return {
+                ...prev,
+                [itemId]: { ...current, type },
+            };
+        });
+    };
 
     const handleQuantityChange = (itemId: number, maxFulfillable: number, valueStr: string) => {
         const parsed = parseInt(valueStr, 10);
         if (isNaN(parsed) || parsed <= 0) {
-            setReductions((prev) => {
+            setAdjustments((prev) => {
                 const next = { ...prev };
                 delete next[itemId];
                 return next;
@@ -110,28 +122,35 @@ export default function RequestAdjustmentModal({
             return;
         }
 
-        const clamped = Math.min(parsed, maxFulfillable);
-        setReductions((prev) => ({
-            ...prev,
-            [itemId]: clamped,
-        }));
+        setAdjustments((prev) => {
+            const currentType = prev[itemId]?.type || 'DECREASE';
+            const clamped = currentType === 'DECREASE' ? Math.min(parsed, maxFulfillable) : parsed;
+            return {
+                ...prev,
+                [itemId]: { type: currentType, qty: clamped },
+            };
+        });
     };
 
     // Calculate item-level impacts and aggregate financial projections
     let totalReductionUnits = 0;
-    let projectedSubtotalReduction = 0;
-    let projectedTaxReduction = 0;
+    let totalIncreaseUnits = 0;
+    let projectedSubtotalDelta = 0;
+    let projectedTaxDelta = 0;
     let hasCaseBImpact = false;
 
     const lineCalculations = eligibleItems.map((item) => {
-        const reduction = reductions[item.id] || 0;
+        const adj = adjustments[item.id] || { type: 'DECREASE', qty: 0 };
+        const isIncrease = adj.type === 'INCREASE';
+        const qty = adj.qty || 0;
+
         const unallocated =
             item.unallocated_quantity !== undefined
                 ? item.unallocated_quantity
                 : Math.max(0, item.fulfillable_quantity - (item.allocated_quantity || 0));
 
-        const isCaseB = reduction > unallocated;
-        const affectedAllocation = isCaseB ? reduction - unallocated : 0;
+        const isCaseB = !isIncrease && qty > unallocated;
+        const affectedAllocation = isCaseB ? qty - unallocated : 0;
 
         if (isCaseB) {
             hasCaseBImpact = true;
@@ -140,16 +159,25 @@ export default function RequestAdjustmentModal({
         const unitPrice = parseFloat(item.unit_price) || 0;
         const taxRate = parseFloat(item.tax_rate) || 0;
 
-        const lineSubtotal = reduction * unitPrice;
+        const lineSubtotal = qty * unitPrice;
         const lineTax = lineSubtotal * (taxRate / 100);
+        const signedMultiplier = isIncrease ? 1 : -1;
 
-        totalReductionUnits += reduction;
-        projectedSubtotalReduction += lineSubtotal;
-        projectedTaxReduction += lineTax;
+        if (qty > 0) {
+            if (isIncrease) {
+                totalIncreaseUnits += qty;
+            } else {
+                totalReductionUnits += qty;
+            }
+            projectedSubtotalDelta += lineSubtotal * signedMultiplier;
+            projectedTaxDelta += lineTax * signedMultiplier;
+        }
 
         return {
             item,
-            reduction,
+            type: adj.type,
+            qty,
+            isIncrease,
             unallocated,
             isCaseB,
             affectedAllocation,
@@ -159,22 +187,25 @@ export default function RequestAdjustmentModal({
         };
     });
 
-    const projectedGrandTotalReduction = projectedSubtotalReduction + projectedTaxReduction;
+    const projectedGrandTotalDelta = projectedSubtotalDelta + projectedTaxDelta;
+    const totalAdjustedUnits = totalReductionUnits + totalIncreaseUnits;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitError(null);
 
-        if (totalReductionUnits <= 0) {
-            setSubmitError('Please specify a quantity reduction of at least 1 unit on one or more items.');
+        if (totalAdjustedUnits <= 0) {
+            setSubmitError('Please specify a quantity adjustment of at least 1 unit on one or more items.');
             return;
         }
 
-        const requestItems = Object.entries(reductions)
-            .filter(([_, qty]) => qty > 0)
-            .map(([itemIdStr, qty]) => ({
+        const requestItems = Object.entries(adjustments)
+            .filter(([_, data]) => data.qty > 0)
+            .map(([itemIdStr, data]) => ({
                 order_item_id: parseInt(itemIdStr, 10),
-                requested_quantity_reduction: qty,
+                action_type: data.type,
+                requested_quantity_reduction: data.type === 'DECREASE' ? data.qty : undefined,
+                requested_quantity_increase: data.type === 'INCREASE' ? data.qty : undefined,
             }));
 
         setIsSubmitting(true);
@@ -223,7 +254,7 @@ export default function RequestAdjustmentModal({
                             </h2>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Submit a post-submission quantity reduction request for Order{' '}
+                            Submit a post-submission quantity adjustment (Increase + or Decrease -) for Order{' '}
                             <span className="font-mono font-bold text-foreground">{orderNumber}</span>.
                         </p>
                     </div>
@@ -252,10 +283,10 @@ export default function RequestAdjustmentModal({
                     <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
                             <span className="font-semibold uppercase tracking-wider text-muted-foreground">
-                                Select Line Items & Reductions
+                                Select Line Items & Adjustments
                             </span>
                             <span className="text-muted-foreground">
-                                {eligibleItems.length} eligible line item{eligibleItems.length !== 1 ? 's' : ''}
+                                {eligibleItems.length} line item{eligibleItems.length !== 1 ? 's' : ''}
                             </span>
                         </div>
 
@@ -266,17 +297,19 @@ export default function RequestAdjustmentModal({
                                         <tr>
                                             <th className="py-2.5 px-3 font-semibold">Product & SKU</th>
                                             <th className="py-2.5 px-3 font-semibold text-center">Fulfillable</th>
-                                            <th className="py-2.5 px-3 font-semibold text-center">Unallocated</th>
-                                            <th className="py-2.5 px-3 font-semibold text-center w-28">Reduction Qty</th>
-                                            <th className="py-2.5 px-3 font-semibold">Allocation Impact</th>
-                                            <th className="py-2.5 px-3 font-semibold text-right">Proj. Reduction</th>
+                                            <th className="py-2.5 px-3 font-semibold text-center w-28">Type</th>
+                                            <th className="py-2.5 px-3 font-semibold text-center w-24">Qty</th>
+                                            <th className="py-2.5 px-3 font-semibold">Impact / Mode</th>
+                                            <th className="py-2.5 px-3 font-semibold text-right">Proj. Financial Delta</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y">
                                         {lineCalculations.map(
                                             ({
                                                 item,
-                                                reduction,
+                                                type,
+                                                qty,
+                                                isIncrease,
                                                 unallocated,
                                                 isCaseB,
                                                 affectedAllocation,
@@ -285,7 +318,11 @@ export default function RequestAdjustmentModal({
                                                 <tr
                                                     key={item.id}
                                                     className={`hover:bg-muted/30 transition-colors ${
-                                                        reduction > 0 ? 'bg-primary/5' : ''
+                                                        qty > 0
+                                                            ? isIncrease
+                                                                ? 'bg-blue-500/5'
+                                                                : 'bg-primary/5'
+                                                            : ''
                                                     }`}
                                                 >
                                                     <td className="py-2.5 px-3">
@@ -301,16 +338,39 @@ export default function RequestAdjustmentModal({
                                                         {item.fulfillable_quantity}
                                                     </td>
 
-                                                    <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">
-                                                        {unallocated}
+                                                    <td className="py-2.5 px-3 text-center">
+                                                        <div className="inline-flex rounded-md shadow-xs p-0.5 bg-muted/60 border">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleTypeChange(item.id, 'DECREASE')}
+                                                                className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${
+                                                                    type === 'DECREASE'
+                                                                        ? 'bg-destructive text-destructive-foreground shadow-xs'
+                                                                        : 'text-muted-foreground hover:text-foreground'
+                                                                }`}
+                                                            >
+                                                                - Dec
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleTypeChange(item.id, 'INCREASE')}
+                                                                className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${
+                                                                    type === 'INCREASE'
+                                                                        ? 'bg-blue-600 text-white shadow-xs'
+                                                                        : 'text-muted-foreground hover:text-foreground'
+                                                                }`}
+                                                            >
+                                                                + Inc
+                                                            </button>
+                                                        </div>
                                                     </td>
 
                                                     <td className="py-2.5 px-3 text-center">
                                                         <input
                                                             type="number"
                                                             min={0}
-                                                            max={item.fulfillable_quantity}
-                                                            value={reductions[item.id] ?? ''}
+                                                            max={type === 'DECREASE' ? item.fulfillable_quantity : 9999}
+                                                            value={adjustments[item.id]?.qty ?? ''}
                                                             onChange={(e) =>
                                                                 handleQuantityChange(
                                                                     item.id,
@@ -324,8 +384,15 @@ export default function RequestAdjustmentModal({
                                                     </td>
 
                                                     <td className="py-2.5 px-3">
-                                                        {reduction === 0 ? (
+                                                        {qty === 0 ? (
                                                             <span className="text-muted-foreground text-[11px]">—</span>
+                                                        ) : isIncrease ? (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="bg-blue-100 text-blue-900 border-blue-300 text-[10px] font-semibold dark:bg-blue-950 dark:text-blue-300 dark:border-blue-700"
+                                                            >
+                                                                + Reserve Stock
+                                                            </Badge>
                                                         ) : isCaseB ? (
                                                             <Badge
                                                                 variant="outline"
@@ -344,10 +411,16 @@ export default function RequestAdjustmentModal({
                                                     </td>
 
                                                     <td className="py-2.5 px-3 text-right font-mono font-medium">
-                                                        {reduction > 0 ? (
-                                                            <span className="text-red-600 dark:text-red-400">
-                                                                -${lineTotal.toFixed(2)}
-                                                            </span>
+                                                        {qty > 0 ? (
+                                                            isIncrease ? (
+                                                                <span className="text-blue-600 dark:text-blue-400">
+                                                                    +${lineTotal.toFixed(2)}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-red-600 dark:text-red-400">
+                                                                    -${lineTotal.toFixed(2)}
+                                                                </span>
+                                                            )
                                                         ) : (
                                                             <span className="text-muted-foreground">$0.00</span>
                                                         )}
@@ -400,38 +473,50 @@ export default function RequestAdjustmentModal({
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                                 <Calculator className="h-4 w-4 text-primary" />
-                                <span>Projected Financial Reduction</span>
+                                <span>Projected Financial Delta</span>
                             </div>
                             <span className="text-[11px] text-muted-foreground">
-                                Total Reduction: <span className="font-mono font-bold text-foreground">-{totalReductionUnits} Units</span>
+                                {totalIncreaseUnits > 0 && (
+                                    <span className="text-blue-600 font-mono font-bold mr-2">+{totalIncreaseUnits} Units Inc</span>
+                                )}
+                                {totalReductionUnits > 0 && (
+                                    <span className="text-destructive font-mono font-bold mr-2">-{totalReductionUnits} Units Dec</span>
+                                )}
+                                Total Units: <span className="font-mono font-bold text-foreground">{totalAdjustedUnits}</span>
                             </span>
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 text-xs">
                             <div className="p-2.5 bg-background rounded-lg border">
                                 <div className="text-[10px] text-muted-foreground uppercase font-semibold">
-                                    Subtotal Reduction
+                                    Subtotal Delta
                                 </div>
-                                <div className="text-sm font-mono font-bold text-red-600 dark:text-red-400 mt-0.5">
-                                    -${projectedSubtotalReduction.toFixed(2)}
-                                </div>
-                            </div>
-
-                            <div className="p-2.5 bg-background rounded-lg border">
-                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">
-                                    Tax Reduction
-                                </div>
-                                <div className="text-sm font-mono font-bold text-red-600 dark:text-red-400 mt-0.5">
-                                    -${projectedTaxReduction.toFixed(2)}
+                                <div className={`text-sm font-mono font-bold mt-0.5 ${
+                                    projectedSubtotalDelta >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'
+                                }`}>
+                                    {projectedSubtotalDelta >= 0 ? '+' : ''}${projectedSubtotalDelta.toFixed(2)}
                                 </div>
                             </div>
 
                             <div className="p-2.5 bg-background rounded-lg border">
                                 <div className="text-[10px] text-muted-foreground uppercase font-semibold">
-                                    Grand Total Reduction
+                                    Tax Delta
                                 </div>
-                                <div className="text-sm font-mono font-bold text-red-600 dark:text-red-400 mt-0.5">
-                                    -${projectedGrandTotalReduction.toFixed(2)}
+                                <div className={`text-sm font-mono font-bold mt-0.5 ${
+                                    projectedTaxDelta >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'
+                                }`}>
+                                    {projectedTaxDelta >= 0 ? '+' : ''}${projectedTaxDelta.toFixed(2)}
+                                </div>
+                            </div>
+
+                            <div className="p-2.5 bg-background rounded-lg border">
+                                <div className="text-[10px] text-muted-foreground uppercase font-semibold">
+                                    Grand Total Delta
+                                </div>
+                                <div className={`text-sm font-mono font-bold mt-0.5 ${
+                                    projectedGrandTotalDelta >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'
+                                }`}>
+                                    {projectedGrandTotalDelta >= 0 ? '+' : ''}${projectedGrandTotalDelta.toFixed(2)}
                                 </div>
                             </div>
                         </div>
@@ -439,7 +524,7 @@ export default function RequestAdjustmentModal({
                         <div className="flex items-start gap-2 text-[11px] text-muted-foreground bg-background/60 p-2.5 rounded-lg border">
                             <Info className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
                             <span>
-                                Financial projections and Case A/B indicators are informational snapshots. Baseline order totals, historical tax records, and warehouse inventory reservations remain strictly unmutated until an administrative review approves and applies the adjustment.
+                                Financial projections and inventory indicators are informational snapshots. Original ordered quantities remain permanently immutable. Adjustments are applied atomically upon administrative review and approval.
                             </span>
                         </div>
                     </div>
@@ -456,7 +541,7 @@ export default function RequestAdjustmentModal({
                         </Button>
                         <Button
                             type="submit"
-                            disabled={isSubmitting || totalReductionUnits <= 0}
+                            disabled={isSubmitting || totalAdjustedUnits <= 0}
                             className="gap-2 shadow-sm"
                         >
                             {isSubmitting ? (

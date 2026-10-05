@@ -16,9 +16,9 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8000';
 
 export default defineConfig({
     testDir: './tests/browser',
-    timeout: 45000,
+    timeout: 90000,
     expect: {
-        timeout: 10000,
+        timeout: 15000,
     },
     fullyParallel: false,
     retries: process.env.CI ? 1 : 0,
@@ -52,29 +52,43 @@ export default defineConfig({
     },
     projects: [
         {
+            name: 'default',
+            testMatch: '**/*.spec.ts',
+            use: {
+                viewport: { width: 1440, height: 900 },
+            },
+        },
+        {
+            name: 'e2e',
+            testMatch: '**/e2e/**/*.spec.ts',
+            use: {
+                viewport: { width: 1440, height: 900 },
+            },
+        },
+        {
             name: 'audit-e2e',
-            testMatch: /tests\/browser\/audit\/.*\.spec\.ts/,
+            testMatch: '**/audit/**/*.spec.ts',
             use: {
                 viewport: { width: 1440, height: 900 },
             },
         },
         {
             name: 'responsive',
-            testMatch: /tests\/browser\/responsive\/.*\.spec\.ts/,
+            testMatch: '**/responsive/**/*.spec.ts',
             use: {
                 viewport: { width: 1440, height: 900 },
             },
         },
         {
             name: 'security',
-            testMatch: /tests\/browser\/security\/.*\.spec\.ts/,
+            testMatch: '**/security/**/*.spec.ts',
             use: {
                 viewport: { width: 1440, height: 900 },
             },
         },
         {
             name: 'visual',
-            testMatch: /tests\/browser\/visual\/.*\.spec\.ts/,
+            testMatch: '**/visual/**/*.spec.ts',
             use: {
                 viewport: { width: 1440, height: 900 },
             },

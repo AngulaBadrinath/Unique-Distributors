@@ -60,39 +60,35 @@ class OrderAdjustmentReviewService
         $liveSubtotalReduction = '0.00';
         $liveTaxReduction = '0.00';
         $liveGrandTotalReduction = '0.00';
+        $liveSubtotalAddition = '0.00';
+        $liveTaxAddition = '0.00';
+        $liveGrandTotalAddition = '0.00';
 
         foreach ($adjustment->items as $adjItem) {
             $orderItem = $adjItem->orderItem;
+            if (! $orderItem) {
+                continue;
+            }
 
             $currentOrdered = (int) $orderItem->ordered_quantity;
             $currentCancelled = (int) $orderItem->cancelled_quantity;
             $currentFulfillable = $orderItem->fulfillableQuantity();
             $currentAllocated = $orderItem->allocatedQuantity();
             $currentUnallocated = $orderItem->unallocatedQuantity();
+            $actionType = $adjItem->action_type ?? 'DECREASE';
+            $isIncrease = ($actionType === 'INCREASE') || ((int) ($adjItem->requested_quantity_increase ?? 0) > 0);
+
             $requestedReduction = (int) $adjItem->requested_quantity_reduction;
+            $requestedIncrease = (int) ($adjItem->requested_quantity_increase ?? 0);
 
-            // Snapshot values
-            $snapshotAffected = (int) $adjItem->affected_allocation_quantity;
-            $snapshotCase = $snapshotAffected > 0 ? 'CASE_B' : 'CASE_A';
-
-            // Current allocation impact
-            $currentAffected = max(0, $requestedReduction - $currentUnallocated);
-            $currentCase = $currentAffected > 0 ? 'CASE_B' : 'CASE_A';
-            $caseChanged = ($snapshotCase !== $currentCase) || ($snapshotAffected !== $currentAffected);
-            if ($caseChanged) {
-                $isStale = true;
-                $staleReasons[] = "Item {$adjItem->sku_snapshot}: Allocation state drifted from {$snapshotCase} ({$snapshotAffected} affected) to {$currentCase} ({$currentAffected} affected).";
-            }
-
-            // Conflict detection: Requested reduction exceeds fulfillable quantity
             $isConflicted = false;
             $conflictReason = null;
-            if ($requestedReduction > $currentFulfillable) {
-                $isConflicted = true;
-                $hasConflict = true;
-                $conflictReason = "Requested reduction ({$requestedReduction}) exceeds current fulfillable quantity ({$currentFulfillable}).";
-                $staleReasons[] = "Item {$adjItem->sku_snapshot}: {$conflictReason}";
-            }
+            $encroachesOnPicked = false;
+            $snapshotAffected = (int) $adjItem->affected_allocation_quantity;
+            $snapshotCase = $snapshotAffected > 0 ? 'CASE_B' : 'CASE_A';
+            $currentAffected = 0;
+            $currentCase = 'CASE_A';
+            $caseChanged = false;
 
             // Active allocations analysis (excluding CANCELLED and RELEASED)
             $activeAllocations = $orderItem->allocations
@@ -102,28 +98,68 @@ class OrderAdjustmentReviewService
             $totalAllocatedOnActive = (int) $activeAllocations->sum('allocated_quantity');
             $unpickedAllocated = max(0, $totalAllocatedOnActive - $totalPickedOnActive);
 
-            // Check if affected allocation encroaches on units that have already been picked
-            $encroachesOnPicked = false;
-            if ($currentAffected > $unpickedAllocated) {
-                $encroachesOnPicked = true;
-                $hasEncroachment = true;
-                $staleReasons[] = "Item {$adjItem->sku_snapshot}: Requested reduction encroaches on units that have already been picked ({$currentAffected} affected vs {$unpickedAllocated} unpicked).";
-            }
-
-            $totalAffectedAllocation += $currentAffected;
-            $totalUnpickedAffected += min($currentAffected, $unpickedAllocated);
-
-            // Live financial calculation for this line using current unit price and tax rate
             $lineUnitPrice = (string) $orderItem->unit_price;
             $lineTaxRate = TaxCalculationService::normalizeRate($orderItem->tax_rate_snapshot, 'tax_rate');
-            $lineTaxableReduction = bcmul($lineUnitPrice, (string) $requestedReduction, 2);
-            $rawTaxReduction = bcdiv(bcmul($lineTaxableReduction, $lineTaxRate, 8), '100', 8);
-            $lineTaxAmtReduction = TaxCalculationService::roundHalfUp($rawTaxReduction, 2);
-            $lineTotalReduction = bcadd($lineTaxableReduction, $lineTaxAmtReduction, 2);
 
-            $liveSubtotalReduction = bcadd($liveSubtotalReduction, $lineTaxableReduction, 2);
-            $liveTaxReduction = bcadd($liveTaxReduction, $lineTaxAmtReduction, 2);
-            $liveGrandTotalReduction = bcadd($liveGrandTotalReduction, $lineTotalReduction, 2);
+            if ($isIncrease) {
+                $increaseQty = $requestedIncrease > 0 ? $requestedIncrease : max(0, (int) $adjItem->requested_quantity_delta);
+                // Check physical stock availability
+                $balance = \App\Models\InventoryBalance::where('product_id', $orderItem->product_id)->first();
+                $availableStock = $balance ? (int) $balance->available_quantity : 0;
+                if ($availableStock < $increaseQty) {
+                    $isConflicted = true;
+                    $hasConflict = true;
+                    $conflictReason = "Requested increase ({$increaseQty}) exceeds available warehouse stock ({$availableStock}).";
+                    $staleReasons[] = "Item {$adjItem->sku_snapshot}: {$conflictReason}";
+                }
+
+                $lineTaxableAddition = bcmul($lineUnitPrice, (string) $increaseQty, 2);
+                $rawTaxAddition = bcdiv(bcmul($lineTaxableAddition, $lineTaxRate, 8), '100', 8);
+                $lineTaxAmtAddition = TaxCalculationService::roundHalfUp($rawTaxAddition, 2);
+                $lineTotalAddition = bcadd($lineTaxableAddition, $lineTaxAmtAddition, 2);
+
+                $liveSubtotalAddition = bcadd($liveSubtotalAddition, $lineTaxableAddition, 2);
+                $liveTaxAddition = bcadd($liveTaxAddition, $lineTaxAmtAddition, 2);
+                $liveGrandTotalAddition = bcadd($liveGrandTotalAddition, $lineTotalAddition, 2);
+
+                $lineTaxableReduction = '0.00';
+                $lineTaxAmtReduction = '0.00';
+                $lineTotalReduction = '0.00';
+            } else {
+                // Reduction logic
+                $currentAffected = max(0, $requestedReduction - $currentUnallocated);
+                $currentCase = $currentAffected > 0 ? 'CASE_B' : 'CASE_A';
+                $caseChanged = ($snapshotCase !== $currentCase) || ($snapshotAffected !== $currentAffected);
+                if ($caseChanged) {
+                    $isStale = true;
+                    $staleReasons[] = "Item {$adjItem->sku_snapshot}: Allocation state drifted from {$snapshotCase} ({$snapshotAffected} affected) to {$currentCase} ({$currentAffected} affected).";
+                }
+
+                if ($requestedReduction > $currentFulfillable) {
+                    $isConflicted = true;
+                    $hasConflict = true;
+                    $conflictReason = "Requested reduction ({$requestedReduction}) exceeds current fulfillable quantity ({$currentFulfillable}).";
+                    $staleReasons[] = "Item {$adjItem->sku_snapshot}: {$conflictReason}";
+                }
+
+                if ($currentAffected > $unpickedAllocated) {
+                    $encroachesOnPicked = true;
+                    $hasEncroachment = true;
+                    $staleReasons[] = "Item {$adjItem->sku_snapshot}: Requested reduction encroaches on units that have already been picked ({$currentAffected} affected vs {$unpickedAllocated} unpicked).";
+                }
+
+                $totalAffectedAllocation += $currentAffected;
+                $totalUnpickedAffected += min($currentAffected, $unpickedAllocated);
+
+                $lineTaxableReduction = bcmul($lineUnitPrice, (string) $requestedReduction, 2);
+                $rawTaxReduction = bcdiv(bcmul($lineTaxableReduction, $lineTaxRate, 8), '100', 8);
+                $lineTaxAmtReduction = TaxCalculationService::roundHalfUp($rawTaxReduction, 2);
+                $lineTotalReduction = bcadd($lineTaxableReduction, $lineTaxAmtReduction, 2);
+
+                $liveSubtotalReduction = bcadd($liveSubtotalReduction, $lineTaxableReduction, 2);
+                $liveTaxReduction = bcadd($liveTaxReduction, $lineTaxAmtReduction, 2);
+                $liveGrandTotalReduction = bcadd($liveGrandTotalReduction, $lineTotalReduction, 2);
+            }
 
             $allocationsData = $activeAllocations->map(fn (OrderItemAllocation $alloc) => [
                 'id' => $alloc->id,
@@ -186,14 +222,20 @@ class OrderAdjustmentReviewService
         $storedSubtotalReduction = (string) $adjustment->projected_subtotal_reduction;
         $storedTaxReduction = (string) $adjustment->projected_tax_reduction;
         $storedGrandTotalReduction = (string) $adjustment->projected_grand_total_reduction;
+        $storedSubtotalAddition = (string) ($adjustment->projected_subtotal_addition ?? '0.00');
+        $storedTaxAddition = (string) ($adjustment->projected_tax_addition ?? '0.00');
+        $storedGrandTotalAddition = (string) ($adjustment->projected_grand_total_addition ?? '0.00');
 
         $financialDiscrepancy = (bccomp($storedGrandTotalReduction, $liveGrandTotalReduction, 2) !== 0)
             || (bccomp($storedSubtotalReduction, $liveSubtotalReduction, 2) !== 0)
-            || (bccomp($storedTaxReduction, $liveTaxReduction, 2) !== 0);
+            || (bccomp($storedTaxReduction, $liveTaxReduction, 2) !== 0)
+            || (bccomp($storedGrandTotalAddition, $liveGrandTotalAddition, 2) !== 0)
+            || (bccomp($storedSubtotalAddition, $liveSubtotalAddition, 2) !== 0)
+            || (bccomp($storedTaxAddition, $liveTaxAddition, 2) !== 0);
 
         if ($financialDiscrepancy) {
             $isStale = true;
-            $staleReasons[] = "Live financial calculation differs from stored projection (Stored: \${$storedGrandTotalReduction} vs Live: \${$liveGrandTotalReduction}).";
+            $staleReasons[] = "Live financial calculation differs from stored projection.";
         }
 
         // 5. Synthesis of Overall Evaluation Status

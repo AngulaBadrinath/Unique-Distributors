@@ -378,5 +378,111 @@ class OrderWorkflowService
 
         return $cancelledOrder;
     }
+
+    /**
+     * Authoritatively evaluate whether an order satisfies all completion invariants and transition it to COMPLETED.
+     * Criteria (Part 7):
+     * - Order status must be APPROVED or PROCESSING (not already COMPLETED, CANCELLED, or REJECTED).
+     * - Payment status is fully PAID.
+     * - Fulfillment status is DELIVERED.
+     * - Delivery status is DELIVERED (or null/DELIVERED).
+     * - Adjustment status is not REQUESTED (no open pending adjustment review).
+     * - Every ordered quantity is accounted for through delivered or explicitly cancelled quantity (zero undelivered fulfillable units remain across all items).
+     *
+     * Invariants:
+     * - Independent state dimensions are preserved.
+     * - Transition is atomic, idempotent, and audited once.
+     */
+    public function evaluateAndCompleteOrder(Order $order, ?User $actor = null): bool
+    {
+        // 1. Pre-check without lock
+        if ($order->status === OrderStatus::COMPLETED) {
+            return false;
+        }
+
+        if (! in_array($order->status, [OrderStatus::APPROVED, OrderStatus::PROCESSING], true)) {
+            return false;
+        }
+
+        if ($order->payment_status !== \App\Enums\PaymentStatus::PAID) {
+            return false;
+        }
+
+        if ($order->fulfillment_status !== FulfillmentStatus::DELIVERED) {
+            return false;
+        }
+
+        if ($order->delivery_status !== null && ! in_array($order->delivery_status, [\App\Enums\DeliveryStatus::DELIVERED], true)) {
+            return false;
+        }
+
+        if ($order->adjustment_status === \App\Enums\AdjustmentStatus::REQUESTED) {
+            return false;
+        }
+
+        return DB::transaction(function () use ($order, $actor) {
+            /** @var Order $lockedOrder */
+            $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedOrder->status === OrderStatus::COMPLETED) {
+                return false;
+            }
+
+            if (! in_array($lockedOrder->status, [OrderStatus::APPROVED, OrderStatus::PROCESSING], true)) {
+                return false;
+            }
+
+            if ($lockedOrder->payment_status !== \App\Enums\PaymentStatus::PAID) {
+                return false;
+            }
+
+            if ($lockedOrder->fulfillment_status !== FulfillmentStatus::DELIVERED) {
+                return false;
+            }
+
+            if ($lockedOrder->delivery_status !== null && ! in_array($lockedOrder->delivery_status, [\App\Enums\DeliveryStatus::DELIVERED], true)) {
+                return false;
+            }
+
+            if ($lockedOrder->adjustment_status === \App\Enums\AdjustmentStatus::REQUESTED) {
+                return false;
+            }
+
+            // Verify all items are fully delivered (delivered_quantity >= fulfillableQuantity)
+            $lockedItems = $lockedOrder->items()->lockForUpdate()->get();
+            if ($lockedItems->isEmpty()) {
+                return false;
+            }
+
+            foreach ($lockedItems as $item) {
+                $fulfillable = $item->fulfillableQuantity();
+                if ($item->delivered_quantity < $fulfillable) {
+                    return false;
+                }
+            }
+
+            $previousStatus = $lockedOrder->status;
+            $lockedOrder->status = OrderStatus::COMPLETED;
+            $lockedOrder->completed_at = Carbon::now();
+            $lockedOrder->version += 1;
+            $lockedOrder->save();
+
+            Log::info('commerce.order_event', [
+                'action' => 'ORDER_COMPLETED',
+                'order_id' => $lockedOrder->id,
+                'order_number' => $lockedOrder->order_number,
+                'actor_id' => $actor?->id,
+                'actor_name' => $actor?->name,
+                'previous_status' => $previousStatus instanceof OrderStatus ? $previousStatus->value : (string) $previousStatus,
+                'new_status' => OrderStatus::COMPLETED->value,
+                'fulfillment_status' => $lockedOrder->fulfillment_status->value,
+                'payment_status' => $lockedOrder->payment_status->value,
+                'delivery_status' => $lockedOrder->delivery_status?->value,
+                'timestamp' => Carbon::now()->toIso8601String(),
+            ]);
+
+            return true;
+        }, 3);
+    }
 }
 

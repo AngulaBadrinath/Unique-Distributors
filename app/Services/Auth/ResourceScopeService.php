@@ -191,6 +191,50 @@ class ResourceScopeService
     }
 
     /**
+     * Determine whether the authenticated user has access to a specific order adjustment.
+     */
+    public function canAccessAdjustment(User $user, OrderAdjustment|int $adjustment): bool
+    {
+        if (! $this->isUserActive($user)) {
+            return false;
+        }
+
+        if ($user->role === UserRole::SALESMAN) {
+            if ($adjustment instanceof OrderAdjustment) {
+                if ((int) $adjustment->requested_by === (int) $user->id) {
+                    return true;
+                }
+                $orderSalesmanId = $adjustment->order?->salesman_id ?? Order::where('id', $adjustment->order_id)->value('salesman_id');
+
+                return (int) $orderSalesmanId === (int) $user->id;
+            }
+
+            return OrderAdjustment::query()
+                ->where('id', (int) $adjustment)
+                ->where(function (Builder $q) use ($user) {
+                    $q->where('requested_by', $user->id)
+                        ->orWhereHas('order', fn ($oq) => $oq->where('salesman_id', $user->id));
+                })
+                ->exists();
+        }
+
+        return $this->permissionService->has($user, Permission::ORDER_ADJUST_REVIEW)
+            || $this->permissionService->has($user, Permission::ORDER_ADJUST_REQUEST)
+            || $this->permissionService->has($user, Permission::ORDER_ADJUST_APPROVE);
+    }
+
+    /**
+     * Verify that an adjustment belongs strictly to the specified order.
+     */
+    public function verifyOrderAdjustmentOwnership(OrderAdjustment|int $adjustment, Order|int $order): bool
+    {
+        $adjOrderId = $adjustment instanceof OrderAdjustment ? $adjustment->order_id : OrderAdjustment::where('id', (int) $adjustment)->value('order_id');
+        $targetOrderId = $order instanceof Order ? $order->id : (int) $order;
+
+        return (int) $adjOrderId === (int) $targetOrderId;
+    }
+
+    /**
      * Determine whether the authenticated user has access to a specific credit note.
      */
     public function canAccessCreditNote(User $user, CreditNote|int $creditNote): bool
@@ -302,37 +346,6 @@ class ResourceScopeService
         return $this->permissionService->has($user, Permission::INVENTORY_VIEW);
     }
 
-    /**
-     * Determine whether the authenticated user has access to an order adjustment.
-     */
-    public function canAccessAdjustment(User $user, OrderAdjustment|int $adjustment): bool
-    {
-        if (! $this->isUserActive($user)) {
-            return false;
-        }
-
-        if ($user->role === UserRole::SALESMAN) {
-            if ($adjustment instanceof OrderAdjustment) {
-                if ((int) $adjustment->requested_by === (int) $user->id) {
-                    return true;
-                }
-                $orderSalesmanId = $adjustment->order?->salesman_id ?? Order::where('id', $adjustment->order_id)->value('salesman_id');
-
-                return (int) $orderSalesmanId === (int) $user->id;
-            }
-
-            return OrderAdjustment::query()
-                ->where('id', (int) $adjustment)
-                ->where(function (Builder $q) use ($user) {
-                    $q->where('requested_by', $user->id)
-                        ->orWhereHas('order', fn ($oq) => $oq->where('salesman_id', $user->id));
-                })
-                ->exists();
-        }
-
-        return $this->permissionService->has($user, Permission::ORDER_ADJUST_REVIEW)
-            || $this->permissionService->has($user, Permission::ORDER_ADJUST_REQUEST);
-    }
 
     /**
      * Query scoping helper: apply authoritative customer scope.
@@ -681,13 +694,6 @@ class ResourceScopeService
         return (int) $item->credit_note_id === (int) $creditNote->id;
     }
 
-    /**
-     * Nested resource verification: Order -> OrderAdjustment.
-     */
-    public function verifyOrderAdjustmentOwnership(OrderAdjustment $adjustment, Order $order): bool
-    {
-        return (int) $adjustment->order_id === (int) $order->id;
-    }
 
     /**
      * Nested resource verification: Order -> OrderItem.

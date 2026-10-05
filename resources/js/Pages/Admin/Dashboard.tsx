@@ -28,10 +28,19 @@ interface OperationalMetrics {
     pending_approval_orders: number;
     today_orders_count: number;
     today_sales_volume: string;
+    sales_change_percentage?: string;
+    fulfillment_rate_percentage?: number;
+    warehouse_health_percentage?: number;
+    warehouse_health_status?: 'Optimal' | 'Warning' | 'Critical';
+    total_on_hand_units?: number;
+    total_available_units?: number;
+    total_reserved_units?: number;
+    total_damaged_units?: number;
     active_customers_count: number;
     low_stock_items_count: number;
     pending_payments_count: number;
     active_deliveries_count: number;
+    trajectory_percentages?: number[];
 }
 
 interface RecentOrderItem {
@@ -70,6 +79,10 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
         }
     };
 
+    const trajectoryBars = metrics.trajectory_percentages && metrics.trajectory_percentages.length > 0
+        ? metrics.trajectory_percentages
+        : [40, 55, 38, 65, 48, 80, 72, 90];
+
     return (
         <AppLayout title="Executive Command Center">
             <Head title="Executive Dashboard" />
@@ -100,7 +113,7 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                     </div>
                 </div>
 
-                {/* Featured Executive Showcase: Master Revenue Card with Glowing Sparkline (Reference 01) */}
+                {/* Featured Executive Showcase: Master Revenue Card with Glowing Sparkline */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     {/* Featured Large Dark Glass Card */}
                     <Card variant="executive" className="lg:col-span-2 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between">
@@ -114,7 +127,7 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
                                     <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 rounded-full">
-                                        <TrendingUp className="h-3 w-3" /> +19.4% Today
+                                        <TrendingUp className="h-3 w-3" /> {metrics.sales_change_percentage ?? '+0.0%'} Today
                                     </span>
                                     <span className="text-xs text-muted-foreground">
                                         {metrics.today_orders_count} orders processed in current cycle
@@ -127,14 +140,14 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                             </div>
                         </div>
 
-                        {/* Luminous Glowing Sparkline Wave (Inspired by Reference 01) */}
+                        {/* Luminous Glowing Sparkline Wave */}
                         <div className="mt-8 pt-4 border-t border-white/8">
                             <div className="flex items-center justify-between text-xs text-muted-foreground font-mono mb-2">
                                 <span>Cycle Trajectory</span>
-                                <span className="text-cyan-400 font-semibold">98.4% Fulfillment Rate</span>
+                                <span className="text-cyan-400 font-semibold">{metrics.fulfillment_rate_percentage ?? 100}% Fulfillment Rate</span>
                             </div>
                             <div className="h-16 w-full flex items-end gap-1 sm:gap-2">
-                                {[40, 55, 38, 65, 48, 80, 72, 90, 85, 95, 78, 92, 100].map((val, i) => (
+                                {trajectoryBars.map((val, i) => (
                                     <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
                                         <div 
                                             className="w-full bg-gradient-to-t from-cyan-600/40 via-cyan-400/80 to-cyan-300 rounded-t-sm transition-all duration-300 group-hover:from-cyan-500 group-hover:to-cyan-200"
@@ -151,18 +164,23 @@ export default function Dashboard({ metrics, recentOrders }: DashboardProps) {
                         <div>
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                                    Warehouse Health
+                                    Inventory Health
                                 </span>
-                                <Badge variant="brand" className="text-[10px]">Optimal</Badge>
+                                <Badge
+                                    variant={metrics.warehouse_health_status === 'Critical' ? 'destructive' : (metrics.warehouse_health_status === 'Warning' ? 'warning' : 'brand')}
+                                    className="text-[10px]"
+                                >
+                                    {metrics.warehouse_health_status ?? 'Optimal'}
+                                </Badge>
                             </div>
 
-                            {/* Dual-tone Progress Ring (Inspired by Reference 01 & 02) */}
+                            {/* Dual-tone Progress Ring */}
                             <div className="flex items-center justify-center my-6">
                                 <div className="relative flex items-center justify-center">
                                     <div className="h-32 w-32 rounded-full border-8 border-white/5 border-t-cyan-400 border-r-indigo-500 animate-spin-slow glow-cyan-subtle flex items-center justify-center">
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold font-mono text-white">91%</div>
-                                            <div className="text-[10px] text-muted-foreground uppercase font-mono">Capacity</div>
+                                            <div className="text-2xl font-bold font-mono text-white">{metrics.warehouse_health_percentage ?? 100}%</div>
+                                            <div className="text-[10px] text-muted-foreground uppercase font-mono">Stock Health</div>
                                         </div>
                                     </div>
                                 </div>

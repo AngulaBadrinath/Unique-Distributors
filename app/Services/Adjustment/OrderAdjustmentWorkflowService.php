@@ -4,10 +4,13 @@ namespace App\Services\Adjustment;
 
 use App\Enums\AdjustmentStatus;
 use App\Enums\AllocationStatus;
+use App\Enums\InventoryMovementType;
+use App\Enums\InventoryStockState;
 use App\Enums\OrderAdjustmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\Permission;
 use App\Enums\UserRole;
+use App\Models\InventoryBalance;
 use App\Models\Order;
 use App\Models\OrderAdjustment;
 use App\Models\OrderItem;
@@ -16,6 +19,8 @@ use App\Models\User;
 use App\Services\Allocation\OrderAllocationService;
 use App\Services\Allocation\OrderAllocationValidationService;
 use App\Services\Auth\PermissionService;
+use App\Services\Inventory\InventoryMovementService;
+use App\Services\Order\OrderWorkflowService;
 use App\Services\Tax\TaxCalculationService;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -33,10 +38,14 @@ class OrderAdjustmentWorkflowService
         protected ?TaxCalculationService $taxCalculationService = null,
         protected ?OrderAllocationService $allocationService = null,
         protected ?OrderAllocationValidationService $allocationValidator = null,
+        protected ?InventoryMovementService $movementService = null,
+        protected ?OrderWorkflowService $orderWorkflowService = null,
     ) {
         $this->taxCalculationService ??= new TaxCalculationService();
         $this->allocationValidator ??= new OrderAllocationValidationService();
         $this->allocationService ??= new OrderAllocationService($this->allocationValidator);
+        $this->movementService ??= app(InventoryMovementService::class);
+        $this->orderWorkflowService ??= app(OrderWorkflowService::class);
     }
 
     /**
@@ -617,40 +626,60 @@ class OrderAdjustmentWorkflowService
                     throw new ConflictHttpException("Cannot apply adjustment: {$blockReason}");
                 }
 
-                $reduction = (int) $adjItem->requested_quantity_reduction;
-                if ($reduction <= 0) {
-                    throw ValidationException::withMessages([
-                        'requested_quantity_reduction' => "Requested quantity reduction must be positive for line item #{$item->id}.",
-                    ]);
-                }
+                $actionType = $adjItem->action_type ?? 'DECREASE';
+                $isIncrease = ($actionType === 'INCREASE') || ((int) ($adjItem->requested_quantity_increase ?? 0) > 0);
 
-                $currentFulfillable = $item->fulfillableQuantity();
-                if ($reduction > $currentFulfillable) {
-                    $blockReason = "Requested reduction of {$reduction} units for line item #{$item->id} exceeds current fulfillable quantity ({$currentFulfillable}).";
-                    $this->logApplicationBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
-                    throw new ConflictHttpException("Cannot apply adjustment: {$blockReason}");
-                }
+                if ($isIncrease) {
+                    $increase = (int) ($adjItem->requested_quantity_increase > 0 ? $adjItem->requested_quantity_increase : $adjItem->requested_quantity_delta);
+                    if ($increase <= 0) {
+                        throw ValidationException::withMessages([
+                            'requested_quantity_increase' => "Requested quantity increase must be positive for line item #{$item->id}.",
+                        ]);
+                    }
 
-                $currentUnallocated = $item->unallocatedQuantity();
-
-                // If Case B (reduction exceeds unallocated units), verify sufficient releasable unpicked capacity
-                if ($reduction > $currentUnallocated) {
-                    $neededRelease = $reduction - $currentUnallocated;
-
-                    // Calculate available releasable capacity across eligible allocations:
-                    // Must be ALLOCATED or RESERVED, and picked == 0, dispatched == 0, delivered == 0, returned == 0
-                    $releasableCapacity = (int) OrderItemAllocation::where('order_item_id', $item->id)
-                        ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
-                        ->where('picked_quantity', 0)
-                        ->where('dispatched_quantity', 0)
-                        ->where('delivered_quantity', 0)
-                        ->where('returned_quantity', 0)
-                        ->sum('allocated_quantity');
-
-                    if ($neededRelease > $releasableCapacity) {
-                        $blockReason = "Requested reduction requires releasing {$neededRelease} allocated units for line item #{$item->id}, but only {$releasableCapacity} unpicked units are available (encroaches on picked/dispatched stock).";
+                    $balance = InventoryBalance::where('product_id', $item->product_id)->lockForUpdate()->first();
+                    $available = $balance ? (int) $balance->available_quantity : 0;
+                    if ($available < $increase) {
+                        $blockReason = "Requested increase of {$increase} units for line item #{$item->id} ({$item->product_name_snapshot}) exceeds available stock ({$available}).";
                         $this->logApplicationBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
                         throw new ConflictHttpException("Cannot apply adjustment: {$blockReason}");
+                    }
+                } else {
+                    $reduction = (int) ($adjItem->requested_quantity_reduction > 0 ? $adjItem->requested_quantity_reduction : abs((int) $adjItem->requested_quantity_delta));
+                    if ($reduction <= 0) {
+                        throw ValidationException::withMessages([
+                            'requested_quantity_reduction' => "Requested quantity reduction must be positive for line item #{$item->id}.",
+                        ]);
+                    }
+
+                    $currentFulfillable = $item->fulfillableQuantity();
+                    if ($reduction > $currentFulfillable) {
+                        $blockReason = "Requested reduction of {$reduction} units for line item #{$item->id} exceeds current fulfillable quantity ({$currentFulfillable}).";
+                        $this->logApplicationBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
+                        throw new ConflictHttpException("Cannot apply adjustment: {$blockReason}");
+                    }
+
+                    $currentUnallocated = $item->unallocatedQuantity();
+
+                    // If Case B (reduction exceeds unallocated units), verify sufficient releasable unpicked capacity
+                    if ($reduction > $currentUnallocated) {
+                        $neededRelease = $reduction - $currentUnallocated;
+
+                        // Calculate available releasable capacity across eligible allocations:
+                        // Must be ALLOCATED or RESERVED, and picked == 0, dispatched == 0, delivered == 0, returned == 0
+                        $releasableCapacity = (int) OrderItemAllocation::where('order_item_id', $item->id)
+                            ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
+                            ->where('picked_quantity', 0)
+                            ->where('dispatched_quantity', 0)
+                            ->where('delivered_quantity', 0)
+                            ->where('returned_quantity', 0)
+                            ->sum('allocated_quantity');
+
+                        if ($neededRelease > $releasableCapacity) {
+                            $blockReason = "Requested reduction requires releasing {$neededRelease} allocated units for line item #{$item->id}, but only {$releasableCapacity} unpicked units are available (encroaches on picked/dispatched stock).";
+                            $this->logApplicationBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
+                            throw new ConflictHttpException("Cannot apply adjustment: {$blockReason}");
+                        }
                     }
                 }
             }
@@ -659,117 +688,200 @@ class OrderAdjustmentWorkflowService
             foreach ($adjItems as $adjItem) {
                 /** @var OrderItem $item */
                 $item = $lockedItemsById->get($adjItem->order_item_id);
-                $reduction = (int) $adjItem->requested_quantity_reduction;
-                $currentUnallocated = $item->unallocatedQuantity();
+                $actionType = $adjItem->action_type ?? 'DECREASE';
+                $isIncrease = ($actionType === 'INCREASE') || ((int) ($adjItem->requested_quantity_increase ?? 0) > 0);
 
-                // Case B Allocation Release
-                if ($reduction > $currentUnallocated) {
-                    $unitsToRelease = $reduction - $currentUnallocated;
+                if ($isIncrease) {
+                    $increase = (int) ($adjItem->requested_quantity_increase > 0 ? $adjItem->requested_quantity_increase : $adjItem->requested_quantity_delta);
 
-                    // Deterministic release order: ALLOCATED before RESERVED, then id DESC (LIFO)
-                    $eligibleAllocations = OrderItemAllocation::where('order_item_id', $item->id)
-                        ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
-                        ->where('picked_quantity', 0)
-                        ->where('dispatched_quantity', 0)
-                        ->where('delivered_quantity', 0)
-                        ->where('returned_quantity', 0)
-                        ->orderByRaw("CASE WHEN status = 'ALLOCATED' THEN 1 ELSE 2 END")
-                        ->orderBy('id', 'desc')
-                        ->lockForUpdate()
-                        ->get();
+                    // Non-destructive: update increased_quantity
+                    $item->increased_quantity = ($item->increased_quantity ?? 0) + $increase;
+                    $item->save();
 
-                    foreach ($eligibleAllocations as $alloc) {
-                        if ($unitsToRelease <= 0) {
-                            break;
+                    // Reserve physical stock on inventory balance
+                    $balance = InventoryBalance::where('product_id', $item->product_id)->lockForUpdate()->first();
+                    if ($balance) {
+                        $onHandBefore = (int) $balance->on_hand_quantity;
+                        $reservedBefore = (int) $balance->reserved_quantity;
+                        $availableBefore = (int) $balance->available_quantity;
+                        $damagedBefore = (int) $balance->damaged_quantity;
+
+                        $balance->reserved_quantity += $increase;
+                        $balance->available_quantity = $balance->calculateAvailableQuantity();
+                        $balance->version += 1;
+                        $balance->save();
+
+                        $this->movementService->recordMovement([
+                            'warehouse_id' => $balance->warehouse_id,
+                            'product_id' => $item->product_id,
+                            'inventory_balance_id' => $balance->id,
+                            'movement_type' => InventoryMovementType::RESERVATION,
+                            'from_state' => InventoryStockState::AVAILABLE,
+                            'to_state' => InventoryStockState::RESERVED,
+                            'quantity' => $increase,
+                            'on_hand_before' => $onHandBefore,
+                            'on_hand_after' => (int) $balance->on_hand_quantity,
+                            'reserved_before' => $reservedBefore,
+                            'reserved_after' => (int) $balance->reserved_quantity,
+                            'available_before' => $availableBefore,
+                            'available_after' => (int) $balance->available_quantity,
+                            'damaged_before' => $damagedBefore,
+                            'damaged_after' => (int) $balance->damaged_quantity,
+                            'reference_type' => 'App\\Models\\OrderAdjustment',
+                            'reference_id' => $lockedAdjustment->id,
+                            'reference_number' => $lockedAdjustment->adjustment_number,
+                            'notes' => "Stock reserved via applied adjustment {$lockedAdjustment->adjustment_number} (+{$increase} units)",
+                            'actor_id' => $actor->id,
+                        ]);
+                    }
+
+                    // If order has baseline allocations, allocate the increase
+                    if (in_array($lockedOrder->status, [OrderStatus::APPROVED, OrderStatus::PROCESSING], true)) {
+                        $orderNumClean = $lockedOrder->order_number ?: 'ORD-' . $lockedOrder->id;
+                        $maxSeq = OrderItemAllocation::where('order_item_id', $item->id)
+                            ->pluck('allocation_number')
+                            ->map(function ($num) {
+                                if (preg_match('/-(\d+)$/', (string) $num, $matches)) {
+                                    return (int) $matches[1];
+                                }
+                                return 0;
+                            })
+                            ->max() ?? 0;
+
+                        $nextSeq = sprintf('%02d', $maxSeq + 1);
+                        $allocNumber = "ALC-{$orderNumClean}-{$item->id}-{$nextSeq}";
+
+                        OrderItemAllocation::create([
+                            'allocation_number' => $allocNumber,
+                            'order_id' => $lockedOrder->id,
+                            'order_item_id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'allocated_quantity' => $increase,
+                            'reserved_quantity' => $increase,
+                            'picked_quantity' => 0,
+                            'dispatched_quantity' => 0,
+                            'delivered_quantity' => 0,
+                            'returned_quantity' => 0,
+                            'status' => AllocationStatus::ALLOCATED,
+                            'warehouse_code' => 'MAIN',
+                            'notes' => "Quantity increase via applied adjustment {$lockedAdjustment->adjustment_number}",
+                            'allocated_by' => $actor->id,
+                            'allocated_at' => Carbon::now(),
+                        ]);
+                    }
+                } else {
+                    $reduction = (int) ($adjItem->requested_quantity_reduction > 0 ? $adjItem->requested_quantity_reduction : abs((int) $adjItem->requested_quantity_delta));
+                    $currentUnallocated = $item->unallocatedQuantity();
+
+                    // Case B Allocation Release
+                    if ($reduction > $currentUnallocated) {
+                        $unitsToRelease = $reduction - $currentUnallocated;
+
+                        // Deterministic release order: ALLOCATED before RESERVED, then id DESC (LIFO)
+                        $eligibleAllocations = OrderItemAllocation::where('order_item_id', $item->id)
+                            ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
+                            ->where('picked_quantity', 0)
+                            ->where('dispatched_quantity', 0)
+                            ->where('delivered_quantity', 0)
+                            ->where('returned_quantity', 0)
+                            ->orderByRaw("CASE WHEN status = 'ALLOCATED' THEN 1 ELSE 2 END")
+                            ->orderBy('id', 'desc')
+                            ->lockForUpdate()
+                            ->get();
+
+                        foreach ($eligibleAllocations as $alloc) {
+                            if ($unitsToRelease <= 0) {
+                                break;
+                            }
+
+                            $Q = (int) $alloc->allocated_quantity;
+                            $R = (int) $alloc->reserved_quantity;
+
+                            if ($unitsToRelease >= $Q) {
+                                // Full release of allocation row
+                                $alloc->status = AllocationStatus::RELEASED;
+                                $alloc->reserved_quantity = 0;
+                                $alloc->notes = trim(($alloc->notes ? $alloc->notes . ' | ' : '') . "Released via applied adjustment {$lockedAdjustment->adjustment_number}");
+                                $alloc->save();
+
+                                $releasedAllocationsLog[] = [
+                                    'order_item_id' => $item->id,
+                                    'allocation_id' => $alloc->id,
+                                    'allocation_number' => $alloc->allocation_number,
+                                    'released_quantity' => $Q,
+                                    'type' => 'FULL_RELEASE',
+                                ];
+
+                                $unitsToRelease -= $Q;
+                            } else {
+                                // Partial release: split allocation into active remainder + released child row
+                                $A = $unitsToRelease;
+                                $releasedReserved = min($A, $R);
+                                $remainingAllocated = $Q - $A;
+                                $remainingReserved = $R - $releasedReserved;
+
+                                // Update active remainder row
+                                $alloc->allocated_quantity = $remainingAllocated;
+                                $alloc->reserved_quantity = $remainingReserved;
+                                $alloc->notes = trim(($alloc->notes ? $alloc->notes . ' | ' : '') . "Partially reduced by {$A} via applied adjustment {$lockedAdjustment->adjustment_number}");
+                                $alloc->save();
+
+                                // Generate next sequence under locked order item boundary
+                                $orderNumClean = $lockedOrder->order_number ?: 'ORD-' . $lockedOrder->id;
+                                $maxSeq = OrderItemAllocation::where('order_item_id', $item->id)
+                                    ->pluck('allocation_number')
+                                    ->map(function ($num) {
+                                        if (preg_match('/-(\d+)$/', (string) $num, $matches)) {
+                                            return (int) $matches[1];
+                                        }
+                                        return 0;
+                                    })
+                                    ->max() ?? 0;
+
+                                $nextSeq = sprintf('%02d', $maxSeq + 1);
+                                $splitAllocNumber = "ALC-{$orderNumClean}-{$item->id}-{$nextSeq}";
+
+                                // Create released child row
+                                $releasedChild = OrderItemAllocation::create([
+                                    'allocation_number' => $splitAllocNumber,
+                                    'order_id' => $lockedOrder->id,
+                                    'order_item_id' => $item->id,
+                                    'product_id' => $item->product_id,
+                                    'allocated_quantity' => $A,
+                                    'reserved_quantity' => 0,
+                                    'picked_quantity' => 0,
+                                    'dispatched_quantity' => 0,
+                                    'delivered_quantity' => 0,
+                                    'returned_quantity' => 0,
+                                    'status' => AllocationStatus::RELEASED,
+                                    'warehouse_code' => $alloc->warehouse_code ?: 'MAIN',
+                                    'notes' => "Released {$A} units via applied adjustment {$lockedAdjustment->adjustment_number} (split from {$alloc->allocation_number})",
+                                    'allocated_by' => $actor->id,
+                                    'allocated_at' => Carbon::now(),
+                                ]);
+
+                                $releasedAllocationsLog[] = [
+                                    'order_item_id' => $item->id,
+                                    'allocation_id' => $releasedChild->id,
+                                    'allocation_number' => $releasedChild->allocation_number,
+                                    'released_quantity' => $A,
+                                    'type' => 'PARTIAL_SPLIT_RELEASE',
+                                ];
+
+                                $unitsToRelease = 0;
+                            }
                         }
 
-                        $Q = (int) $alloc->allocated_quantity;
-                        $R = (int) $alloc->reserved_quantity;
-
-                        if ($unitsToRelease >= $Q) {
-                            // Full release of allocation row
-                            $alloc->status = AllocationStatus::RELEASED;
-                            $alloc->reserved_quantity = 0;
-                            $alloc->notes = trim(($alloc->notes ? $alloc->notes . ' | ' : '') . "Released via applied adjustment {$lockedAdjustment->adjustment_number}");
-                            $alloc->save();
-
-                            $releasedAllocationsLog[] = [
-                                'order_item_id' => $item->id,
-                                'allocation_id' => $alloc->id,
-                                'allocation_number' => $alloc->allocation_number,
-                                'released_quantity' => $Q,
-                                'type' => 'FULL_RELEASE',
-                            ];
-
-                            $unitsToRelease -= $Q;
-                        } else {
-                            // Partial release: split allocation into active remainder + released child row
-                            $A = $unitsToRelease;
-                            $releasedReserved = min($A, $R);
-                            $remainingAllocated = $Q - $A;
-                            $remainingReserved = $R - $releasedReserved;
-
-                            // Update active remainder row
-                            $alloc->allocated_quantity = $remainingAllocated;
-                            $alloc->reserved_quantity = $remainingReserved;
-                            $alloc->notes = trim(($alloc->notes ? $alloc->notes . ' | ' : '') . "Partially reduced by {$A} via applied adjustment {$lockedAdjustment->adjustment_number}");
-                            $alloc->save();
-
-                            // Generate next sequence under locked order item boundary
-                            $orderNumClean = $lockedOrder->order_number ?: 'ORD-' . $lockedOrder->id;
-                            $maxSeq = OrderItemAllocation::where('order_item_id', $item->id)
-                                ->pluck('allocation_number')
-                                ->map(function ($num) {
-                                    if (preg_match('/-(\d+)$/', (string) $num, $matches)) {
-                                        return (int) $matches[1];
-                                    }
-                                    return 0;
-                                })
-                                ->max() ?? 0;
-
-                            $nextSeq = sprintf('%02d', $maxSeq + 1);
-                            $splitAllocNumber = "ALC-{$orderNumClean}-{$item->id}-{$nextSeq}";
-
-                            // Create released child row
-                            $releasedChild = OrderItemAllocation::create([
-                                'allocation_number' => $splitAllocNumber,
-                                'order_id' => $lockedOrder->id,
-                                'order_item_id' => $item->id,
-                                'product_id' => $item->product_id,
-                                'allocated_quantity' => $A,
-                                'reserved_quantity' => 0,
-                                'picked_quantity' => 0,
-                                'dispatched_quantity' => 0,
-                                'delivered_quantity' => 0,
-                                'returned_quantity' => 0,
-                                'status' => AllocationStatus::RELEASED,
-                                'warehouse_code' => $alloc->warehouse_code ?: 'MAIN',
-                                'notes' => "Released {$A} units via applied adjustment {$lockedAdjustment->adjustment_number} (split from {$alloc->allocation_number})",
-                                'allocated_by' => $actor->id,
-                                'allocated_at' => Carbon::now(),
-                            ]);
-
-                            $releasedAllocationsLog[] = [
-                                'order_item_id' => $item->id,
-                                'allocation_id' => $releasedChild->id,
-                                'allocation_number' => $releasedChild->allocation_number,
-                                'released_quantity' => $A,
-                                'type' => 'PARTIAL_SPLIT_RELEASE',
-                            ];
-
-                            $unitsToRelease = 0;
+                        if ($unitsToRelease > 0) {
+                            throw new ConflictHttpException("Cannot apply adjustment: Incomplete allocation release for line item #{$item->id}.");
                         }
                     }
 
-                    if ($unitsToRelease > 0) {
-                        throw new ConflictHttpException("Cannot apply adjustment: Incomplete allocation release for line item #{$item->id}.");
-                    }
+                    // Mutate order item quantity: non-destructive history
+                    $item->cancelled_quantity += $reduction;
+                    $totalUnitsCancelled += $reduction;
+                    $item->save();
                 }
-
-                // Mutate order item quantity: non-destructive history
-                $item->cancelled_quantity += $reduction;
-                $totalUnitsCancelled += $reduction;
-                $item->save();
 
                 // Synchronize line item rollups authoritatively from child allocations
                 $this->allocationService->syncOrderItemRollups($item);
@@ -818,9 +930,11 @@ class OrderAdjustmentWorkflowService
             $lockedOrder->tax_total = $orderTaxTotal;
             $lockedOrder->grand_total = $orderGrandTotal;
 
-            // Cumulative adjustment total tracking
-            $reduction = (string) $lockedAdjustment->projected_grand_total_reduction;
-            $lockedOrder->adjustment_total = bcadd($oldAdjustmentTotal, $reduction, 2);
+            // Cumulative adjustment total tracking: net reduction convention
+            $addition = (string) ($lockedAdjustment->projected_grand_total_addition ?? '0.00');
+            $reduction = (string) ($lockedAdjustment->projected_grand_total_reduction ?? '0.00');
+            $netReduction = bcsub($reduction, $addition, 2);
+            $lockedOrder->adjustment_total = bcadd($oldAdjustmentTotal, $netReduction, 2);
 
             // 11. UPDATE ORDER STATE & VERSION
             $lockedOrder->adjustment_status = AdjustmentStatus::APPLIED;
@@ -831,6 +945,9 @@ class OrderAdjustmentWorkflowService
             $lockedAdjustment->status = OrderAdjustmentStatus::APPLIED;
             $lockedAdjustment->applied_at = Carbon::now();
             $lockedAdjustment->save();
+
+            // 13. Authoritatively evaluate whether order is now fully completed
+            $this->orderWorkflowService->evaluateAndCompleteOrder($lockedOrder, $actor);
 
             $financialDeltaLog = [
                 'old_subtotal' => $oldSubtotal,
@@ -1108,29 +1225,63 @@ class OrderAdjustmentWorkflowService
                     throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
                 }
 
-                $reduction = (int) $adjItem->requested_quantity_reduction;
-                if ($reduction <= 0) {
-                    throw ValidationException::withMessages([
-                        'requested_quantity_reduction' => "Requested quantity reduction must be positive for line item #{$item->id}.",
-                    ]);
-                }
+                $actionType = $adjItem->action_type ?? 'DECREASE';
+                $isIncrease = ($actionType === 'INCREASE') || ((int) ($adjItem->requested_quantity_increase ?? 0) > 0);
 
-                // Conservation check: cannot restore more cancelled units than currently recorded as cancelled
-                if ($item->cancelled_quantity < $reduction) {
-                    $blockReason = "Line item #{$item->id} cancelled quantity ({$item->cancelled_quantity}) is less than the adjustment reduction ({$reduction}).";
-                    $this->logReversalBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
-                    throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
-                }
+                if ($isIncrease) {
+                    $increase = (int) ($adjItem->requested_quantity_increase > 0 ? $adjItem->requested_quantity_increase : $adjItem->requested_quantity_delta);
+                    if ($increase <= 0) {
+                        throw ValidationException::withMessages([
+                            'requested_quantity_increase' => "Requested quantity increase must be positive for line item #{$item->id}.",
+                        ]);
+                    }
 
-                // Case B check: if affected_allocation_quantity > 0, verify unallocated headroom
-                $affectedAllocation = (int) $adjItem->affected_allocation_quantity;
-                if ($affectedAllocation > 0) {
-                    $newFulfillable = $item->fulfillableQuantity() + $reduction;
-                    $currentAllocated = $item->allocatedQuantity();
-                    if (($currentAllocated + $affectedAllocation) > $newFulfillable) {
-                        $blockReason = "Restoring {$affectedAllocation} allocated units for line item #{$item->id} would exceed the restored fulfillable quantity ({$newFulfillable}).";
+                    if (($item->increased_quantity ?? 0) < $increase) {
+                        $blockReason = "Line item #{$item->id} increased quantity ({$item->increased_quantity}) is less than the adjustment increase ({$increase}).";
                         $this->logReversalBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
                         throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
+                    }
+
+                    // Check if unpicked capacity allows removing this increase
+                    $unpickedAllocated = (int) OrderItemAllocation::where('order_item_id', $item->id)
+                        ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
+                        ->where('picked_quantity', 0)
+                        ->where('dispatched_quantity', 0)
+                        ->where('delivered_quantity', 0)
+                        ->where('returned_quantity', 0)
+                        ->sum('allocated_quantity');
+
+                    $currentUnallocated = $item->unallocatedQuantity();
+                    if (($currentUnallocated + $unpickedAllocated) < $increase) {
+                        $blockReason = "Cannot reverse quantity increase of {$increase} units for line item #{$item->id} because units have already been picked/dispatched.";
+                        $this->logReversalBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
+                        throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
+                    }
+                } else {
+                    $reduction = (int) ($adjItem->requested_quantity_reduction > 0 ? $adjItem->requested_quantity_reduction : abs((int) $adjItem->requested_quantity_delta));
+                    if ($reduction <= 0) {
+                        throw ValidationException::withMessages([
+                            'requested_quantity_reduction' => "Requested quantity reduction must be positive for line item #{$item->id}.",
+                        ]);
+                    }
+
+                    // Conservation check: cannot restore more cancelled units than currently recorded as cancelled
+                    if ($item->cancelled_quantity < $reduction) {
+                        $blockReason = "Line item #{$item->id} cancelled quantity ({$item->cancelled_quantity}) is less than the adjustment reduction ({$reduction}).";
+                        $this->logReversalBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
+                        throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
+                    }
+
+                    // Case B check: if affected_allocation_quantity > 0, verify unallocated headroom
+                    $affectedAllocation = (int) $adjItem->affected_allocation_quantity;
+                    if ($affectedAllocation > 0) {
+                        $newFulfillable = $item->fulfillableQuantity() + $reduction;
+                        $currentAllocated = $item->allocatedQuantity();
+                        if (($currentAllocated + $affectedAllocation) > $newFulfillable) {
+                            $blockReason = "Restoring {$affectedAllocation} allocated units for line item #{$item->id} would exceed the restored fulfillable quantity ({$newFulfillable}).";
+                            $this->logReversalBlocked($lockedAdjustment, $lockedOrder, $actor, $blockReason, $clientIp);
+                            throw new ConflictHttpException("Cannot reverse adjustment: {$blockReason}");
+                        }
                     }
                 }
             }
@@ -1139,68 +1290,129 @@ class OrderAdjustmentWorkflowService
             foreach ($adjItems as $adjItem) {
                 /** @var OrderItem $item */
                 $item = $lockedItemsById->get($adjItem->order_item_id);
-                $reduction = (int) $adjItem->requested_quantity_reduction;
-                $affectedAllocation = (int) $adjItem->affected_allocation_quantity;
+                $actionType = $adjItem->action_type ?? 'DECREASE';
+                $isIncrease = ($actionType === 'INCREASE') || ((int) ($adjItem->requested_quantity_increase ?? 0) > 0);
 
-                // 1. Decrement cancelled_quantity (authoritatively restores fulfillable quantity)
-                $item->cancelled_quantity -= $reduction;
-                $totalUnitsRestored += $reduction;
-                $item->save();
+                if ($isIncrease) {
+                    $increase = (int) ($adjItem->requested_quantity_increase > 0 ? $adjItem->requested_quantity_increase : $adjItem->requested_quantity_delta);
 
-                // 2. Case B: Create forward restoration allocation record
-                if ($affectedAllocation > 0) {
-                    // Derive authoritative warehouse_code from historical released row for this adjustment
-                    $releasedAlloc = OrderItemAllocation::where('order_item_id', $item->id)
-                        ->where('status', AllocationStatus::RELEASED)
+                    // 1. Decrement increased_quantity
+                    $item->increased_quantity = max(0, ($item->increased_quantity ?? 0) - $increase);
+                    $item->save();
+
+                    // 2. Release physical stock on inventory balance
+                    $balance = InventoryBalance::where('product_id', $item->product_id)->lockForUpdate()->first();
+                    if ($balance) {
+                        $onHandBefore = (int) $balance->on_hand_quantity;
+                        $reservedBefore = (int) $balance->reserved_quantity;
+                        $availableBefore = (int) $balance->available_quantity;
+                        $damagedBefore = (int) $balance->damaged_quantity;
+
+                        $balance->reserved_quantity = max(0, $balance->reserved_quantity - $increase);
+                        $balance->available_quantity = $balance->calculateAvailableQuantity();
+                        $balance->version += 1;
+                        $balance->save();
+
+                        $this->movementService->recordMovement([
+                            'warehouse_id' => $balance->warehouse_id,
+                            'product_id' => $item->product_id,
+                            'inventory_balance_id' => $balance->id,
+                            'movement_type' => InventoryMovementType::RELEASE,
+                            'from_state' => InventoryStockState::RESERVED,
+                            'to_state' => InventoryStockState::AVAILABLE,
+                            'quantity' => $increase,
+                            'on_hand_before' => $onHandBefore,
+                            'on_hand_after' => (int) $balance->on_hand_quantity,
+                            'reserved_before' => $reservedBefore,
+                            'reserved_after' => (int) $balance->reserved_quantity,
+                            'available_before' => $availableBefore,
+                            'available_after' => (int) $balance->available_quantity,
+                            'damaged_before' => $damagedBefore,
+                            'damaged_after' => (int) $balance->damaged_quantity,
+                            'reference_type' => 'App\\Models\\OrderAdjustment',
+                            'reference_id' => $lockedAdjustment->id,
+                            'reference_number' => $lockedAdjustment->adjustment_number,
+                            'notes' => "Stock released via reversed adjustment {$lockedAdjustment->adjustment_number} (-{$increase} units)",
+                            'actor_id' => $actor->id,
+                        ]);
+                    }
+
+                    // 3. Release any allocation created for this increase
+                    $createdAllocations = OrderItemAllocation::where('order_item_id', $item->id)
                         ->where('notes', 'like', "%{$lockedAdjustment->adjustment_number}%")
-                        ->orderBy('id', 'desc')
-                        ->first();
+                        ->whereIn('status', [AllocationStatus::ALLOCATED->value, AllocationStatus::RESERVED->value])
+                        ->get();
 
-                    $warehouseCode = $releasedAlloc?->warehouse_code ?: 'MAIN';
+                    foreach ($createdAllocations as $cAlloc) {
+                        $cAlloc->status = AllocationStatus::RELEASED;
+                        $cAlloc->reserved_quantity = 0;
+                        $cAlloc->notes = trim(($cAlloc->notes ? $cAlloc->notes . ' | ' : '') . "Released via reversed adjustment {$lockedAdjustment->adjustment_number}");
+                        $cAlloc->save();
+                    }
+                } else {
+                    $reduction = (int) ($adjItem->requested_quantity_reduction > 0 ? $adjItem->requested_quantity_reduction : abs((int) $adjItem->requested_quantity_delta));
+                    $affectedAllocation = (int) $adjItem->affected_allocation_quantity;
 
-                    // Generate next deterministic sequence under locked OrderItem boundary
-                    $orderNumClean = $lockedOrder->order_number ?: 'ORD-' . $lockedOrder->id;
-                    $maxSeq = OrderItemAllocation::where('order_item_id', $item->id)
-                        ->pluck('allocation_number')
-                        ->map(function ($num) {
-                            if (preg_match('/-(\d+)$/', (string) $num, $matches)) {
-                                return (int) $matches[1];
-                            }
-                            return 0;
-                        })
-                        ->max() ?? 0;
+                    // 1. Decrement cancelled_quantity (authoritatively restores fulfillable quantity)
+                    $item->cancelled_quantity -= $reduction;
+                    $totalUnitsRestored += $reduction;
+                    $item->save();
 
-                    $nextSeq = sprintf('%02d', $maxSeq + 1);
-                    $restorationAllocNumber = "ALC-{$orderNumClean}-{$item->id}-{$nextSeq}";
+                    // 2. Case B: Create forward restoration allocation record
+                    if ($affectedAllocation > 0) {
+                        // Derive authoritative warehouse_code from historical released row for this adjustment
+                        $releasedAlloc = OrderItemAllocation::where('order_item_id', $item->id)
+                            ->where('status', AllocationStatus::RELEASED)
+                            ->where('notes', 'like', "%{$lockedAdjustment->adjustment_number}%")
+                            ->orderBy('id', 'desc')
+                            ->first();
 
-                    // Forward restoration allocation:
-                    // Invariant: 0 <= reserved_quantity <= allocated_quantity.
-                    // Setting reserved_quantity = 0 prevents fabricating unverified reservation capacity.
-                    $restorationAlloc = OrderItemAllocation::create([
-                        'allocation_number' => $restorationAllocNumber,
-                        'order_id' => $lockedOrder->id,
-                        'order_item_id' => $item->id,
-                        'product_id' => $item->product_id,
-                        'allocated_quantity' => $affectedAllocation,
-                        'reserved_quantity' => 0,
-                        'picked_quantity' => 0,
-                        'dispatched_quantity' => 0,
-                        'delivered_quantity' => 0,
-                        'returned_quantity' => 0,
-                        'status' => AllocationStatus::ALLOCATED,
-                        'warehouse_code' => $warehouseCode,
-                        'notes' => "Restoration allocation of {$affectedAllocation} units via reversed adjustment {$lockedAdjustment->adjustment_number}",
-                        'allocated_by' => $actor->id,
-                        'allocated_at' => Carbon::now(),
-                    ]);
+                        $warehouseCode = $releasedAlloc?->warehouse_code ?: 'MAIN';
 
-                    $restoredAllocationsLog[] = [
-                        'order_item_id' => $item->id,
-                        'allocation_id' => $restorationAlloc->id,
-                        'allocation_number' => $restorationAlloc->allocation_number,
-                        'restored_quantity' => $affectedAllocation,
-                        'warehouse_code' => $warehouseCode,
-                    ];
+                        // Generate next deterministic sequence under locked OrderItem boundary
+                        $orderNumClean = $lockedOrder->order_number ?: 'ORD-' . $lockedOrder->id;
+                        $maxSeq = OrderItemAllocation::where('order_item_id', $item->id)
+                            ->pluck('allocation_number')
+                            ->map(function ($num) {
+                                if (preg_match('/-(\d+)$/', (string) $num, $matches)) {
+                                    return (int) $matches[1];
+                                }
+                                return 0;
+                            })
+                            ->max() ?? 0;
+
+                        $nextSeq = sprintf('%02d', $maxSeq + 1);
+                        $restorationAllocNumber = "ALC-{$orderNumClean}-{$item->id}-{$nextSeq}";
+
+                        // Forward restoration allocation:
+                        // Invariant: 0 <= reserved_quantity <= allocated_quantity.
+                        // Setting reserved_quantity = 0 prevents fabricating unverified reservation capacity.
+                        $restorationAlloc = OrderItemAllocation::create([
+                            'allocation_number' => $restorationAllocNumber,
+                            'order_id' => $lockedOrder->id,
+                            'order_item_id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'allocated_quantity' => $affectedAllocation,
+                            'reserved_quantity' => 0,
+                            'picked_quantity' => 0,
+                            'dispatched_quantity' => 0,
+                            'delivered_quantity' => 0,
+                            'returned_quantity' => 0,
+                            'status' => AllocationStatus::ALLOCATED,
+                            'warehouse_code' => $warehouseCode,
+                            'notes' => "Restoration allocation of {$affectedAllocation} units via reversed adjustment {$lockedAdjustment->adjustment_number}",
+                            'allocated_by' => $actor->id,
+                            'allocated_at' => Carbon::now(),
+                        ]);
+
+                        $restoredAllocationsLog[] = [
+                            'order_item_id' => $item->id,
+                            'allocation_id' => $restorationAlloc->id,
+                            'allocation_number' => $restorationAlloc->allocation_number,
+                            'restored_quantity' => $affectedAllocation,
+                            'warehouse_code' => $warehouseCode,
+                        ];
+                    }
                 }
 
                 // 3. Synchronize line item rollups authoritatively from active allocations
@@ -1250,9 +1462,11 @@ class OrderAdjustmentWorkflowService
             $lockedOrder->tax_total = $orderTaxTotal;
             $lockedOrder->grand_total = $orderGrandTotal;
 
-            // Decrement adjustment total by the reversed adjustment's grand total reduction
-            $reduction = (string) $lockedAdjustment->projected_grand_total_reduction;
-            $newAdjustmentTotal = bcsub($oldAdjustmentTotal, $reduction, 2);
+            // Cumulative adjustment total tracking: subtract net reduction of this adjustment
+            $addition = (string) ($lockedAdjustment->projected_grand_total_addition ?? '0.00');
+            $reduction = (string) ($lockedAdjustment->projected_grand_total_reduction ?? '0.00');
+            $netReduction = bcsub($reduction, $addition, 2);
+            $newAdjustmentTotal = bcsub($oldAdjustmentTotal, $netReduction, 2);
             if (bccomp($newAdjustmentTotal, '0.00', 2) < 0) {
                 $newAdjustmentTotal = '0.00';
             }

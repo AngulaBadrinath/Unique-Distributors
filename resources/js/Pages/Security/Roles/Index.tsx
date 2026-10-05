@@ -26,6 +26,7 @@ interface RolesIndexProps extends PageProps {
     users: ManagedUser[];
     availableRoles: RoleOption[];
     canAssignSuperAdmin: boolean;
+    canDeleteUser?: boolean;
     currentUser: {
         id: number;
         role: string | null;
@@ -37,6 +38,7 @@ export default function RolesIndex({
     users,
     availableRoles,
     canAssignSuperAdmin,
+    canDeleteUser = false,
     currentUser,
     status,
 }: RolesIndexProps) {
@@ -50,6 +52,16 @@ export default function RolesIndex({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
 
+    // Lifecycle status modal state
+    const [statusModalUser, setStatusModalUser] = useState<ManagedUser | null>(null);
+    const [targetStatus, setTargetStatus] = useState<string>('ACTIVE');
+    const [statusReason, setStatusReason] = useState<string>('');
+
+    // Delete modal state
+    const [deleteModalUser, setDeleteModalUser] = useState<ManagedUser | null>(null);
+    const [deleteReason, setDeleteReason] = useState<string>('');
+    const [deleteConfirmed, setDeleteConfirmed] = useState<boolean>(false);
+
     // Filter users
     const filteredUsers = users.filter((u) => {
         const matchesSearch =
@@ -59,7 +71,7 @@ export default function RolesIndex({
         return matchesSearch && matchesRole;
     });
 
-    // Close modal and reset state
+    // Close modals and reset state
     const closeModal = () => {
         setSelectedUser(null);
         setTargetRole('');
@@ -67,21 +79,51 @@ export default function RolesIndex({
         setFormError(null);
     };
 
+    const closeStatusModal = () => {
+        setStatusModalUser(null);
+        setTargetStatus('ACTIVE');
+        setStatusReason('');
+        setFormError(null);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModalUser(null);
+        setDeleteReason('');
+        setDeleteConfirmed(false);
+        setFormError(null);
+    };
+
     // Handle Escape key to close modal
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && selectedUser) {
-                closeModal();
+            if (e.key === 'Escape') {
+                if (selectedUser) closeModal();
+                if (statusModalUser) closeStatusModal();
+                if (deleteModalUser) closeDeleteModal();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedUser]);
+    }, [selectedUser, statusModalUser, deleteModalUser]);
 
     const openRoleModal = (user: ManagedUser) => {
         setSelectedUser(user);
         setTargetRole(user.role || availableRoles[0]?.value || 'SALESMAN');
         setReason('');
+        setFormError(null);
+    };
+
+    const openStatusModal = (user: ManagedUser) => {
+        setStatusModalUser(user);
+        setTargetStatus(user.status || 'ACTIVE');
+        setStatusReason('');
+        setFormError(null);
+    };
+
+    const openDeleteModal = (user: ManagedUser) => {
+        setDeleteModalUser(user);
+        setDeleteReason('');
+        setDeleteConfirmed(false);
         setFormError(null);
     };
 
@@ -117,6 +159,69 @@ export default function RolesIndex({
                 },
             }
         );
+    };
+
+    const handleStatusSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!statusModalUser) return;
+
+        setIsSubmitting(true);
+        setFormError(null);
+
+        router.put(
+            `/security/users/${statusModalUser.id}/status`,
+            {
+                status: targetStatus,
+                reason: statusReason.trim() || undefined,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    closeStatusModal();
+                    setIsSubmitting(false);
+                },
+                onError: (errs) => {
+                    setIsSubmitting(false);
+                    const firstError = Object.values(errs)[0];
+                    setFormError(firstError || 'An error occurred while updating the account status.');
+                },
+            }
+        );
+    };
+
+    const handleDeleteSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!deleteModalUser) return;
+
+        if (deleteReason.trim().length < 10) {
+            setFormError('A detailed reason (at least 10 characters) is required to delete an account.');
+            return;
+        }
+
+        if (!deleteConfirmed) {
+            setFormError('You must acknowledge and confirm the deletion.');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setFormError(null);
+
+        router.delete(`/security/users/${deleteModalUser.id}`, {
+            data: {
+                reason: deleteReason.trim(),
+                confirm: true,
+            },
+            preserveScroll: true,
+            onSuccess: () => {
+                closeDeleteModal();
+                setIsSubmitting(false);
+            },
+            onError: (errs) => {
+                setIsSubmitting(false);
+                const firstError = Object.values(errs)[0];
+                setFormError(firstError || 'Failed to delete user account.');
+            },
+        });
     };
 
     const getStatusBadge = (statusValue: string) => {
@@ -207,7 +312,7 @@ export default function RolesIndex({
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <Head title="Role Management — Security" />
+            <Head title="Role & Account Lifecycle — Security" />
 
             {/* Header Navigation */}
             <header className="border-b bg-card">
@@ -223,10 +328,10 @@ export default function RolesIndex({
                             </Link>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-                                    Role Management
+                                    Role & Account Lifecycle Management
                                 </h1>
                                 <p className="text-sm text-muted-foreground">
-                                    Authoritative Primary Role Assignments (RBAC Groundwork)
+                                    Authoritative Primary Role Assignments & Account Lifecycle Governance
                                 </p>
                             </div>
                         </div>
@@ -280,13 +385,13 @@ export default function RolesIndex({
                         <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" aria-hidden="true" />
                         <div className="text-sm">
                             <h2 className="font-semibold text-foreground">
-                                Primary Role Model & Security Policies
+                                Primary Role Model & Account Governance
                             </h2>
                             <p className="mt-1 text-muted-foreground leading-relaxed">
                                 Each user is assigned exactly <strong>one primary canonical role</strong>.
-                                Role changes are executed atomically with database row locking. To preserve
-                                system integrity, changing a user's role immediately invalidates all of their active
-                                web sessions. Self-role modification is prohibited.
+                                Role changes and status modifications (Activate, Suspend, Disable) are executed atomically with database row locking. To preserve
+                                system integrity, updating status or roles immediately revokes all active
+                                sessions. Non-active accounts possess zero effective permissions.
                             </p>
                         </div>
                     </div>
@@ -337,7 +442,7 @@ export default function RolesIndex({
                                     Users ({filteredUsers.length})
                                 </CardTitle>
                                 <CardDescription>
-                                    View and manage authoritative roles for system accounts
+                                    View and manage authoritative roles and account lifecycles
                                 </CardDescription>
                             </div>
                         </div>
@@ -370,7 +475,9 @@ export default function RolesIndex({
                                             const roleOption = availableRoles.find((r) => r.value === user.role);
                                             const isPrivileged = roleOption?.is_privileged ?? false;
                                             const isCurrentUser = user.id === currentUser.id;
-                                            const canModify = !isCurrentUser && (canAssignSuperAdmin || user.role !== 'SUPER_ADMIN');
+                                            const canModifyRole = !isCurrentUser && (canAssignSuperAdmin || user.role !== 'SUPER_ADMIN');
+                                            const canModifyStatus = !isCurrentUser;
+                                            const canDeleteThisUser = canDeleteUser && !isCurrentUser;
 
                                             return (
                                                 <tr key={user.id} className="hover:bg-muted/30 transition-colors">
@@ -391,7 +498,7 @@ export default function RolesIndex({
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         {isPrivileged ? (
-                                                            <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                                                             <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
                                                                 <Lock className="h-3 w-3" /> Privileged (MFA Mandatory)
                                                             </span>
                                                         ) : (
@@ -401,22 +508,48 @@ export default function RolesIndex({
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            disabled={!canModify}
-                                                            onClick={() => openRoleModal(user)}
-                                                            className="min-h-[44px]"
-                                                            title={
-                                                                isCurrentUser
-                                                                    ? 'Users cannot modify their own role'
-                                                                    : !canModify
-                                                                    ? 'Only Super Administrators can modify a Super Administrator'
-                                                                    : 'Change User Role'
-                                                            }
-                                                        >
-                                                            Change Role
-                                                        </Button>
+                                                        <div className="flex items-center justify-end gap-2">
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                disabled={!canModifyStatus}
+                                                                onClick={() => openStatusModal(user)}
+                                                                className="min-h-[36px]"
+                                                                title="Manage Account Lifecycle Status"
+                                                            >
+                                                                Status
+                                                            </Button>
+
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                disabled={!canModifyRole}
+                                                                onClick={() => openRoleModal(user)}
+                                                                className="min-h-[36px]"
+                                                                title={
+                                                                    isCurrentUser
+                                                                        ? 'Users cannot modify their own role'
+                                                                        : !canModifyRole
+                                                                        ? 'Only Super Administrators can modify a Super Administrator'
+                                                                        : 'Change User Role'
+                                                                }
+                                                            >
+                                                                Role
+                                                            </Button>
+
+                                                            {canDeleteUser && (
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="sm"
+                                                                    disabled={!canDeleteThisUser}
+                                                                    onClick={() => openDeleteModal(user)}
+                                                                    className="min-h-[36px]"
+                                                                    title={isCurrentUser ? 'Cannot delete own account' : 'Delete or Safely Retire Account'}
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );
@@ -431,7 +564,9 @@ export default function RolesIndex({
                                     const roleOption = availableRoles.find((r) => r.value === user.role);
                                     const isPrivileged = roleOption?.is_privileged ?? false;
                                     const isCurrentUser = user.id === currentUser.id;
-                                    const canModify = !isCurrentUser && (canAssignSuperAdmin || user.role !== 'SUPER_ADMIN');
+                                    const canModifyRole = !isCurrentUser && (canAssignSuperAdmin || user.role !== 'SUPER_ADMIN');
+                                    const canModifyStatus = !isCurrentUser;
+                                    const canDeleteThisUser = canDeleteUser && !isCurrentUser;
 
                                     return (
                                         <div key={user.id} className="p-4 sm:p-6 space-y-3">
@@ -460,16 +595,38 @@ export default function RolesIndex({
                                                 )}
                                             </div>
 
-                                            <div className="pt-2">
+                                            <div className="pt-2 flex flex-wrap gap-2">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    disabled={!canModify}
+                                                    disabled={!canModifyStatus}
+                                                    onClick={() => openStatusModal(user)}
+                                                    className="flex-1 min-h-[44px]"
+                                                >
+                                                    Status
+                                                </Button>
+
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={!canModifyRole}
                                                     onClick={() => openRoleModal(user)}
-                                                    className="w-full min-h-[44px]"
+                                                    className="flex-1 min-h-[44px]"
                                                 >
                                                     Change Role
                                                 </Button>
+
+                                                {canDeleteUser && (
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        disabled={!canDeleteThisUser}
+                                                        onClick={() => openDeleteModal(user)}
+                                                        className="min-h-[44px]"
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                )}
                                             </div>
                                         </div>
                                     );
@@ -611,6 +768,216 @@ export default function RolesIndex({
                                     className="min-h-[44px]"
                                 >
                                     {isSubmitting ? 'Updating Role...' : 'Confirm & Assign Role'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Lifecycle Status Modal Dialog */}
+            {statusModalUser && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="status-modal-title"
+                >
+                    <div className="relative w-full max-w-lg rounded-xl border bg-card p-6 shadow-xl space-y-5 animate-in fade-in-0 zoom-in-95">
+                        <div className="flex items-start justify-between border-b pb-4">
+                            <div>
+                                <h2 id="status-modal-title" className="text-lg font-bold text-foreground">
+                                    Manage Account Lifecycle Status
+                                </h2>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                    Updating lifecycle status for <span className="font-semibold text-foreground">{statusModalUser.name}</span> ({statusModalUser.email})
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={closeStatusModal}
+                                className="rounded-lg p-1 text-muted-foreground hover:bg-accent hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                aria-label="Close dialog"
+                            >
+                                <XCircle className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Error Alert */}
+                        {formError && (
+                            <div
+                                role="alert"
+                                className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-destructive text-sm"
+                            >
+                                <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                <div>{formError}</div>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleStatusSubmit} className="space-y-4">
+                            <div className="rounded-lg bg-muted/40 p-3 flex items-center justify-between">
+                                <span className="text-xs font-medium text-muted-foreground">Current Status:</span>
+                                <div>{getStatusBadge(statusModalUser.status)}</div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="status-select" className="text-sm font-semibold text-foreground">
+                                    New Lifecycle Status <span className="text-destructive">*</span>
+                                </label>
+                                <select
+                                    id="status-select"
+                                    value={targetStatus}
+                                    onChange={(e) => setTargetStatus(e.target.value)}
+                                    className="w-full min-h-[44px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    required
+                                >
+                                    <option value="ACTIVE">ACTIVE (Normal operational permissions)</option>
+                                    <option value="SUSPENDED">SUSPENDED (Temporarily locked out, zero effective permissions)</option>
+                                    <option value="DISABLED">DISABLED (Indefinitely deactivated, zero effective permissions)</option>
+                                    <option value="INVITED">INVITED (Awaiting onboarding activation)</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="status-reason" className="text-sm font-semibold text-foreground">
+                                    Reason for Status Modification <span className="text-xs font-normal text-muted-foreground">(Audited)</span>
+                                </label>
+                                <Input
+                                    id="status-reason"
+                                    type="text"
+                                    value={statusReason}
+                                    onChange={(e) => setStatusReason(e.target.value)}
+                                    placeholder="e.g. Leave of absence, security incident, contract end"
+                                    maxLength={255}
+                                    className="min-h-[44px]"
+                                />
+                            </div>
+
+                            <div className="rounded-lg border bg-muted/30 p-3 text-xs text-muted-foreground flex items-start gap-2">
+                                <Lock className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" aria-hidden="true" />
+                                <div>
+                                    <strong>Session Invalidation:</strong> Updating account status will immediately revoke all active web sessions for this user.
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-3 border-t">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={closeStatusModal}
+                                    disabled={isSubmitting}
+                                    className="min-h-[44px]"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={isSubmitting || statusModalUser.id === currentUser.id}
+                                    className="min-h-[44px]"
+                                >
+                                    {isSubmitting ? 'Updating Status...' : 'Apply Status Change'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Permanent Delete Confirmation Modal Dialog */}
+            {deleteModalUser && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="delete-modal-title"
+                >
+                    <div className="relative w-full max-w-lg rounded-xl border border-destructive/50 bg-card p-6 shadow-xl space-y-5 animate-in fade-in-0 zoom-in-95">
+                        <div className="flex items-start justify-between border-b pb-4">
+                            <div className="flex items-center gap-2 text-destructive">
+                                <AlertTriangle className="h-6 w-6" />
+                                <h2 id="delete-modal-title" className="text-lg font-bold">
+                                    Confirm Account Deletion / Retirement
+                                </h2>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={closeDeleteModal}
+                                className="rounded-lg p-1 text-muted-foreground hover:bg-accent hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                aria-label="Close dialog"
+                            >
+                                <XCircle className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Error Alert */}
+                        {formError && (
+                            <div
+                                role="alert"
+                                className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-destructive text-sm"
+                            >
+                                <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                <div>{formError}</div>
+                            </div>
+                        )}
+
+                        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3.5 text-xs space-y-2">
+                            <p className="font-semibold text-destructive">
+                                Target Account: {deleteModalUser.name} ({deleteModalUser.email}) — Role: {deleteModalUser.role || 'Unassigned'}
+                            </p>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Deleting an account will revoke all sessions and access tokens. If the account is linked to historical business records (orders, payments, invoices, or audit entries), the system will safely retire and anonymize the user to preserve relational accounting integrity.
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleDeleteSubmit} className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="delete-reason" className="text-sm font-semibold text-foreground">
+                                    Deletion Reason <span className="text-destructive">* (Min 10 characters)</span>
+                                </label>
+                                <Input
+                                    id="delete-reason"
+                                    type="text"
+                                    value={deleteReason}
+                                    onChange={(e) => setDeleteReason(e.target.value)}
+                                    placeholder="e.g. Employee offboarding per ticket #SEC-1204"
+                                    minLength={10}
+                                    maxLength={255}
+                                    className="min-h-[44px]"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex items-start gap-2 pt-2">
+                                <input
+                                    type="checkbox"
+                                    id="confirm-delete"
+                                    checked={deleteConfirmed}
+                                    onChange={(e) => setDeleteConfirmed(e.target.checked)}
+                                    className="mt-1 h-4 w-4 rounded border-input text-destructive focus:ring-destructive"
+                                    required
+                                />
+                                <label htmlFor="confirm-delete" className="text-xs text-muted-foreground leading-tight">
+                                    I confirm that I have verified the identity and authorization to remove this account, and I understand this action is permanent and audited.
+                                </label>
+                            </div>
+
+                            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-3 border-t">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={closeDeleteModal}
+                                    disabled={isSubmitting}
+                                    className="min-h-[44px]"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    disabled={isSubmitting || deleteReason.trim().length < 10 || !deleteConfirmed}
+                                    className="min-h-[44px]"
+                                >
+                                    {isSubmitting ? 'Deleting Account...' : 'Permanently Delete User'}
                                 </Button>
                             </div>
                         </form>

@@ -386,27 +386,33 @@ class SalesmanScopedCustomerAccessTest extends TestCase
     // =========================================================================
 
     /**
-     * SLM-SCOPE-013: Salesman cannot access customer creation form.
+     * SLM-SCOPE-013: Salesman CAN access customer creation form (auto-assigned portfolio onboarding).
      */
-    public function test_salesman_cannot_access_customer_creation_form(): void
+    public function test_salesman_can_access_customer_creation_form(): void
     {
         $salesman = $this->createUserWithRole(UserRole::SALESMAN);
 
         $response = $this->actingAs($salesman)->get(route('customers.create'));
 
-        $response->assertForbidden();
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Customer/Create')
+            ->where('isSalesman', true)
+            ->where('eligibleSalesmen', [])
+        );
     }
 
     /**
-     * SLM-SCOPE-014: Salesman cannot store new customer.
+     * SLM-SCOPE-014: Salesman can store new customer with automatic salesman_id binding.
      */
-    public function test_salesman_cannot_store_new_customer(): void
+    public function test_salesman_can_store_new_customer_with_automatic_salesman_binding(): void
     {
         $salesman = $this->createUserWithRole(UserRole::SALESMAN);
+        $otherSalesman = $this->createUserWithRole(UserRole::SALESMAN);
 
         $payload = [
-            'code' => 'CUST-SLM-NEW',
-            'name' => 'Unauthorized New Customer',
+            'code' => 'CUST-SLM-NEW-01',
+            'name' => 'Salesman Onboarded Customer',
             'contact_name' => 'Jane Sales',
             'email' => 'salesnew@example.com',
             'phone' => '+1 (555) 444-3322',
@@ -418,12 +424,17 @@ class SalesmanScopedCustomerAccessTest extends TestCase
             'credit_limit' => 10000.00,
             'payment_terms' => PaymentTerms::NET_30->value,
             'status' => CustomerStatus::ACTIVE->value,
+            // Even if a malicious salesman tries to pass another salesman's ID:
+            'salesman_id' => $otherSalesman->id,
         ];
 
         $response = $this->actingAs($salesman)->post(route('customers.store'), $payload);
 
-        $response->assertForbidden();
-        $this->assertDatabaseMissing('customers', ['code' => 'CUST-SLM-NEW']);
+        $response->assertRedirect();
+        $createdCust = Customer::where('code', 'CUST-SLM-NEW-01')->first();
+        $this->assertNotNull($createdCust);
+        // Server-side authority: forced to authenticated salesman ID!
+        $this->assertEquals($salesman->id, $createdCust->salesman_id);
     }
 
     /**
@@ -508,7 +519,7 @@ class SalesmanScopedCustomerAccessTest extends TestCase
         $indexResponse->assertOk();
         $indexResponse->assertInertia(fn (Assert $page) => $page
             ->where('eligibleSalesmen', [])
-            ->where('can.create', false)
+            ->where('can.create', true)
             ->where('can.assign', false)
         );
 

@@ -51,6 +51,12 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     Route::redirect('/tax-profiles-create', '/tax-profiles/create', 301);
     Route::redirect('/orders', '/salesman/orders', 301);
     Route::redirect('/orders/create', '/salesman/orders/create', 301);
+    Route::get('/orders/{order}', function ($order) {
+        if (auth()->check() && auth()->user()->role === \App\Enums\UserRole::SALESMAN) {
+            return redirect("/salesman/orders/{$order}", 301);
+        }
+        return redirect("/admin/orders/{$order}", 301);
+    })->whereNumber('order');
     Route::redirect('/admin/customers', '/customers', 301);
     Route::redirect('/admin/products', '/products', 301);
     Route::redirect('/admin/categories', '/categories', 301);
@@ -89,6 +95,8 @@ Route::middleware(['auth', 'account.active'])->group(function () {
     Route::middleware('permission:role.manage')->group(function () {
         Route::get('/security/roles', [\App\Http\Controllers\Security\RoleAssignmentController::class, 'index'])->name('roles.index');
         Route::put('/security/users/{user}/role', [\App\Http\Controllers\Security\RoleAssignmentController::class, 'update'])->name('users.role.update');
+        Route::put('/security/users/{user}/status', [\App\Http\Controllers\Security\UserLifecycleController::class, 'updateStatus'])->name('users.status.update');
+        Route::delete('/security/users/{user}', [\App\Http\Controllers\Security\UserLifecycleController::class, 'destroy'])->name('users.destroy');
 
         // Company Information Settings
         Route::get('/system/company', [\App\Http\Controllers\System\CompanyInformationController::class, 'index'])->name('system.company.index');

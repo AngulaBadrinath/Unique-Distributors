@@ -118,10 +118,24 @@ class SalesmanReturnController extends Controller
                     ->orWhere('fulfillment_status', FulfillmentStatus::DELIVERED)
                     ->orWhereHas('items', fn ($iq) => $iq->where('delivered_quantity', '>', 0));
             })
-            ->with('customer')
+            ->with('customer:id,name,code')
             ->orderBy('id', 'desc')
             ->limit(50)
-            ->get(['id', 'order_number', 'customer_id', 'status', 'total_amount', 'created_at']);
+            ->get(['id', 'order_number', 'customer_id', 'status', 'grand_total', 'created_at'])
+            ->map(fn ($order) => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'customer_id' => $order->customer_id,
+                'status' => $order->status instanceof OrderStatus ? $order->status->value : (string) $order->status,
+                'grand_total' => (string) $order->grand_total,
+                'total_amount' => (string) $order->grand_total,
+                'created_at' => $order->created_at?->toIso8601String(),
+                'customer' => $order->customer ? [
+                    'id' => $order->customer->id,
+                    'name' => $order->customer->name,
+                    'code' => $order->customer->code,
+                ] : null,
+            ]);
 
         $warehouses = Warehouse::query()->where('is_active', true)->orderBy('name')->get(['id', 'name', 'code']);
         $reasons = array_map(fn ($r) => ['value' => $r->value, 'label' => $r->label()], ReturnReasonCode::cases());
