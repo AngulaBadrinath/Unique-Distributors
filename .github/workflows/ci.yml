@@ -16,6 +16,18 @@ jobs:
     name: Backend Tests (PHP 8.4 & PostgreSQL 17)
     runs-on: ubuntu-latest
 
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: wdms_test
+      DB_USERNAME: wdms_user
+      DB_PASSWORD: wdms_secret
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+
     services:
       postgres:
         image: postgres:17-alpine
@@ -41,7 +53,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, pdo, pdo_pgsql, pgsql, zip, bcmath, intl
+          extensions: mbstring, pdo, pdo_pgsql, pgsql, zip, bcmath, intl, pdo_sqlite, sqlite3
           coverage: none
 
       - name: Get Composer Cache Directory
@@ -64,13 +76,6 @@ jobs:
           php artisan key:generate
 
       - name: Run Migrations
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: wdms_test
-          DB_USERNAME: wdms_user
-          DB_PASSWORD: wdms_secret
         run: php artisan migrate --force
 
       - name: Execute Domain Invariant Tests
@@ -143,7 +148,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, pdo, pdo_pgsql, pgsql, zip, bcmath, intl
+          extensions: mbstring, pdo, pdo_pgsql, pgsql, zip, bcmath, intl, pdo_sqlite, sqlite3
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -177,6 +182,7 @@ jobs:
           php artisan migrate --seed --force
           npm run build
           php artisan serve --host=127.0.0.1 --port=8000 &
+          timeout 30 bash -c 'until curl -s http://127.0.0.1:8000/health; do sleep 1; done' || true
 
       - name: Execute Playwright Shard
         env:
