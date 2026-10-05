@@ -84,7 +84,7 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     // Permission checks
     const hasRoleManage = auth?.user?.permissions?.includes('role.manage') || auth?.user?.role === 'SUPER_ADMIN' || auth?.user?.role === 'ADMIN';
     const hasCustomerView = auth?.user?.permissions?.includes('customer.view') || ['SUPER_ADMIN', 'ADMIN', 'ACCOUNTANT', 'SALESMAN'].includes(auth?.user?.role || '');
-    const hasCustomerCreate = auth?.user?.permissions?.includes('customer.create') || ['SUPER_ADMIN', 'ADMIN'].includes(auth?.user?.role || '');
+    const hasCustomerCreate = auth?.user?.permissions?.includes('customer.create') || ['SUPER_ADMIN', 'ADMIN', 'SALESMAN'].includes(auth?.user?.role || '');
     const hasUserView = auth?.user?.permissions?.includes('user.view') || ['SUPER_ADMIN', 'ADMIN'].includes(auth?.user?.role || '');
     const hasProductView = auth?.user?.permissions?.includes('product.view') || ['SUPER_ADMIN', 'ADMIN', 'SALESMAN', 'WAREHOUSE_MANAGER'].includes(auth?.user?.role || '');
     const hasTaxManage = auth?.user?.permissions?.includes('product.tax.update') || ['SUPER_ADMIN', 'ADMIN'].includes(auth?.user?.role || '');
@@ -107,51 +107,6 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
     const hasReportingAccess = (hasOrderView || hasCustomerView || hasInventoryView || hasDeliveryView || hasAccountingView || hasUserView) && !['SALESMAN', 'DELIVERY_PARTNER'].includes(auth?.user?.role || '');
     const hasAuditView = auth?.user?.permissions?.includes('audit.view') || ['SUPER_ADMIN', 'ADMIN'].includes(auth?.user?.role || '');
     const hasSecurityView = auth?.user?.permissions?.includes('audit.security.view') || ['SUPER_ADMIN', 'ADMIN'].includes(auth?.user?.role || '');
-
-    const isLinkActive = (path: string) => {
-        if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
-        if (path === currentUrl) return true;
-        // Sibling exclusion: /notifications must NOT match when visiting /notifications/preferences
-        if (path === '/notifications' && currentUrl.startsWith('/notifications/preferences')) return false;
-        // Prefix matching with trailing slash for nested details (e.g. /customers/1)
-        if (path !== '/dashboard' && path !== '/' && currentUrl.startsWith(`${path}/`)) return true;
-        return false;
-    };
-
-    const renderNavLink = (href: string, icon: React.ReactNode, label: string) => {
-        const active = isLinkActive(href);
-        return (
-            <Link
-                key={href}
-                href={href}
-                onClick={() => setSidebarOpen(false)}
-                title={sidebarCollapsed ? label : undefined}
-                className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-150 ${
-                    active
-                        ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
-                        : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
-                } ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
-            >
-                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-action-accent' : 'text-brand-muted group-hover:text-brand-foreground'}`}>
-                    {icon}
-                </div>
-                {!sidebarCollapsed && <span className="truncate">{label}</span>}
-            </Link>
-        );
-    };
-
-
-    // Keyboard shortcut for sidebar toggle (Ctrl+B / Cmd+B)
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
-                e.preventDefault();
-                toggleSidebarCollapse();
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [sidebarCollapsed]);
 
     // Nav Groups and Items definitions
     interface NavItem {
@@ -293,6 +248,70 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
             ]
         }
     ];
+
+    const isLinkActive = (path: string) => {
+        if (path === '/dashboard' && (currentUrl === '/dashboard' || currentUrl === '/')) return true;
+        if (path === currentUrl) return true;
+        if (path === '/dashboard' || path === '/') return false;
+
+        // Path must be a directory prefix of currentUrl (e.g. /customers/123 under /customers)
+        if (!currentUrl.startsWith(`${path}/`)) {
+            return false;
+        }
+
+        // Collect all visible leaf items across groups
+        const allVisibleHrefs = navGroups
+            .filter(g => g.show)
+            .flatMap(g => g.items.filter(i => i.show).map(i => i.href));
+
+        // If any visible leaf route exact matches currentUrl, that exact match is the active leaf
+        if (allVisibleHrefs.some(href => href === currentUrl)) {
+            return false;
+        }
+
+        // If another visible leaf item has a longer matching prefix for currentUrl, that more specific item wins
+        const hasMoreSpecificMatch = allVisibleHrefs.some(href =>
+            href !== path &&
+            href.length > path.length &&
+            (currentUrl === href || currentUrl.startsWith(`${href}/`))
+        );
+
+        return !hasMoreSpecificMatch;
+    };
+
+    const renderNavLink = (href: string, icon: React.ReactNode, label: string) => {
+        const active = isLinkActive(href);
+        return (
+            <Link
+                key={href}
+                href={href}
+                onClick={() => setSidebarOpen(false)}
+                title={sidebarCollapsed ? label : undefined}
+                className={`group flex items-center gap-3 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-150 ${
+                    active
+                        ? 'bg-brand-surface text-brand-surface-foreground font-semibold shadow-xs'
+                        : 'text-brand-muted hover:bg-brand-hover hover:text-brand-foreground'
+                } ${sidebarCollapsed ? 'justify-center px-2' : ''}`}
+            >
+                <div className={`shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-action-accent' : 'text-brand-muted group-hover:text-brand-foreground'}`}>
+                    {icon}
+                </div>
+                {!sidebarCollapsed && <span className="truncate">{label}</span>}
+            </Link>
+        );
+    };
+
+    // Keyboard shortcut for sidebar toggle (Ctrl+B / Cmd+B)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+                e.preventDefault();
+                toggleSidebarCollapse();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [sidebarCollapsed]);
 
     // Nested group expansion state with localStorage persistence
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
@@ -739,11 +758,9 @@ export default function AppLayout({ children, title, breadcrumbs }: AppLayoutPro
                             {identity?.footer_text || displayName} &bull; Enterprise Distribution Platform
                         </div>
                         <div className="flex items-center gap-4 text-[11px]">
-                            <span>Tailwind CSS 4</span>
+                            <span>All Rights Reserved</span>
                             <span>&bull;</span>
-                            <span>shadcn/ui Foundation</span>
-                            <span>&bull;</span>
-                            <span>Inertia 3</span>
+                            <span>Authorized System Access</span>
                         </div>
                     </footer>
                 </div>

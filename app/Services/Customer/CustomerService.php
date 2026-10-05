@@ -222,12 +222,16 @@ class CustomerService
     {
         $this->ensureActorIsActiveAndAuthorized($actor, Permission::CUSTOMER_CREATE);
 
-        if ($data->salesman_id !== null) {
-            $this->validateSalesmanEligibility($data->salesman_id);
+        // Salesman actor is strictly bound to self-attribution (cannot assign other salesmen or leave unassigned)
+        $salesmanId = $actor->role === UserRole::SALESMAN ? $actor->id : $data->salesman_id;
+
+        if ($salesmanId !== null) {
+            $this->validateSalesmanEligibility($salesmanId);
         }
 
-        return DB::transaction(function () use ($data, $actor, $ip) {
+        return DB::transaction(function () use ($data, $actor, $salesmanId, $ip) {
             $attributes = $data->toArray();
+            $attributes['salesman_id'] = $salesmanId;
 
             // Auto-generate code if not explicitly provided
             if (empty($attributes['code'])) {

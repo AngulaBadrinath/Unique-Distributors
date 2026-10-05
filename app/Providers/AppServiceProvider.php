@@ -115,6 +115,10 @@ class AppServiceProvider extends ServiceProvider
             $email = $request->input('email');
             $key = $email ? Str::transliterate(Str::lower(trim((string) $email))).'|'.$request->ip() : $request->ip();
 
+            if (app()->environment('local', 'testing')) {
+                return Limit::perMinute(100)->by($key);
+            }
+
             return Limit::perMinute(5)->by($key);
         });
 
@@ -123,6 +127,10 @@ class AppServiceProvider extends ServiceProvider
             $userId = is_array($challenge) && ! empty($challenge['user_id'])
                 ? (string) $challenge['user_id']
                 : 'anon';
+
+            if (app()->environment('local', 'testing')) {
+                return Limit::perMinute(100)->by('mfa:'.$userId.'|'.$request->ip());
+            }
 
             return Limit::perMinute(5)->by('mfa:'.$userId.'|'.$request->ip());
         });

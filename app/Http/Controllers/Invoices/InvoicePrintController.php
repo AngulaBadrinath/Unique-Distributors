@@ -31,6 +31,7 @@ class InvoicePrintController extends Controller
 
         return view('documents.invoice', [
             'invoice' => $invoice,
+            'unbranded' => false,
         ]);
     }
 }

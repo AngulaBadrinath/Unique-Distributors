@@ -241,7 +241,7 @@ export default function InvoiceShow({ invoice, isSalesmanView = false }: Props) 
                                 {invoice.order && (
                                     <div>
                                         <span className="text-muted-foreground">Order Ref:</span>{' '}
-                                        <Link href={`/orders/${invoice.order.id}`} className="text-primary hover:underline">
+                                        <Link href={isSalesmanView ? `/salesman/orders/${invoice.order.id}` : `/admin/orders/${invoice.order.id}`} className="text-primary hover:underline">
                                             {invoice.order.order_number}
                                         </Link>
                                     </div>

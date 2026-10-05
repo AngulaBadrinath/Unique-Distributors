@@ -45,7 +45,10 @@ class CreateOrderAdjustmentDTO
         $canonicalItems = array_map(
             fn (CreateOrderAdjustmentItemDTO $item) => [
                 'order_item_id' => $item->orderItemId,
+                'action_type' => $item->actionType,
                 'reduction_quantity' => $item->reductionQuantity,
+                'increase_quantity' => $item->increaseQuantity,
+                'quantity_delta' => $item->quantityDelta(),
             ],
             $this->items
         );

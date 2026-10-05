@@ -70,26 +70,27 @@ export const QA_USER_CREDENTIALS: Record<UserRole, UserCredential> = {
     },
 };
 
-const mfaSecretCache: Record<string, string> = {
-    'admin.qa@example.test': 'VA2ZJNHTYKCCKHYTJF5J3IAGGULFJ7IO',
-    'superadmin.qa@example.test': 'XOALNE242KWVOR5G2JKAY45KVPINDHWB',
-    'accountant.qa@example.test': 'SU3UCP6R4XLAIE5L6W3JYBIKRZO27V74',
-};
+const mfaSecretCache: Record<string, string> = {};
 
 /**
  * Retrieve the TOTP secret for a user if already enrolled in the local database.
  */
 function getStoredUserMfaSecret(email: string): string {
-    if (mfaSecretCache[email]) return mfaSecretCache[email];
-    try {
-        const cmd = `php artisan tinker --execute="echo \\App\\Models\\User::where('email', '${email}')->value('two_factor_secret');"`;
-        const output = execSync(cmd, { encoding: 'utf-8', timeout: 15000 });
-        const secret = output.trim().replace(/[^A-Za-z0-9]/g, '');
-        if (secret) mfaSecretCache[email] = secret;
-        return secret;
-    } catch {
-        return '';
+    if (mfaSecretCache[email]) {
+        return mfaSecretCache[email];
     }
+    try {
+        const cmd = `php scripts/get_mfa_secret.php "${email}"`;
+        const output = execSync(cmd, { encoding: 'utf-8', timeout: 10000 });
+        const secret = output.trim().replace(/[^A-Za-z0-9]/g, '');
+        if (secret) {
+            mfaSecretCache[email] = secret;
+            return secret;
+        }
+    } catch {
+        // ignore and fallback
+    }
+    return '';
 }
 
 /**
@@ -105,6 +106,8 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
     const baseUrl = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8000';
     const loginUrl = `${baseUrl.replace(/\/$/, '')}/login`;
 
+    console.log(`[loginAs] Logging in as ${role} (${creds.email}) at ${loginUrl}`);
+
     // Always clear session cookies to ensure fresh login and avoid guest redirection
     try {
         await page.context().clearCookies();
@@ -116,74 +119,31 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
         });
     } catch {}
 
-    let gotoAttempts = 0;
-    while (gotoAttempts < 4) {
-        try {
-            await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
-            if (page.url().includes('/login')) {
-                break;
-            }
-            await page.context().clearCookies();
-            await page.waitForTimeout(800);
-        } catch (err: any) {
-            gotoAttempts++;
-            if (gotoAttempts >= 4) throw err;
-            await page.waitForTimeout(1000);
-        }
-    }
+    console.log(`[loginAs] Navigating to ${loginUrl}`);
+    await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    console.log(`[loginAs] At ${page.url()}`);
 
-    for (let attempt = 1; attempt <= 3; attempt++) {
-        if (attempt > 1) {
-            await page.waitForTimeout(1000);
-            await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
-        }
+    const emailInput = page.locator('input#email, input[name="email"], input[type="email"]').first();
+    const passwordInput = page.locator('input#password, input[name="password"], input[type="password"]').first();
 
-        await page.locator('input[type="email"], input[name="email"]').waitFor({ state: 'visible', timeout: 15000 });
-        await page.waitForTimeout(300);
+    await emailInput.waitFor({ state: 'visible', timeout: 15000 });
+    console.log(`[loginAs] Filling credentials`);
+    await emailInput.fill(creds.email);
+    await passwordInput.fill(creds.password);
 
-        const emailInput = page.locator('input#email, input[name="email"], input[type="email"]').first();
-        const passwordInput = page.locator('input#password, input[name="password"], input[type="password"]').first();
+    const submitBtn = page.locator('button[type="submit"]');
+    console.log(`[loginAs] Clicking submit button`);
+    await submitBtn.click();
 
-        await emailInput.click();
-        await emailInput.fill(creds.email);
-        await emailInput.dispatchEvent('input');
-        await emailInput.dispatchEvent('change');
-        await page.waitForTimeout(150);
-
-        await passwordInput.click();
-        await passwordInput.fill(creds.password);
-        await passwordInput.dispatchEvent('input');
-        await passwordInput.dispatchEvent('change');
-        await page.waitForTimeout(250);
-
-        // Ensure submit button is enabled before clicking
-        const submitBtn = page.locator('button[type="submit"]');
-        await page.waitForFunction(() => {
-            const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-            return btn && !btn.disabled;
-        }, { timeout: 8000 }).catch(() => {});
-
-        try {
-            await submitBtn.click({ timeout: 6000 });
-        } catch {
-            // If normal click timed out, try force click or enter key
-            await passwordInput.press('Enter').catch(() => {});
-        }
-
-        try {
-            await page.waitForURL((url) => url.pathname !== '/login', { timeout: 10000 });
-            break;
-        } catch {
-            if (attempt === 3) {
-                const alertText = await page.locator('[role="alert"], .text-destructive').first().textContent().catch(() => '');
-                throw new Error(`[AuthHelper] Login failed for ${role} (${creds.email}). Still on ${page.url()}. Page alert: "${alertText?.trim()}"`);
-            }
-        }
-    }
+    console.log(`[loginAs] Waiting for navigation away from /login`);
+    await page.waitForURL((url) => !url.pathname.endsWith('/login') || url.pathname.includes('/mfa') || url.pathname.includes('/dashboard') || url.pathname.includes('/admin') || url.pathname.includes('/salesman'), { timeout: 30000 });
+    console.log(`[loginAs] After submit, current URL is ${page.url()}`);
 
     const currentUrl = page.url();
+    console.log(`[loginAs] Checking if MFA is required: ${currentUrl}`);
 
     if (currentUrl.includes('/login/mfa') || currentUrl.includes('/mfa')) {
+        console.log(`[loginAs] Entering MFA handler for ${creds.email}`);
         // Step 1: Check for manual key in Inertia props (initial enrollment)
         let secretKey = await page.evaluate(() => {
             try {
@@ -212,38 +172,38 @@ export async function loginAs(page: Page, role: UserRole): Promise<void> {
             secretKey = getStoredUserMfaSecret(creds.email);
         }
 
+        console.log(`[loginAs] Resolved secretKey: "${secretKey ? 'EXISTS' : 'EMPTY'}"`);
+
         if (secretKey) {
             let mfaSuccess = false;
             for (let attempt = 0; attempt < 3; attempt++) {
                 const totpCode = generateTOTP(secretKey);
-                const mfaInput = page.locator('input#code, input[name="code"], input[type="text"]').first();
+                console.log(`[loginAs] Generated TOTP code: ${totpCode} (attempt ${attempt + 1})`);
+                const mfaInput = page.locator('input#code, input[type="text"]').first();
+                await mfaInput.waitFor({ state: 'visible', timeout: 10000 });
                 await mfaInput.click();
                 await mfaInput.fill(totpCode);
-                await mfaInput.dispatchEvent('input');
-                await mfaInput.dispatchEvent('change');
                 await page.waitForTimeout(200);
 
                 const mfaSubmit = page.locator('button[type="submit"]');
-                await page.waitForFunction(() => {
-                    const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-                    return btn && !btn.disabled;
-                }, { timeout: 8000 }).catch(() => {});
-
+                console.log(`[loginAs] Clicking MFA submit button`);
                 try {
                     await mfaSubmit.click({ timeout: 6000 });
                 } catch {
                     await mfaInput.press('Enter').catch(() => {});
                 }
 
+                console.log(`[loginAs] Waiting for navigation after MFA submit`);
                 try {
-                    await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 10000 });
+                    await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 30000 });
                     mfaSuccess = true;
+                    console.log(`[loginAs] MFA success! Current URL is ${page.url()}`);
                     break;
-                } catch {
-                    // Check if error message appeared or still on /login/mfa
-                    if (page.url().includes('/login')) {
-                        await page.waitForTimeout(1500);
-                    } else {
+                } catch (e: any) {
+                    console.log(`[loginAs] MFA attempt ${attempt + 1} timed out or failed. URL: ${page.url()}`);
+                    if (page.url().includes('/login/mfa')) {
+                        await page.waitForTimeout(1000);
+                    } else if (!page.url().includes('/login')) {
                         mfaSuccess = true;
                         break;
                     }

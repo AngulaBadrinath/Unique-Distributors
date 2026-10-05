@@ -21,7 +21,7 @@ class InvoicePdfService
      *
      * @throws RuntimeException
      */
-    public function generate(Invoice $invoice, bool $forceRegenerate = false): string
+    public function generate(Invoice $invoice, bool $forceRegenerate = false, bool $unbranded = true): string
     {
         $invoice->loadMissing(['items.product', 'order.payments', 'customer', 'creator']);
 
@@ -30,7 +30,8 @@ class InvoicePdfService
             File::makeDirectory($storageDir, 0755, true);
         }
 
-        $pdfFilename = sprintf('%s.pdf', preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoice->invoice_number));
+        $suffix = $unbranded ? '_unbranded' : '';
+        $pdfFilename = sprintf('%s%s.pdf', preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoice->invoice_number), $suffix);
         $pdfPath = $storageDir.DIRECTORY_SEPARATOR.$pdfFilename;
         $relativePdfPath = 'invoices/'.$pdfFilename;
 
@@ -46,8 +47,11 @@ class InvoicePdfService
             return $pdfPath;
         }
 
-        // Render standalone HTML view
-        $htmlContent = view('documents.invoice', ['invoice' => $invoice])->render();
+        // Render standalone HTML view with identical canonical layout
+        $htmlContent = view('documents.invoice', [
+            'invoice' => $invoice,
+            'unbranded' => $unbranded,
+        ])->render();
 
         $tempDir = storage_path('app/private/temp_html');
         if (! File::exists($tempDir)) {
@@ -64,7 +68,7 @@ class InvoicePdfService
                 $this->renderWithChromium($chromeBinary, $tempHtmlPath, $pdfPath);
             } else {
                 // Fallback for minimal/headless test environments without browser binaries
-                $this->renderCompliantFallbackPdf($invoice, $pdfPath);
+                $this->renderCompliantFallbackPdf($invoice, $pdfPath, $unbranded);
             }
 
             if (! File::exists($pdfPath) || ! $this->isValidPdf($pdfPath)) {
@@ -115,7 +119,7 @@ class InvoicePdfService
 
             $invoice = Invoice::where('pdf_path', 'LIKE', '%'.basename($outputPdfPath))->first();
             if ($invoice) {
-                $this->renderCompliantFallbackPdf($invoice, $outputPdfPath);
+                $this->renderCompliantFallbackPdf($invoice, $outputPdfPath, true);
             }
         }
     }
@@ -123,19 +127,43 @@ class InvoicePdfService
     /**
      * Generate a standards-compliant PDF file directly if Chromium is unavailable in test environments.
      */
-    protected function renderCompliantFallbackPdf(Invoice $invoice, string $outputPath): void
+    protected function renderCompliantFallbackPdf(Invoice $invoice, string $outputPath, bool $unbranded = true): void
     {
+        $itemsList = '';
+        $y = 620;
+        if ($invoice->relationLoaded('items')) {
+            foreach ($invoice->items as $item) {
+                $itemsList .= sprintf("BT /F1 9 Tf 50 %d Td (%s | %s | Qty: %d | $%s) Tj ET\n",
+                    $y,
+                    substr($item->sku_snapshot ?? '', 0, 15),
+                    substr($item->product_name_snapshot ?? '', 0, 30),
+                    (int) $item->quantity,
+                    number_format($item->line_total, 2)
+                );
+                $y -= 15;
+                if ($y < 150) break;
+            }
+        }
+
+        $companyLine = $unbranded ? '' : sprintf("BT /F1 10 Tf 50 650 Td (Company: %s) Tj ET\n", $invoice->company_legal_name_snapshot);
+
         $streamContent = sprintf(
             "BT /F1 16 Tf 50 750 Td (TAX INVOICE) Tj ET\n"
             ."BT /F1 12 Tf 50 720 Td (Invoice #: %s) Tj ET\n"
             ."BT /F1 12 Tf 50 700 Td (Customer: %s) Tj ET\n"
-            ."BT /F1 12 Tf 50 680 Td (Grand Total: %s %s) Tj ET\n"
-            ."BT /F1 10 Tf 50 650 Td (Company: %s) Tj ET\n",
+            ."BT /F1 10 Tf 50 680 Td (Date: %s | Terms: %s) Tj ET\n"
+            ."%s"
+            ."%s"
+            ."BT /F1 12 Tf 50 100 Td (Grand Total: %s %s | Balance Due: $%s) Tj ET\n",
             $invoice->invoice_number,
             $invoice->customer_name_snapshot,
+            $invoice->invoice_date ? $invoice->invoice_date->format('m/d/Y') : date('m/d/Y'),
+            $invoice->payment_terms ? $invoice->payment_terms->label() : 'Due on Receipt',
+            $companyLine,
+            $itemsList,
             $invoice->currency,
             number_format($invoice->grand_total, 2),
-            $invoice->company_legal_name_snapshot
+            number_format($invoice->amount_due, 2)
         );
 
         $streamLength = strlen($streamContent);

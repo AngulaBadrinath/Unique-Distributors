@@ -51,6 +51,7 @@ class RoleAssignmentController extends Controller
             'users' => $users,
             'availableRoles' => $availableRoles,
             'canAssignSuperAdmin' => $actor->isSuperAdmin(),
+            'canDeleteUser' => $actor->canPermission(\App\Enums\Permission::USER_DELETE),
             'currentUser' => [
                 'id' => $actor->id,
                 'role' => $actor->role?->value,

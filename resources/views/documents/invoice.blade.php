@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAX INVOICE - {{ $invoice->invoice_number }} — Unique Jersey Wholesale</title>
+    <title>TAX INVOICE - {{ $invoice->invoice_number }} &mdash; {{ !empty($unbranded) ? 'Customer Copy' : ($invoice->company_legal_name_snapshot ?? 'Unique Jersey Wholesale') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('branding/favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('branding/favicon.ico') }}">
     <style>
         @page {
-            size: letter portrait;
-            margin: 0.5in;
+            size: A4 portrait;
+            margin: 12mm 10mm;
         }
 
         *, *::before, *::after {
@@ -20,7 +22,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: #0f172a;
             background-color: #ffffff;
-            font-size: 10px;
+            font-size: 10.5pt;
             line-height: 1.35;
             padding: 16px;
         }
@@ -235,7 +237,7 @@
             width: 100%;
             border-collapse: collapse;
             border: 1px solid #94a3b8;
-            font-size: 10px;
+            font-size: 9.5pt;
         }
 
         .items-table thead {
@@ -250,7 +252,7 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             padding: 6px 8px;
-            font-size: 9px;
+            font-size: 9.5pt;
         }
 
         .items-table th.col-qty {
@@ -291,7 +293,7 @@
             border-left: 1px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
             padding: 5.5px 8px;
-            font-size: 9.5px;
+            font-size: 9.5pt;
             color: #1e293b;
             vertical-align: middle;
         }
@@ -504,6 +506,7 @@
 <body>
 
     <!-- Screen-Only Actions -->
+    @if(empty($unbranded))
     <div class="no-print-bar">
         <div>
             <strong>TAX INVOICE #{{ $invoice->invoice_number }}</strong> &mdash; {{ $invoice->customer_name_snapshot }}
@@ -513,34 +516,40 @@
             <button class="btn" onclick="window.print()">Print / Export PDF</button>
         </div>
     </div>
+    @endif
 
     <div class="invoice-container">
         <!-- Top Header -->
         <header class="invoice-header">
             <div class="company-brand">
-                <!-- RULE-DOC-001: Inline SVG Vector Logo (Zero img tags) -->
-                <div class="brand-logo-wrap">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 434 80" style="height: 48px; width: auto; max-width: 260px; display: block;"><g transform="translate(16 12)"><mask id="m" maskUnits="userSpaceOnUse" x="-40" y="-40" width="200" height="140"><rect x="-40" y="-40" width="200" height="140" fill="#fff"/><path d="M-8 52Q46 52 98 -2Q40 28 -8 52Z" fill="#000" stroke="#000" stroke-width="7" stroke-linejoin="round"/></mask><g mask="url(#m)"><g transform="skewX(-12)" fill="none" stroke="#0B1220" stroke-width="16"><path d="M8 0V40A16 16 0 0 0 40 40V0"/><path d="M80 -9V40.04A15.96 15.96 0 0 1 64.04 56H50"/></g></g><path d="M-8 52Q46 52 98 -2Q40 28 -8 52Z" fill="#0891B2"/></g><text x="132" y="42" font-family="Inter,Manrope,'Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" lengthAdjust="spacing" textLength="300" fill="#0B1220">UNIQUE <tspan fill="#0891B2">JERSEY</tspan></text><text x="132" y="68" font-family="Inter,Manrope,'Segoe UI',Arial,sans-serif" font-size="17" font-weight="500" letter-spacing="7" fill="#5B6B80">WHOLESALE</text></svg>
-                </div>
-                <div class="company-address-block">
-                    <div class="company-title">{{ $invoice->company_legal_name_snapshot ?? 'Unique Jersey Wholesale' }}</div>
-                    @if($invoice->company_dba_name_snapshot)
-                        <div>d/b/a {{ $invoice->company_dba_name_snapshot }}</div>
-                    @endif
-                    <div>{{ $invoice->company_address_snapshot }}</div>
-                    @if($invoice->company_phone_snapshot)
-                        <div>Phone: {{ $invoice->company_phone_snapshot }}</div>
-                    @endif
-                    @if($invoice->company_email_snapshot)
-                        <div>Email: {{ $invoice->company_email_snapshot }}</div>
-                    @endif
-                    @if($invoice->company_tax_id_snapshot)
-                        <div>Tax ID / EIN: {{ $invoice->company_tax_id_snapshot }}</div>
-                    @endif
-                    @if($invoice->company_state_tax_id_snapshot)
-                        <div>State Tax ID: {{ $invoice->company_state_tax_id_snapshot }}</div>
-                    @endif
-                </div>
+                @if(empty($unbranded))
+                    <!-- RULE-DOC-001: Inline SVG Vector Logo (Zero img tags) -->
+                    <div class="brand-logo-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 434 80" style="height: 48px; width: auto; max-width: 260px; display: block;"><g transform="translate(16 12)"><mask id="m" maskUnits="userSpaceOnUse" x="-40" y="-40" width="200" height="140"><rect x="-40" y="-40" width="200" height="140" fill="#fff"/><path d="M-8 52Q46 52 98 -2Q40 28 -8 52Z" fill="#000" stroke="#000" stroke-width="7" stroke-linejoin="round"/></mask><g mask="url(#m)"><g transform="skewX(-12)" fill="none" stroke="#0B1220" stroke-width="16"><path d="M8 0V40A16 16 0 0 0 40 40V0"/><path d="M80 -9V40.04A15.96 15.96 0 0 1 64.04 56H50"/></g></g><path d="M-8 52Q46 52 98 -2Q40 28 -8 52Z" fill="#0891B2"/></g><text x="132" y="42" font-family="Inter,Manrope,'Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" lengthAdjust="spacing" textLength="300" fill="#0B1220">UNIQUE <tspan fill="#0891B2">JERSEY</tspan></text><text x="132" y="68" font-family="Inter,Manrope,'Segoe UI',Arial,sans-serif" font-size="17" font-weight="500" letter-spacing="7" fill="#5B6B80">WHOLESALE</text></svg>
+                    </div>
+                    <div class="company-address-block">
+                        <div class="company-title">{{ $invoice->company_legal_name_snapshot ?? 'Unique Jersey Wholesale' }}</div>
+                        @if($invoice->company_dba_name_snapshot)
+                            <div>d/b/a {{ $invoice->company_dba_name_snapshot }}</div>
+                        @endif
+                        <div>{{ $invoice->company_address_snapshot }}</div>
+                        @if($invoice->company_phone_snapshot)
+                            <div>Phone: {{ $invoice->company_phone_snapshot }}</div>
+                        @endif
+                        @if($invoice->company_email_snapshot)
+                            <div>Email: {{ $invoice->company_email_snapshot }}</div>
+                        @endif
+                        @if($invoice->company_tax_id_snapshot)
+                            <div>Tax ID / EIN: {{ $invoice->company_tax_id_snapshot }}</div>
+                        @endif
+                        @if($invoice->company_state_tax_id_snapshot)
+                            <div>State Tax ID: {{ $invoice->company_state_tax_id_snapshot }}</div>
+                        @endif
+                    </div>
+                @else
+                    <!-- Unbranded PDF presentation variant: company identity hidden -->
+                    <div style="min-height: 48px;"></div>
+                @endif
             </div>
 
             <div class="invoice-title-block">
@@ -723,7 +732,11 @@
 
         <!-- Document Footer -->
         <footer class="invoice-footer">
-            <p>Thank you for your business! Legal Entity: {{ $invoice->company_legal_name_snapshot ?? 'Unique Jersey Wholesale' }}</p>
+            @if(empty($unbranded))
+                <p>Thank you for your business! Legal Entity: {{ $invoice->company_legal_name_snapshot ?? 'Unique Jersey Wholesale' }}</p>
+            @else
+                <p>Thank you for your business!</p>
+            @endif
         </footer>
     </div>
 

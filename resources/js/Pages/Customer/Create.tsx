@@ -4,7 +4,8 @@ import AppLayout from '@/Layouts/AppLayout';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
-import { CustomerStatusOption, EligibleSalesman, PaymentTermsOption } from '@/types';
+import { CustomerStatusOption, EligibleSalesman, PaymentTermsOption, PageProps } from '@/types';
+import { usePage } from '@inertiajs/react';
 import {
     Building2,
     MapPin,
@@ -24,9 +25,12 @@ interface CustomerCreateProps {
     statuses: CustomerStatusOption[];
     paymentTerms: PaymentTermsOption[];
     eligibleSalesmen?: EligibleSalesman[];
+    isSalesman?: boolean;
 }
 
-export default function CustomerCreate({ suggestedCode, statuses, paymentTerms, eligibleSalesmen = [] }: CustomerCreateProps) {
+export default function CustomerCreate({ suggestedCode, statuses, paymentTerms, eligibleSalesmen = [], isSalesman = false }: CustomerCreateProps) {
+    const { auth } = usePage<PageProps>().props;
+    const isUserSalesman = isSalesman || auth?.user?.role === 'SALESMAN';
     const [sameAsBilling, setSameAsBilling] = useState(true);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -548,22 +552,29 @@ export default function CustomerCreate({ suggestedCode, statuses, paymentTerms, 
                                         <UserCheck className="h-3.5 w-3.5 text-primary" />
                                         Sales Representative
                                     </label>
-                                    <select
-                                        id="salesman_id"
-                                        value={data.salesman_id}
-                                        onChange={(e) => setData('salesman_id', e.target.value)}
-                                        disabled={processing}
-                                        className={`w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-xs shadow-xs focus:outline-none focus:ring-1 focus:ring-ring ${
-                                            errors.salesman_id ? 'border-destructive' : ''
-                                        }`}
-                                    >
-                                        <option value="">Unassigned (No Sales Rep)</option>
-                                        {eligibleSalesmen.map((slm) => (
-                                            <option key={slm.id} value={slm.id}>
-                                                {slm.name} ({slm.email})
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {isUserSalesman ? (
+                                        <div className="w-full h-9 rounded-md border border-input bg-muted/30 px-3 py-1 flex items-center text-xs text-foreground">
+                                            <span className="font-semibold text-primary">{auth?.user?.name || 'You'}</span>
+                                            <span className="text-muted-foreground ml-1.5 text-[11px]">(Direct Portfolio Attribution)</span>
+                                        </div>
+                                    ) : (
+                                        <select
+                                            id="salesman_id"
+                                            value={data.salesman_id}
+                                            onChange={(e) => setData('salesman_id', e.target.value)}
+                                            disabled={processing}
+                                            className={`w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-xs shadow-xs focus:outline-none focus:ring-1 focus:ring-ring ${
+                                                errors.salesman_id ? 'border-destructive' : ''
+                                            }`}
+                                        >
+                                            <option value="">Unassigned (No Sales Rep)</option>
+                                            {eligibleSalesmen.map((slm) => (
+                                                <option key={slm.id} value={slm.id}>
+                                                    {slm.name} ({slm.email})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
                                     {errors.salesman_id && <p className="text-xs text-destructive">{errors.salesman_id}</p>}
                                 </div>
 

@@ -35,7 +35,7 @@ class InvoicePdfController extends Controller
         Gate::authorize('download', $invoice);
 
         $force = $request->boolean('regenerate', false);
-        $pdfPath = $this->pdfService->generate($invoice, $force);
+        $pdfPath = $this->pdfService->generate($invoice, $force, true);
 
         $downloadFilename = sprintf('%s.pdf', $invoice->invoice_number);
 

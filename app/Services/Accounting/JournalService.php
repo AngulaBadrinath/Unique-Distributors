@@ -132,7 +132,7 @@ class JournalService
                     'description' => trim((string) ($header['description'] ?? "Journal entry {$journalNumber}")),
                     'notes' => ! empty($header['notes']) ? trim((string) $header['notes']) : null,
                     'reversed_journal_id' => ! empty($header['reversed_journal_id']) ? (int) $header['reversed_journal_id'] : null,
-                    'reversal_reason' => ! empty($header['reversal_reason']) ? (string) $header['reversal_reason'] : null,
+                    'reversal_reason' => ! empty($header['reversal_reason']) ? trim((string) $header['reversal_reason']) : null,
                     'created_by' => $actor?->id,
                     'posted_by' => $actor?->id,
                     'posted_at' => Carbon::now(),

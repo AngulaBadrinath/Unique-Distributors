@@ -220,15 +220,16 @@ class QA007PaymentRefundIntegrityTest extends TestCase
     /**
      * Helper to create an issued credit note with a specified balance.
      */
-    protected function createIssuedCreditNote(string $totalAmount = '500.00', ?Order $order = null): CreditNote
+    protected function createIssuedCreditNote(string $totalAmount = '500.00'): CreditNote
     {
-        $order ??= $this->createApprovedOrder($totalAmount);
+        $order = $this->createApprovedOrder($totalAmount);
 
         return CreditNote::create([
             'credit_number' => 'CR-2026-'.Str::upper(Str::random(6)),
-            'idempotency_key' => (string) Str::uuid(),
-            'customer_id' => $this->customer->id,
             'order_id' => $order->id,
+            'customer_id' => $this->customer->id,
+            'customer_name_snapshot' => $this->customer->name,
+            'customer_code_snapshot' => $this->customer->customer_code ?? 'CUST-001',
             'status' => CreditNoteStatus::ISSUED,
             'currency' => 'USD',
             'subtotal' => $totalAmount,
@@ -238,10 +239,9 @@ class QA007PaymentRefundIntegrityTest extends TestCase
             'allocated_to_refunds' => '0.00',
             'allocated_to_invoices' => '0.00',
             'reason' => 'Damaged goods return credit',
+            'idempotency_key' => (string) Str::uuid(),
             'issued_by' => $this->admin->id,
             'issued_at' => Carbon::now(),
-            'customer_name_snapshot' => $this->customer->name,
-            'customer_code_snapshot' => $this->customer->code,
         ]);
     }
 
@@ -255,7 +255,6 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         // Attempting to record $1200 payment against $1000 order balance must fail
         $this->expectException(ValidationException::class);
         $this->paymentService->recordCashPayment([
-            'customer_id' => $order->customer_id,
             'order_id' => $order->id,
             'amount' => '1200.00',
             'payment_date' => Carbon::now()->toDateString(),
@@ -456,13 +455,13 @@ class QA007PaymentRefundIntegrityTest extends TestCase
         // Attempting to process another refund request against the exhausted credit note must fail
         $secondRequest = RefundRequest::create([
             'refund_number' => 'REF-2026-999999',
-            'idempotency_key' => (string) Str::uuid(),
             'credit_note_id' => $creditNote->id,
             'customer_id' => $this->customer->id,
             'status' => RefundStatus::APPROVED,
             'payment_method' => PaymentMethod::CASH,
             'amount' => '200.00',
             'reason' => 'Second unauthorized request',
+            'idempotency_key' => (string) Str::uuid(),
             'requested_by' => $this->salesmanA->id,
             'requested_at' => Carbon::now(),
         ]);

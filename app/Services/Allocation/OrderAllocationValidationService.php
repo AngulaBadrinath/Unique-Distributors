@@ -58,11 +58,11 @@ class OrderAllocationValidationService
     public function validateItemConservation(OrderItem $item): void
     {
         $fulfillable = $item->fulfillableQuantity();
-        $expectedFulfillable = max(0, $item->ordered_quantity - $item->cancelled_quantity);
+        $expectedFulfillable = max(0, ($item->ordered_quantity + ($item->increased_quantity ?? 0)) - $item->cancelled_quantity);
 
         if ($fulfillable !== $expectedFulfillable) {
             throw ValidationException::withMessages([
-                'order_item' => "Quantity conservation violated for line item #{$item->id}: fulfillable ({$fulfillable}) does not match ordered ({$item->ordered_quantity}) minus cancelled ({$item->cancelled_quantity}).",
+                'order_item' => "Quantity conservation violated for line item #{$item->id}: fulfillable ({$fulfillable}) does not match ordered ({$item->ordered_quantity}) + increased (" . ($item->increased_quantity ?? 0) . ") minus cancelled ({$item->cancelled_quantity}).",
             ]);
         }
 

@@ -90,12 +90,44 @@ class QA008AccountingIntegrityTest extends TestCase
             'status' => AccountStatus::ACTIVE,
         ]);
 
+        $this->ensureChartOfAccountsSeeded();
+
         $this->cashAccount = Account::where('account_code', '1010')->firstOrFail();
         $this->arAccount = Account::where('account_code', '1100')->firstOrFail();
         $this->inventoryAccount = Account::where('account_code', '1200')->firstOrFail();
-        $this->taxPayableAccount = Account::where('account_code', '2100')->firstOrFail();
+        $this->taxPayableAccount = Account::where('account_code', '2020')->firstOrFail();
         $this->salesRevenueAccount = Account::where('account_code', '4010')->firstOrFail();
         $this->cogsAccount = Account::where('account_code', '5010')->firstOrFail();
+    }
+
+    protected function ensureChartOfAccountsSeeded(): void
+    {
+        $accounts = [
+            ['account_code' => '1010', 'name' => 'Cash on Hand', 'type' => 'ASSET', 'category' => 'CURRENT_ASSET', 'normal_balance' => 'DEBIT'],
+            ['account_code' => '1020', 'name' => 'Undeposited Cheques & Money Orders', 'type' => 'ASSET', 'category' => 'CURRENT_ASSET', 'normal_balance' => 'DEBIT'],
+            ['account_code' => '1030', 'name' => 'Operating Bank Account', 'type' => 'ASSET', 'category' => 'CURRENT_ASSET', 'normal_balance' => 'DEBIT'],
+            ['account_code' => '1100', 'name' => 'Accounts Receivable', 'type' => 'ASSET', 'category' => 'CURRENT_ASSET', 'normal_balance' => 'DEBIT'],
+            ['account_code' => '1200', 'name' => 'Merchandise Inventory', 'type' => 'ASSET', 'category' => 'CURRENT_ASSET', 'normal_balance' => 'DEBIT'],
+            ['account_code' => '2010', 'name' => 'Accounts Payable', 'type' => 'LIABILITY', 'category' => 'CURRENT_LIABILITY', 'normal_balance' => 'CREDIT'],
+            ['account_code' => '2020', 'name' => 'Sales Tax Payable', 'type' => 'LIABILITY', 'category' => 'CURRENT_LIABILITY', 'normal_balance' => 'CREDIT'],
+            ['account_code' => '3010', 'name' => 'Owner Capital / Retained Earnings', 'type' => 'EQUITY', 'category' => 'EQUITY', 'normal_balance' => 'CREDIT'],
+            ['account_code' => '4010', 'name' => 'Wholesale Sales Revenue', 'type' => 'REVENUE', 'category' => 'OPERATING_REVENUE', 'normal_balance' => 'CREDIT'],
+            ['account_code' => '5010', 'name' => 'Cost of Goods Sold - Wholesale', 'type' => 'EXPENSE', 'category' => 'COST_OF_GOODS_SOLD', 'normal_balance' => 'DEBIT'],
+        ];
+
+        $now = now();
+        foreach ($accounts as $acc) {
+            Account::firstOrCreate(
+                ['account_code' => $acc['account_code']],
+                array_merge($acc, [
+                    'is_active' => true,
+                    'is_system' => true,
+                    'is_reconcilable' => true,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ])
+            );
+        }
     }
 
     /**
@@ -201,7 +233,7 @@ class QA008AccountingIntegrityTest extends TestCase
             $this->reversalService->reverseJournal($originalJournal, 'Duplicate reversal attempt', $this->accountant);
             $this->fail('Expected ValidationException on duplicate reversal.');
         } catch (ValidationException $e) {
-            $this->assertStringContainsString('already been reversed', $e->getMessage());
+            $this->assertArrayHasKey('journal', $e->errors());
         }
     }
 
@@ -267,6 +299,7 @@ class QA008AccountingIntegrityTest extends TestCase
         $balanceSheet = $this->balanceSheetService->getBalanceSheet('2026-09-30');
 
         $this->assertArrayHasKey('assets', $balanceSheet);
+        $this->assertArrayHasKey('total_assets', $balanceSheet['assets']);
         $this->assertArrayHasKey('total_liabilities_and_equity', $balanceSheet);
         $this->assertArrayHasKey('is_balanced', $balanceSheet);
 

@@ -130,17 +130,17 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
     const getStatusBadge = (statusVal: string) => {
         switch (statusVal) {
             case 'REQUESTED':
-                return <Badge className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/40 dark:text-amber-300">Requested</Badge>;
+                return <Badge variant="warning">Requested</Badge>;
             case 'UNDER_REVIEW':
-                return <Badge className="bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-900/40 dark:text-sky-300">Under Review</Badge>;
+                return <Badge variant="info">Under Review</Badge>;
             case 'INSPECTED':
-                return <Badge className="bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/40 dark:text-purple-300">Inspected</Badge>;
+                return <Badge variant="brand">Inspected</Badge>;
             case 'APPROVED':
-                return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-300">Approved</Badge>;
+                return <Badge variant="success">Approved</Badge>;
             case 'REJECTED':
-                return <Badge className="bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-900/40 dark:text-rose-300">Rejected</Badge>;
+                return <Badge variant="destructive">Rejected</Badge>;
             case 'CANCELLED':
-                return <Badge className="bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300">Cancelled</Badge>;
+                return <Badge variant="secondary">Cancelled</Badge>;
             default:
                 return <Badge variant="outline">{statusVal}</Badge>;
         }
@@ -167,7 +167,7 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
     const backUrl = isSalesmanView ? '/salesman/returns' : '/admin/returns';
 
     return (
-        <AppLayout>
+        <AppLayout title={`Return ${returnRequest.return_number}`}>
             <Head title={`Return ${returnRequest.return_number}`} />
 
             <div className="max-w-7xl mx-auto space-y-6">
@@ -250,60 +250,60 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                     {/* Left 2 Cols: Line Items and Details */}
                     <div className="lg:col-span-2 space-y-6">
                         {/* Line Items Table */}
-                        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden">
-                            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 flex justify-between items-center">
-                                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                    <RotateCcw className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        <div className="bg-card rounded-xl border border-border shadow-xs overflow-hidden">
+                            <div className="px-6 py-4 border-b border-border bg-muted/40 flex justify-between items-center">
+                                <h2 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                                    <RotateCcw className="w-4 h-4 text-primary" />
                                     Merchandise Return Line Items
                                 </h2>
-                                <span className="text-xs text-slate-500 font-medium">
+                                <span className="text-xs text-muted-foreground font-medium">
                                     {returnRequest.items.length} item(s)
                                 </span>
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-                                    <thead className="bg-slate-50/50 dark:bg-slate-900/20 text-slate-500 uppercase text-xs border-b border-slate-200 dark:border-slate-700 font-semibold">
+                                <table className="w-full text-left text-sm text-muted-foreground">
+                                    <thead className="bg-muted/20 text-foreground uppercase text-xs border-b border-border font-semibold">
                                         <tr>
                                             <th className="px-5 py-3">Product</th>
                                             <th className="px-3 py-3 text-center">Requested</th>
                                             <th className="px-3 py-3 text-center">Received</th>
-                                            <th className="px-3 py-3 text-center text-emerald-700 dark:text-emerald-400">Good</th>
-                                            <th className="px-3 py-3 text-center text-amber-700 dark:text-amber-400">Damaged</th>
-                                            <th className="px-3 py-3 text-center text-rose-700 dark:text-rose-400">Rejected</th>
+                                            <th className="px-3 py-3 text-center text-emerald-400">Good</th>
+                                            <th className="px-3 py-3 text-center text-amber-400">Damaged</th>
+                                            <th className="px-3 py-3 text-center text-rose-400">Rejected</th>
                                             <th className="px-5 py-3 text-right">Est. Total</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-750">
+                                    <tbody className="divide-y divide-border">
                                         {returnRequest.items.map(item => {
                                             const productName = item.product?.name || item.order_item?.product_name_snapshot || 'Product';
                                             const sku = item.product?.sku || item.order_item?.sku_snapshot || '';
 
                                             return (
-                                                <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/50">
+                                                <tr key={item.id} className="hover:bg-muted/30">
                                                     <td className="px-5 py-3.5">
-                                                        <p className="font-semibold text-slate-900 dark:text-slate-100">{productName}</p>
-                                                        <p className="text-xs text-slate-400">SKU: {sku} • Reason: {item.reason_code}</p>
+                                                        <p className="font-semibold text-foreground">{productName}</p>
+                                                        <p className="text-xs text-muted-foreground">SKU: {sku} • Reason: {item.reason_code}</p>
                                                         {item.item_notes && (
-                                                            <p className="text-xs text-slate-500 italic mt-0.5">Notes: {item.item_notes}</p>
+                                                            <p className="text-xs text-muted-foreground italic mt-0.5">Notes: {item.item_notes}</p>
                                                         )}
                                                     </td>
-                                                    <td className="px-3 py-3.5 text-center font-bold text-slate-800 dark:text-slate-200">
+                                                    <td className="px-3 py-3.5 text-center font-bold text-foreground">
                                                         {item.requested_quantity}
                                                     </td>
-                                                    <td className="px-3 py-3.5 text-center font-semibold text-indigo-700 dark:text-indigo-400">
+                                                    <td className="px-3 py-3.5 text-center font-semibold text-primary">
                                                         {item.received_quantity > 0 ? item.received_quantity : '—'}
                                                     </td>
-                                                    <td className="px-3 py-3.5 text-center font-bold text-emerald-700 dark:text-emerald-400">
+                                                    <td className="px-3 py-3.5 text-center font-bold text-emerald-400">
                                                         {item.accepted_good_quantity > 0 ? item.accepted_good_quantity : '—'}
                                                     </td>
-                                                    <td className="px-3 py-3.5 text-center font-bold text-amber-700 dark:text-amber-400">
+                                                    <td className="px-3 py-3.5 text-center font-bold text-amber-400">
                                                         {item.accepted_damaged_quantity > 0 ? item.accepted_damaged_quantity : '—'}
                                                     </td>
-                                                    <td className="px-3 py-3.5 text-center font-bold text-rose-700 dark:text-rose-400">
+                                                    <td className="px-3 py-3.5 text-center font-bold text-rose-400">
                                                         {item.rejected_quantity > 0 ? item.rejected_quantity : '—'}
                                                     </td>
-                                                    <td className="px-5 py-3.5 text-right font-bold text-slate-900 dark:text-slate-100">
+                                                    <td className="px-5 py-3.5 text-right font-bold text-foreground">
                                                         ${parseFloat(String(item.line_total || 0)).toFixed(2)}
                                                     </td>
                                                 </tr>
@@ -314,19 +314,19 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                             </div>
 
                             {/* Financial Subtotals */}
-                            <div className="p-4 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                            <div className="p-4 bg-muted/40 border-t border-border flex justify-end">
                                 <div className="w-64 space-y-1.5 text-sm">
-                                    <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                                    <div className="flex justify-between text-muted-foreground">
                                         <span>Eligible Subtotal:</span>
-                                        <span className="font-medium">${parseFloat(String(returnRequest.estimated_refund_subtotal || 0)).toFixed(2)}</span>
+                                        <span className="font-medium text-foreground">${parseFloat(String(returnRequest.estimated_refund_subtotal || 0)).toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                                    <div className="flex justify-between text-muted-foreground">
                                         <span>Eligible Tax:</span>
-                                        <span className="font-medium">${parseFloat(String(returnRequest.estimated_refund_tax || 0)).toFixed(2)}</span>
+                                        <span className="font-medium text-foreground">${parseFloat(String(returnRequest.estimated_refund_tax || 0)).toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-slate-900 dark:text-slate-100 font-bold border-t border-slate-200 dark:border-slate-700 pt-1.5 text-base">
+                                    <div className="flex justify-between text-foreground font-bold border-t border-border pt-1.5 text-base">
                                         <span>Estimated Credit Total:</span>
-                                        <span className="text-emerald-700 dark:text-emerald-400">${parseFloat(String(returnRequest.estimated_refund_total || 0)).toFixed(2)}</span>
+                                        <span className="text-emerald-400">${parseFloat(String(returnRequest.estimated_refund_total || 0)).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -334,30 +334,30 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
 
                         {/* Inspection & Disposition Notes */}
                         {(returnRequest.notes || returnRequest.inspection_notes || returnRequest.rejection_reason) && (
-                            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                    <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                                    <FileText className="w-4 h-4 text-primary" />
                                     Return Notes &amp; Documentation
                                 </h3>
 
                                 {returnRequest.notes && (
-                                    <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded border border-slate-200 dark:border-slate-700 text-sm">
-                                        <span className="font-semibold text-slate-700 dark:text-slate-300 block text-xs">Request Notes</span>
-                                        <p className="text-slate-600 dark:text-slate-300 mt-1">{returnRequest.notes}</p>
+                                    <div className="p-3 bg-muted/30 rounded border border-border text-sm">
+                                        <span className="font-semibold text-foreground block text-xs">Request Notes</span>
+                                        <p className="text-muted-foreground mt-1">{returnRequest.notes}</p>
                                     </div>
                                 )}
 
                                 {returnRequest.inspection_notes && (
-                                    <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-200 dark:border-purple-800 text-sm">
-                                        <span className="font-semibold text-purple-900 dark:text-purple-300 block text-xs">Warehouse Inspection Notes</span>
-                                        <p className="text-purple-800 dark:text-purple-200 mt-1">{returnRequest.inspection_notes}</p>
+                                    <div className="p-3 bg-primary/10 rounded border border-primary/20 text-sm">
+                                        <span className="font-semibold text-primary block text-xs">Warehouse Inspection Notes</span>
+                                        <p className="text-foreground mt-1">{returnRequest.inspection_notes}</p>
                                     </div>
                                 )}
 
                                 {returnRequest.rejection_reason && (
-                                    <div className="p-3 bg-rose-50 dark:bg-rose-950/30 rounded border border-rose-200 dark:border-rose-800 text-sm">
-                                        <span className="font-semibold text-rose-900 dark:text-rose-300 block text-xs">Rejection Reason</span>
-                                        <p className="text-rose-800 dark:text-rose-200 mt-1">{returnRequest.rejection_reason}</p>
+                                    <div className="p-3 bg-destructive/10 rounded border border-destructive/20 text-sm">
+                                        <span className="font-semibold text-destructive block text-xs">Rejection Reason</span>
+                                        <p className="text-foreground mt-1">{returnRequest.rejection_reason}</p>
                                     </div>
                                 )}
                             </div>
@@ -367,36 +367,36 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                     {/* Right Col: Metadata & Audit Events */}
                     <div className="space-y-6">
                         {/* Meta Card */}
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                <Building2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                                <Building2 className="w-4 h-4 text-primary" />
                                 Return Specifications
                             </h3>
 
-                            <dl className="divide-y divide-slate-100 dark:divide-slate-750 text-sm space-y-3">
+                            <dl className="divide-y divide-border text-sm space-y-3">
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Customer</dt>
-                                    <dd className="font-semibold text-slate-800 dark:text-slate-200 text-right">
+                                    <dt className="text-muted-foreground">Customer</dt>
+                                    <dd className="font-semibold text-foreground text-right">
                                         {returnRequest.customer?.name} ({returnRequest.customer?.code})
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Original Order</dt>
-                                    <dd className="font-semibold text-indigo-600 dark:text-indigo-400 text-right">
+                                    <dt className="text-muted-foreground">Original Order</dt>
+                                    <dd className="font-semibold text-primary text-right">
                                         <Link href={`/admin/orders/${returnRequest.order_id}`} className="hover:underline">
                                             {returnRequest.order?.order_number}
                                         </Link>
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Target Warehouse</dt>
-                                    <dd className="font-semibold text-slate-800 dark:text-slate-200 text-right">
+                                    <dt className="text-muted-foreground">Target Warehouse</dt>
+                                    <dd className="font-semibold text-foreground text-right">
                                         {returnRequest.warehouse?.name}
                                     </dd>
                                 </div>
                                 <div className="pt-2 flex justify-between">
-                                    <dt className="text-slate-500">Requested Date</dt>
-                                    <dd className="font-medium text-slate-700 dark:text-slate-300 text-right">
+                                    <dt className="text-muted-foreground">Requested Date</dt>
+                                    <dd className="font-medium text-foreground text-right">
                                         {new Date(returnRequest.requested_at).toLocaleString()}
                                     </dd>
                                 </div>
@@ -404,26 +404,26 @@ export default function Show({ returnRequest, isSalesmanView = false }: Props) {
                         </div>
 
                         {/* Audit Timeline */}
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                                <Clock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        <div className="bg-card p-6 rounded-xl border border-border shadow-xs space-y-4">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-primary" />
                                 Immutable Lifecycle Timeline
                             </h3>
 
-                            <div className="space-y-3 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+                            <div className="space-y-3 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
                                 {returnRequest.events?.map((ev, idx) => (
                                     <div key={ev.id || idx} className="flex items-start gap-3 relative pl-1">
-                                        <div className="w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-950 border-2 border-indigo-600 dark:border-indigo-400 flex items-center justify-center shrink-0 z-10">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                        <div className="w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center shrink-0 z-10">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
                                         </div>
-                                        <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
-                                            <div className="flex justify-between items-center font-semibold text-slate-800 dark:text-slate-200">
+                                        <div className="flex-1 bg-muted/40 p-2.5 rounded-lg border border-border text-xs">
+                                            <div className="flex justify-between items-center font-semibold text-foreground">
                                                 <span>{ev.event_type}</span>
-                                                <span className="text-slate-400 font-normal">
+                                                <span className="text-muted-foreground font-normal">
                                                     {new Date(ev.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             </div>
-                                            <p className="text-slate-500 mt-0.5">
+                                            <p className="text-muted-foreground mt-0.5">
                                                 By: {ev.actor?.name || 'System User'}
                                             </p>
                                         </div>
