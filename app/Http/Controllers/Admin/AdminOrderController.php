@@ -385,6 +385,11 @@ class AdminOrderController extends Controller
             'payments.verifiedBy:id,name',
         ]);
 
+        if ($order->status === OrderStatus::PROCESSING && $order->fulfillment_status === \App\Enums\FulfillmentStatus::DELIVERED && $order->payment_status === \App\Enums\PaymentStatus::PAID) {
+            app(\App\Services\Order\OrderWorkflowService::class)->evaluateAndCompleteOrder($order, $request->user());
+            $order->refresh();
+        }
+
         $taxBreakdown = $this->buildTaxBreakdown($order);
         $fulfillmentSummary = $this->buildFulfillmentSummary($order);
         $timeline = $this->buildOrderTimeline($order);

@@ -456,6 +456,18 @@ class OrderWorkflowService
 
             foreach ($lockedItems as $item) {
                 $fulfillable = $item->fulfillableQuantity();
+
+                // Reconcile delivered_quantity from allocations if not already rolled up
+                $allocDelivered = (int) \App\Models\OrderItemAllocation::where('order_item_id', $item->id)
+                    ->where('status', \App\Enums\AllocationStatus::DELIVERED)
+                    ->sum('delivered_quantity');
+
+                $effectiveDelivered = max((int) $item->delivered_quantity, $allocDelivered);
+                if ($effectiveDelivered > (int) $item->delivered_quantity) {
+                    $item->delivered_quantity = $effectiveDelivered;
+                    $item->save();
+                }
+
                 if ($item->delivered_quantity < $fulfillable) {
                     return false;
                 }

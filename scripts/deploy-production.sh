@@ -99,6 +99,12 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Reload PHP-FPM to ensure opcode cache and workers are clean
+if command -v systemctl &>/dev/null; then
+    echo "Reloading PHP-FPM service (sudo systemctl reload php8.4-fpm)..."
+    sudo systemctl reload php8.4-fpm 2>/dev/null || systemctl reload php8.4-fpm 2>/dev/null || true
+fi
+
 # 7. Queue Worker Recycling
 echo "Restarting Laravel queue workers..."
 php artisan queue:restart

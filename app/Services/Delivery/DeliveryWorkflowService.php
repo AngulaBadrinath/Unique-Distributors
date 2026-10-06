@@ -400,6 +400,16 @@ class DeliveryWorkflowService
                 'created_at' => $now,
             ]);
 
+            // Sync order item delivered quantities from allocations
+            $orderItems = \App\Models\OrderItem::where('order_id', $lockedOrder->id)->lockForUpdate()->get();
+            foreach ($orderItems as $oi) {
+                $itemAllocDelivered = (int) OrderItemAllocation::where('order_item_id', $oi->id)
+                    ->where('status', AllocationStatus::DELIVERED)
+                    ->sum('delivered_quantity');
+                $oi->delivered_quantity = max((int) $oi->delivered_quantity, $itemAllocDelivered);
+                $oi->save();
+            }
+
             // Sync order completion
             $lockedOrder->fulfillment_status = FulfillmentStatus::DELIVERED;
             $lockedOrder->delivery_status = DeliveryStatus::DELIVERED;

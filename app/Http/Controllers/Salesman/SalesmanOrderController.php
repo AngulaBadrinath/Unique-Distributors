@@ -589,6 +589,11 @@ class SalesmanOrderController extends Controller
             'payments.verifiedBy:id,name',
         ]);
 
+        if ($order->status === OrderStatus::PROCESSING && $order->fulfillment_status === FulfillmentStatus::DELIVERED && $order->payment_status === \App\Enums\PaymentStatus::PAID) {
+            app(\App\Services\Order\OrderWorkflowService::class)->evaluateAndCompleteOrder($order, $request->user());
+            $order->refresh();
+        }
+
         $verifiedPaymentsSum = (float) $order->payments->where('status', PaymentTransactionStatus::VERIFIED)->sum('amount');
         $pendingPaymentsSum = (float) $order->payments->where('status', PaymentTransactionStatus::PENDING_VERIFICATION)->sum('amount');
         $outstandingBalance = max(0.0, (float) $order->grand_total - ($verifiedPaymentsSum + $pendingPaymentsSum));
