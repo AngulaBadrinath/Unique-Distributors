@@ -1,0 +1,58 @@
+name: Production CD (AWS OIDC + SSM)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ujw-production
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    name: Deploy to Production (AWS OIDC + SSM)
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+          role-to-assume: ${{ vars.AWS_UJW_DEPLOY_ROLE_ARN || 'arn:aws:iam::122979784839:role/GitHubActions-UJW-Production-Deploy' }}
+          role-session-name: GitHubActions-UJW-Production-Deploy
+          audience: sts.amazonaws.com
+
+      - name: Verify AWS Identity
+        run: |
+          echo "Verifying AWS caller identity..."
+          ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+          echo "Authenticated AWS Account: ${ACCOUNT_ID}"
+          if [ "${ACCOUNT_ID}" != "122979784839" ]; then
+            echo "[ERROR] Unexpected AWS Account ID: ${ACCOUNT_ID} (Expected: 122979784839)" >&2
+            exit 1
+          fi
+
+      - name: Execute Production Deployment via AWS SSM
+        run: |
+          chmod +x scripts/run-ssm-deployment.sh scripts/deploy-production.sh
+          ./scripts/run-ssm-deployment.sh "${{ vars.UJW_EC2_INSTANCE_ID || 'i-04b5a0903d590e029' }}" "${{ github.sha }}" "${{ vars.AWS_REGION || 'us-east-1' }}"
+
+      - name: Verify Live Production Endpoints
+        run: |
+          echo "Verifying live production endpoints..."
+          curl -fsS --max-time 15 https://uniquejerseywholesale.com/health
+          echo ""
+          curl -fsS --max-time 15 https://uniquejerseywholesale.com/ready
+          echo ""
+          echo "Production deployment and verification completed successfully."
