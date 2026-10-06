@@ -38,7 +38,8 @@ if [[ ! -d ".git" ]]; then
     exit 1
 fi
 
-# Ensure working tree is clean
+# Ensure working tree is clean (reconcile any script filemode differences first)
+git checkout -- scripts/deploy-production.sh scripts/run-ssm-deployment.sh 2>/dev/null || true
 DIRTY_FILES=$(git status --porcelain)
 if [[ -n "$DIRTY_FILES" ]]; then
     echo "[ERROR] Working tree is dirty. Refusing deployment to prevent data loss." >&2

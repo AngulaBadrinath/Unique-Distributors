@@ -27,7 +27,7 @@ PARAMS_FILE=$(mktemp /tmp/ssm-deploy-params.XXXXXX.json 2>/dev/null || mktemp)
 cat <<EOF > "$PARAMS_FILE"
 {
   "commands": [
-    "sudo -u ubuntu -H bash -lc 'cd /var/www/ujw && git fetch origin main --tags && if [ -f scripts/deploy-production.sh ]; then chmod +x scripts/deploy-production.sh && ./scripts/deploy-production.sh \"${TARGET_SHA}\"; else git merge --ff-only \"${TARGET_SHA}\" && chmod +x scripts/deploy-production.sh && ./scripts/deploy-production.sh \"${TARGET_SHA}\"; fi'"
+    "sudo -u ubuntu -H bash -lc 'cd /var/www/ujw && git checkout -- scripts/deploy-production.sh 2>/dev/null || true && git fetch origin main --tags && if [ -f scripts/deploy-production.sh ]; then bash scripts/deploy-production.sh \"${TARGET_SHA}\"; else git merge --ff-only \"${TARGET_SHA}\" && bash scripts/deploy-production.sh \"${TARGET_SHA}\"; fi'"
   ]
 }
 EOF
