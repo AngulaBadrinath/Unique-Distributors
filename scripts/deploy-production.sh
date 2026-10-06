@@ -107,13 +107,13 @@ php artisan queue:restart
 echo "Performing local health and readiness verification..."
 sleep 2
 
-HEALTH_RESPONSE=$(curl -fsS --max-time 10 http://127.0.0.1/health || {
+HEALTH_RESPONSE=$(curl -fsS --max-time 15 https://uniquejerseywholesale.com/health || curl -fsS --max-time 15 -H "Host: uniquejerseywholesale.com" http://127.0.0.1/health || {
     echo "[ERROR] /health check failed." >&2
     exit 1
 })
 echo "Health Check OK: ${HEALTH_RESPONSE}"
 
-READY_RESPONSE=$(curl -fsS --max-time 10 http://127.0.0.1/ready || {
+READY_RESPONSE=$(curl -fsS --max-time 15 https://uniquejerseywholesale.com/ready || curl -fsS --max-time 15 -H "Host: uniquejerseywholesale.com" http://127.0.0.1/ready || {
     echo "[ERROR] /ready check failed (PostgreSQL/Redis/Storage degraded)." >&2
     exit 1
 })
