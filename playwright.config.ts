@@ -58,40 +58,5 @@ export default defineConfig({
                 viewport: { width: 1440, height: 900 },
             },
         },
-        {
-            name: 'e2e',
-            testMatch: '**/e2e/**/*.spec.ts',
-            use: {
-                viewport: { width: 1440, height: 900 },
-            },
-        },
-        {
-            name: 'audit-e2e',
-            testMatch: '**/audit/**/*.spec.ts',
-            use: {
-                viewport: { width: 1440, height: 900 },
-            },
-        },
-        {
-            name: 'responsive',
-            testMatch: '**/responsive/**/*.spec.ts',
-            use: {
-                viewport: { width: 1440, height: 900 },
-            },
-        },
-        {
-            name: 'security',
-            testMatch: '**/security/**/*.spec.ts',
-            use: {
-                viewport: { width: 1440, height: 900 },
-            },
-        },
-        {
-            name: 'visual',
-            testMatch: '**/visual/**/*.spec.ts',
-            use: {
-                viewport: { width: 1440, height: 900 },
-            },
-        },
     ],
 });

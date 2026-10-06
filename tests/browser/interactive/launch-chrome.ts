@@ -212,19 +212,30 @@ export async function launchDedicatedChrome(config: LaunchChromeConfig = {}): Pr
     console.log(`  QA Profile     : ${profileDir}`);
 
     const helperPath = path.resolve(projectRoot, 'scripts', 'manage-qa-chrome.ps1');
-    try {
-        const out = execSync(
-            `powershell -NoProfile -ExecutionPolicy Bypass -File "${helperPath}" -Action launch -Port ${port} -TargetUrl "${targetUrl}"`,
-            { encoding: 'utf8', timeout: 5000 }
-        );
-        console.log(`[QA Chrome] Launch result: ${out.trim()}`);
-    } catch {
-        console.log(`[QA Chrome] Direct spawn fallback activating for Chrome...`);
+    let launchedViaPs = false;
+    if (process.platform === 'win32') {
+        try {
+            const out = execSync(
+                `powershell -NoProfile -ExecutionPolicy Bypass -File "${helperPath}" -Action launch -Port ${port} -TargetUrl "${targetUrl}"`,
+                { encoding: 'utf8', timeout: 5000 }
+            );
+            console.log(`[QA Chrome] Launch result: ${out.trim()}`);
+            launchedViaPs = true;
+        } catch {
+            console.log(`[QA Chrome] PowerShell helper failed, using direct spawn...`);
+        }
+    }
+    if (!launchedViaPs) {
+        console.log(`[QA Chrome] Direct spawn activating for Chrome...`);
         const chromeArgs = [
             `--remote-debugging-port=${port}`,
             `--user-data-dir=${profileDir}`,
             '--no-first-run',
             '--no-default-browser-check',
+            '--no-sandbox',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            ...(process.env.CI || process.platform !== 'win32' || !process.env.DISPLAY ? ['--headless=new'] : []),
             `--window-position=${placement.x},${placement.y}`,
             `--window-size=${placement.width},${placement.height}`,
             targetUrl,

@@ -172,10 +172,14 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           sed -i 's/DB_PORT=5433/DB_PORT=5432/g' .env
+          sed -i 's/DB_DATABASE=wdms/DB_DATABASE=wdms_test/g' .env
           sed -i 's/DB_PASSWORD=your_db_password_here/DB_PASSWORD=wdms_secret/g' .env
           sed -i 's/REDIS_PORT=6380/REDIS_PORT=6379/g' .env
           sed -i 's/REDIS_PASSWORD=your_redis_password_here/REDIS_PASSWORD=/g' .env
-          php artisan migrate --seed --force
+          sed -i 's/CACHE_STORE=redis/CACHE_STORE=array/g' .env
+          sed -i 's/SESSION_DRIVER=database/SESSION_DRIVER=file/g' .env
+          sed -i 's/QUEUE_CONNECTION=redis/QUEUE_CONNECTION=sync/g' .env
+          php artisan migrate:fresh --seed --force
           npm run build
           php artisan serve --host=127.0.0.1 --port=8000 &
           timeout 30 bash -c 'until curl -s http://127.0.0.1:8000/health; do sleep 1; done' || true
