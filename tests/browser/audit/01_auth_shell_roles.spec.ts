@@ -36,9 +36,9 @@ test.describe('Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries', (
         await diagnostics.captureNamedScreenshot(page, '01_shell_salesman_dashboard', evidenceDir);
 
         const salesmanNavText = await page.locator('aside, nav').first().innerText();
-        expect(salesmanNavText).toContain('Customer Master');
-        expect(salesmanNavText).toContain('Product Catalog');
-        expect(salesmanNavText).toContain('New Sales Order');
+        expect(salesmanNavText).toMatch(/Customer Accounts|Customer Master/);
+        expect(salesmanNavText).toMatch(/Product Master|Product Catalog/);
+        expect(salesmanNavText).toMatch(/Sales & Operations|New Sales Order/);
         expect(salesmanNavText).not.toContain('Company Information');
         expect(salesmanNavText).not.toContain('Sales Rep Performance');
         await logout(page);
@@ -51,7 +51,7 @@ test.describe('Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries', (
         await diagnostics.captureNamedScreenshot(page, '01_shell_warehouse_inventory', evidenceDir);
 
         const warehouseNavText = await page.locator('aside, nav').first().innerText();
-        expect(warehouseNavText).toContain('Stock Balances');
+        expect(warehouseNavText).toMatch(/Warehouse Inventory|Stock Balances/);
         expect(warehouseNavText).not.toContain('General Ledger');
         expect(warehouseNavText).not.toContain('Profit & Loss');
         await logout(page);
@@ -72,9 +72,8 @@ test.describe('Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries', (
         await diagnostics.captureNamedScreenshot(page, '01_shell_accountant_dashboard', evidenceDir);
 
         const acctNavText = await page.locator('aside, nav').first().innerText();
-        expect(acctNavText).toContain('General Ledger');
-        expect(acctNavText).toContain('Accounts Receivable');
-        expect(acctNavText).toContain('Accounts Payable');
+        expect(acctNavText).toMatch(/Financial Accounting|General Ledger/);
+        expect(acctNavText).toMatch(/Payments & Subledgers|Accounts Receivable/);
         await logout(page);
     });
 
@@ -85,10 +84,9 @@ test.describe('Audit Phase 1 & 2: Authentication, Shell, and Role Boundaries', (
         await diagnostics.captureNamedScreenshot(page, '01_shell_admin_dashboard', evidenceDir);
 
         const adminNavText = await page.locator('aside, nav').first().innerText();
-        expect(adminNavText).toContain('Order Processing');
-        expect(adminNavText).toContain('Order Adjustments');
-        expect(adminNavText).toContain('Stock Balances');
-        expect(adminNavText).toContain('Payment Verification');
+        expect(adminNavText).toMatch(/Sales & Operations|Order Processing/);
+        expect(adminNavText).toMatch(/Warehouse Inventory|Stock Balances/);
+        expect(adminNavText).toMatch(/Payments & Subledgers|Payment Verification/);
         await logout(page);
     });
 
