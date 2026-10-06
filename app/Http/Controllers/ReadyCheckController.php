@@ -63,7 +63,7 @@ class ReadyCheckController extends Controller
         if ($defaultDisk === 's3') {
             try {
                 $bucket = config('filesystems.disks.s3.bucket');
-                $isConfigured = ! empty(config('filesystems.disks.s3.key')) && ! empty($bucket);
+                $isConfigured = ! empty($bucket);
 
                 $dependencies['storage'] = [
                     'status' => $isConfigured ? 'ready' : 'degraded',
