@@ -22,26 +22,15 @@ echo "Target Commit SHA: ${TARGET_SHA}"
 echo "AWS Region: ${AWS_REGION}"
 echo "================================================================="
 
-# Construct deployment command for remote execution as user 'ubuntu'
-DEPLOY_COMMAND=$(cat <<EOF
-sudo -u ubuntu -H bash -lc '
-set -euo pipefail
-cd /var/www/ujw
-echo "[SSM] Fetching origin..."
-git fetch origin main --tags
-
-if [ -f scripts/deploy-production.sh ]; then
-    chmod +x scripts/deploy-production.sh
-    ./scripts/deploy-production.sh "${TARGET_SHA}"
-else
-    echo "[SSM] Bootstrapping initial deploy-production.sh from target SHA..."
-    git merge --ff-only "${TARGET_SHA}"
-    chmod +x scripts/deploy-production.sh
-    ./scripts/deploy-production.sh "${TARGET_SHA}"
-fi
-'
+# Construct parameters JSON file for AWS SSM send-command
+PARAMS_FILE=$(mktemp /tmp/ssm-deploy-params.XXXXXX.json 2>/dev/null || mktemp)
+cat <<EOF > "$PARAMS_FILE"
+{
+  "commands": [
+    "sudo -u ubuntu -H bash -lc 'cd /var/www/ujw && git fetch origin main --tags && if [ -f scripts/deploy-production.sh ]; then chmod +x scripts/deploy-production.sh && ./scripts/deploy-production.sh \"${TARGET_SHA}\"; else git merge --ff-only \"${TARGET_SHA}\" && chmod +x scripts/deploy-production.sh && ./scripts/deploy-production.sh \"${TARGET_SHA}\"; fi'"
+  ]
+}
 EOF
-)
 
 # Send Command via AWS Systems Manager
 echo "Dispatching AWS-RunShellScript to ${INSTANCE_ID}..."
@@ -50,8 +39,10 @@ SEND_OUTPUT=$(aws ssm send-command \
     --instance-ids "${INSTANCE_ID}" \
     --document-name "AWS-RunShellScript" \
     --comment "UJW Production Deploy SHA ${TARGET_SHA}" \
-    --parameters "commands=[$(jq -Rs . <<< "$DEPLOY_COMMAND")]" \
+    --parameters "file://${PARAMS_FILE}" \
     --output json)
+
+rm -f "$PARAMS_FILE"
 
 COMMAND_ID=$(echo "$SEND_OUTPUT" | jq -r '.Command.CommandId')
 
