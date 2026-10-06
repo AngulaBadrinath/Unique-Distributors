@@ -48,7 +48,7 @@ test.describe('Audit Phase 4: Product Master, Categories, Pricing & Tax Invarian
         expect(prodResp?.status()).toBe(200);
 
         // Salesman CANNOT edit product
-        const editResp = await safeGoto(page, '/products/18/edit');
+        const editResp = await safeGoto(page, '/products/1/edit');
         expect([403, 404]).toContain(editResp?.status());
 
         // Salesman CANNOT create or edit categories

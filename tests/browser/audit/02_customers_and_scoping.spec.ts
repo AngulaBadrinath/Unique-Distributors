@@ -27,8 +27,8 @@ test.describe('Audit Phase 3: Customer Domain & Salesman Scoping', () => {
             expect(await page.locator('table').first().innerText()).toContain('Apex');
         }
 
-        // View Customer Detail (Documents BUG-011: returns 500)
-        const detailResp = await safeGoto(page, '/customers/31');
+        // View Customer Detail
+        const detailResp = await safeGoto(page, '/customers/1');
         if (detailResp?.status() === 500) {
             await diagnostics.captureNamedScreenshot(page, 'BUG-011-admin-customer-detail-500', evidenceDir);
         }
@@ -58,14 +58,14 @@ test.describe('Audit Phase 3: Customer Domain & Salesman Scoping', () => {
         expect(salesmanAContent).not.toContain('Crestline Wholesale Mart');
         expect(salesmanAContent).not.toContain('Delta Convenience Stores');
 
-        // Access assigned customer 31 (Documents BUG-011)
-        const ownCustResp = await safeGoto(page, '/customers/31');
+        // Access assigned customer 1 (Apex Supermarket Group)
+        const ownCustResp = await safeGoto(page, '/customers/1');
         expect([200, 500]).toContain(ownCustResp?.status());
 
-        // IDOR Attack: Salesman A attempts to view Salesman B's customer 34
-        const idorResp = await safeGoto(page, '/customers/34');
+        // IDOR Attack: Salesman A attempts to view Salesman B's customer (Customer 4: Crestline Wholesale Mart)
+        const idorResp = await safeGoto(page, '/customers/4');
         expect([403, 404]).toContain(idorResp?.status());
-        await diagnostics.captureNamedScreenshot(page, '02_salesman_a_idor_blocked_customer_34', evidenceDir);
+        await diagnostics.captureNamedScreenshot(page, '02_salesman_a_idor_blocked_customer_4', evidenceDir);
 
         // Salesman A accesses customer onboarding (Customer Onboarding permission)
         const salesmanCreateResp = await safeGoto(page, '/customers/create');
@@ -83,8 +83,8 @@ test.describe('Audit Phase 3: Customer Domain & Salesman Scoping', () => {
         expect(salesmanBContent).toContain('Crestline Wholesale Mart');
         expect(salesmanBContent).not.toContain('Apex Supermarket Group');
 
-        // IDOR Attack: Salesman B attempts to view Salesman A's customer 31
-        const idorBResp = await safeGoto(page, '/customers/31');
+        // IDOR Attack: Salesman B attempts to view Salesman A's customer (Customer 1)
+        const idorBResp = await safeGoto(page, '/customers/1');
         expect([403, 404]).toContain(idorBResp?.status());
 
         await logout(page);

@@ -21,7 +21,7 @@ test.describe('UJW God Prompt 2 — Targeted Production Fix Batch E2E Verificati
             await page.waitForLoadState('domcontentloaded');
             // Canonical table structure
             await expect(page.locator('.items-table')).toBeVisible({ timeout: 10000 });
-            await expect(page.getByText('INVOICE')).toBeVisible({ timeout: 10000 });
+            await expect(page.locator('h1').filter({ hasText: 'INVOICE' })).toBeVisible({ timeout: 10000 });
             // Zero <img> tags per RULE-DOC-001
             const imgCount = await page.locator('img').count();
             expect(imgCount).toBe(0);

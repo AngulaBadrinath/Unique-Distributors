@@ -205,7 +205,7 @@ test.describe('UJW God Prompt 3 — Final Global UX & Browser Regression', () =>
         await page.goto('/admin/orders', { waitUntil: 'domcontentloaded' });
         await expect(page).toHaveURL(/\/admin\/orders/);
 
-        const viewLink = page.locator('a[href*="/admin/orders/"], a:has-text("View")').first();
+        const viewLink = page.locator('table a[href*="/admin/orders/"]').first();
         if (await viewLink.isVisible({ timeout: 3000 }).catch(() => false)) {
             await viewLink.click();
             await page.waitForURL(/\/admin\/orders\/\d+/);
@@ -252,7 +252,7 @@ test.describe('UJW God Prompt 3 — Final Global UX & Browser Regression', () =>
 
         const printResp = await safeGoto(page, '/invoices/1/print');
         if (printResp?.status() === 200) {
-            await expect(page.getByText('INVOICE')).toBeVisible({ timeout: 10000 });
+            await expect(page.locator('h1').filter({ hasText: 'INVOICE' })).toBeVisible({ timeout: 10000 });
             const imgCount = await page.locator('img').count();
             expect(imgCount).toBe(0); // RULE-DOC-001: Zero product images on invoice
         }
