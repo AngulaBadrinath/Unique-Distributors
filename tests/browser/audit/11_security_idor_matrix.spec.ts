@@ -45,7 +45,7 @@ test.describe('Audit Phase 12: Security, Authorization & Anti-IDOR Abuse Matrix'
 
         // 3. Accountant cannot alter product master pricing boundaries
         await loginAs(page, 'ACCOUNTANT');
-        const prodEditResp = await safeGoto(page, '/products/18/edit');
+        const prodEditResp = await safeGoto(page, '/products/1/edit');
         expect([403, 404]).toContain(prodEditResp?.status());
         await logout(page);
     });

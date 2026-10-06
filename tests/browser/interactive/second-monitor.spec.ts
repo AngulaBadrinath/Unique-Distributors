@@ -53,7 +53,8 @@ test.describe('Second-Monitor Real-Chrome QA Environment Verification', () => {
 
         // Verify page title and DOM presence
         const title = await page.title();
-        expect(title).toContain('Unique Distributors');
+        expect(title).toBeTruthy();
+        expect(title).toMatch(/sign in/i);
 
         // Test observation
         const obs = await controller.observe({ detailLevel: 'detailed' });

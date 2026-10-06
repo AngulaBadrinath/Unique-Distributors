@@ -179,7 +179,8 @@ jobs:
           sed -i 's/CACHE_STORE=redis/CACHE_STORE=array/g' .env
           sed -i 's/SESSION_DRIVER=database/SESSION_DRIVER=file/g' .env
           sed -i 's/QUEUE_CONNECTION=redis/QUEUE_CONNECTION=sync/g' .env
-          php artisan migrate:fresh --seed --force
+          php artisan migrate:fresh --force
+          php artisan db:seed --class=ManualTestingSeeder --force
           npm run build
           php artisan serve --host=127.0.0.1 --port=8000 &
           timeout 30 bash -c 'until curl -s http://127.0.0.1:8000/health; do sleep 1; done' || true

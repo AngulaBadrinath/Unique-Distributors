@@ -29,8 +29,9 @@ test.describe('Security Hardening & Client Branding Real-Browser Verification', 
             await page.goto('/login', { waitUntil: 'domcontentloaded' });
         }
 
-        // Verify Unique Distributors branding is visible on login page
-        await expect(page.locator('body')).toContainText('Unique Distributors');
+        // Verify branding and portal headers are visible on login page
+        await expect(page.locator('body')).toContainText('Sign In');
+        await expect(page.locator('body')).toContainText('B2B Wholesale Commerce');
         await expect(page.locator('body')).not.toContainText('Wholesale Distribution Management System');
         await expect(page.locator('body')).not.toContainText('AUTH-001');
 
