@@ -96,7 +96,9 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         Route::get('/security/roles', [\App\Http\Controllers\Security\RoleAssignmentController::class, 'index'])->name('roles.index');
         Route::put('/security/users/{user}/role', [\App\Http\Controllers\Security\RoleAssignmentController::class, 'update'])->name('users.role.update');
         Route::put('/security/users/{user}/status', [\App\Http\Controllers\Security\UserLifecycleController::class, 'updateStatus'])->name('users.status.update');
-        Route::delete('/security/users/{user}', [\App\Http\Controllers\Security\UserLifecycleController::class, 'destroy'])->name('users.destroy');
+        Route::delete('/security/users/{user}', [\App\Http\Controllers\Security\UserLifecycleController::class, 'destroy'])
+            ->middleware('permission:user.delete')
+            ->name('users.destroy');
 
         // Company Information Settings
         Route::get('/system/company', [\App\Http\Controllers\System\CompanyInformationController::class, 'index'])->name('system.company.index');

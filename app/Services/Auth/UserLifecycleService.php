@@ -18,6 +18,7 @@ use App\Services\Audit\AuditLogService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -179,15 +180,14 @@ class UserLifecycleService
 
         if ($hasHistoricalReferences) {
             // Safe Retirement: Disable account, wipe credentials and sensitive tokens, preserve attribution ID
-            $target->update([
+            $target->forceFill([
                 'status' => AccountStatus::DISABLED,
                 'password' => Hash::make(Str::random(40)),
                 'remember_token' => null,
                 'two_factor_secret' => null,
-                'two_factor_recovery_codes' => null,
                 'two_factor_confirmed_at' => null,
                 'email_verified_at' => null,
-            ]);
+            ])->save();
 
             $this->auditLogService->log(
                 eventType: 'SECURITY',
@@ -249,12 +249,25 @@ class UserLifecycleService
      */
     protected function hasHistoricalReferences(int $userId): bool
     {
-        return Order::query()->where('creator_id', $userId)->orWhere('salesman_id', $userId)->exists()
-            || Customer::query()->where('created_by', $userId)->orWhere('salesman_id', $userId)->exists()
-            || Payment::query()->where('recorded_by', $userId)->orWhere('verified_by', $userId)->exists()
-            || Invoice::query()->where('created_by', $userId)->exists()
-            || Delivery::query()->where('driver_id', $userId)->orWhere('assigned_by', $userId)->exists()
-            || AuditLog::query()->where('actor_id', $userId)->exists();
+        return DB::table('orders')->where('created_by', $userId)->orWhere('salesman_id', $userId)->exists()
+            || DB::table('customers')->where('salesman_id', $userId)->exists()
+            || DB::table('payments')->where('recorded_by', $userId)->orWhere('verified_by', $userId)->orWhere('rejected_by', $userId)->orWhere('reversed_by', $userId)->exists()
+            || DB::table('invoices')->where('created_by', $userId)->exists()
+            || DB::table('deliveries')->where('driver_id', $userId)->orWhere('created_by', $userId)->orWhere('updated_by', $userId)->exists()
+            || DB::table('order_adjustments')->where('requested_by', $userId)->orWhere('reviewed_by', $userId)->exists()
+            || DB::table('inventory_movements')->where('actor_id', $userId)->exists()
+            || DB::table('stock_exceptions')->where('reported_by', $userId)->orWhere('resolved_by', $userId)->exists()
+            || DB::table('inventory_adjustments')->where('actor_id', $userId)->exists()
+            || DB::table('return_requests')->where('created_by', $userId)->exists()
+            || DB::table('credit_notes')->where('issued_by', $userId)->exists()
+            || DB::table('refund_requests')->where('requested_by', $userId)->exists()
+            || (Schema::hasTable('refund_transactions') && DB::table('refund_transactions')->where('processed_by', $userId)->exists())
+            || DB::table('receivable_transactions')->where('created_by', $userId)->exists()
+            || (Schema::hasTable('suppliers') && DB::table('suppliers')->where('created_by', $userId)->exists())
+            || (Schema::hasTable('supplier_bills') && (DB::table('supplier_bills')->where('created_by', $userId)->orWhere('posted_by', $userId)->exists()))
+            || (Schema::hasTable('supplier_payments') && (DB::table('supplier_payments')->where('created_by', $userId)->orWhere('reversed_by', $userId)->exists()))
+            || (Schema::hasTable('payable_transactions') && DB::table('payable_transactions')->where('created_by', $userId)->exists())
+            || DB::table('audit_logs')->where('actor_id', $userId)->exists();
     }
 
     /**
@@ -263,9 +276,13 @@ class UserLifecycleService
     protected function revokeUserSessions(int $userId): void
     {
         try {
-            DB::table('sessions')->where('user_id', $userId)->delete();
+            app(SessionRevocationService::class)->revokeUserSessionsForSecurityEvent($userId, 'account_lifecycle_changed');
         } catch (\Throwable) {
-            // In case session table uses non-database driver in test fixtures
+            try {
+                DB::table('sessions')->where('user_id', $userId)->delete();
+            } catch (\Throwable) {
+                // In case session table uses non-database driver in test fixtures
+            }
         }
     }
 }

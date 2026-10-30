@@ -62,11 +62,12 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can delete the user.
-     * User deletion is prohibited to preserve referential transaction history.
+     * Determine whether the user can delete the target user.
+     * Requires USER_DELETE permission (Super Admin only).
+     * Domain validation (self-deletion and last active admin) is enforced by UserLifecycleService.
      */
     public function delete(User $user, User $target): bool
     {
-        return false;
+        return $this->permissionService->has($user, Permission::USER_DELETE);
     }
 }
