@@ -3,8 +3,9 @@ import { LineFinancialPreview } from '@/types/order';
 import { QuantityStepper } from '@/Components/Salesman/QuantityStepper';
 import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
-import { Trash2, Tag, Percent, Package } from 'lucide-react';
+import { Trash2, Tag, Percent } from 'lucide-react';
 import { formatCurrency } from '@/lib/financial';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface OrderReviewLineCardProps {
     line: LineFinancialPreview;
@@ -24,18 +25,11 @@ export const OrderReviewLineCard: React.FC<OrderReviewLineCardProps> = ({
             {/* Header: Product Thumbnail, Name, SKU, and Remove */}
             <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0">
-                    <div className="w-12 h-12 rounded-md border border-border/70 bg-muted/20 shrink-0 flex items-center justify-center overflow-hidden p-1">
-                        {line.product.primary_image_url ? (
-                            <img
-                                src={line.product.primary_image_url}
-                                alt={line.product.name}
-                                className="object-contain w-full h-full drop-shadow-2xs"
-                                loading="lazy"
-                            />
-                        ) : (
-                            <Package className="h-5 w-5 text-muted-foreground/40 stroke-[1.5]" />
-                        )}
-                    </div>
+                    <ProductThumbnail
+                        src={line.product.primary_image_url}
+                        alt={line.product.name}
+                        size="md"
+                    />
                     <div className="space-y-1 min-w-0">
                         <div className="font-semibold text-sm text-foreground leading-snug line-clamp-2">
                             {line.product.name}

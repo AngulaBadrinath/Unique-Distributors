@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { calculateOrderPreview, formatCurrency } from '@/lib/financial';
 import { cn } from '@/lib/utils';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 export interface OrderSummaryPanelProps {
     customer: CustomerSummary | null;
@@ -87,18 +88,25 @@ export function OrderSummaryPanel({
                         <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                             Line Items ({calculation.itemCount})
                         </div>
-                        <div className="max-h-56 overflow-y-auto space-y-1.5 divide-y divide-border/40 pr-1">
+                        <div className="max-h-56 overflow-y-auto space-y-2 divide-y divide-border/40 pr-1">
                             {calculation.lines.map((line) => (
                                 <div
                                     key={line.product.id}
-                                    className="pt-1.5 first:pt-0 flex items-center justify-between text-xs gap-2"
+                                    className="pt-2 first:pt-0 flex items-center justify-between text-xs gap-2.5"
                                 >
-                                    <div className="min-w-0 flex-1">
-                                        <div className="font-medium text-foreground truncate" title={line.product.name}>
-                                            {line.product.name}
-                                        </div>
-                                        <div className="text-[11px] font-mono text-muted-foreground">
-                                            {line.quantity} × {formatCurrency(line.unitPrice)}
+                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                        <ProductThumbnail
+                                            src={line.product.primary_image_url}
+                                            alt={line.product.name}
+                                            size="sm"
+                                        />
+                                        <div className="min-w-0 flex-1">
+                                            <div className="font-medium text-foreground truncate" title={line.product.name}>
+                                                {line.product.name}
+                                            </div>
+                                            <div className="text-[11px] font-mono text-muted-foreground">
+                                                {line.quantity} × {formatCurrency(line.unitPrice)}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0 font-mono">

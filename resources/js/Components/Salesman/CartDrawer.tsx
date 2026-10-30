@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { CartLineItem } from '@/types/order';
 import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
-import { X, ShoppingBag, Trash2, ArrowRight, Package } from 'lucide-react';
+import { X, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
 import { QuantityStepper } from '@/Components/Salesman/QuantityStepper';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface CartDrawerProps {
     open: boolean;
@@ -76,18 +77,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                                     className="p-3 rounded-lg border bg-card flex gap-3 text-xs items-center"
                                 >
                                     {/* Product Thumbnail */}
-                                    <div className="w-12 h-12 rounded-md border border-border/70 bg-muted/20 shrink-0 flex items-center justify-center overflow-hidden p-1">
-                                        {item.product.primary_image_url ? (
-                                            <img
-                                                src={item.product.primary_image_url}
-                                                alt={item.product.name}
-                                                className="object-contain w-full h-full drop-shadow-2xs"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <Package className="h-5 w-5 text-muted-foreground/40 stroke-[1.5]" />
-                                        )}
-                                    </div>
+                                    <ProductThumbnail
+                                        src={item.product.primary_image_url}
+                                        alt={item.product.name}
+                                        size="md"
+                                    />
 
                                     <div className="flex-1 min-w-0 space-y-1">
                                         <div className="font-semibold text-foreground line-clamp-1">
