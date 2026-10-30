@@ -70,6 +70,27 @@ class OrderItem extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'primary_image_url',
+    ];
+
+    /**
+     * Get the primary image temporary URL when product with primaryImage relation is loaded.
+     */
+    public function getPrimaryImageUrlAttribute(): ?string
+    {
+        if ($this->relationLoaded('product') && $this->product) {
+            return $this->product->primary_image_url;
+        }
+
+        return null;
+    }
+
+    /**
      * Get the order that this line item belongs to.
      *
      * @return BelongsTo<Order, $this>

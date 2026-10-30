@@ -37,6 +37,7 @@ class OrderAdjustmentItemReviewDTO
         public readonly array $allocations,
         public readonly array $financialSnapshot,
         public readonly array $liveFinancialPreview,
+        public readonly ?string $primaryImageUrl = null,
     ) {}
 
     /**
@@ -52,6 +53,7 @@ class OrderAdjustmentItemReviewDTO
             'product_id' => $this->productId,
             'product_name' => $this->productName,
             'sku' => $this->sku,
+            'primary_image_url' => $this->primaryImageUrl,
             'unit_price_snapshot' => $this->unitPriceSnapshot,
             'tax_rate_snapshot' => $this->taxRateSnapshot,
             'ordered_quantity_snapshot' => $this->orderedQuantitySnapshot,

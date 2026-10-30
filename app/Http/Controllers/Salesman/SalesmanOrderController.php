@@ -584,6 +584,7 @@ class SalesmanOrderController extends Controller
             'activeAdjustment.requester:id,name',
             'activeAdjustment.items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
+            'items.product.primaryImage',
             'items.allocations' => fn ($q) => $q->orderBy('id', 'asc'),
             'payments.recordedBy:id,name',
             'payments.verifiedBy:id,name',
@@ -680,6 +681,7 @@ class SalesmanOrderController extends Controller
                     'taxable_amount' => (string) $item->taxable_amount,
                     'tax_amount' => (string) $item->tax_amount,
                     'line_total' => (string) $item->line_total,
+                    'primary_image_url' => $item->primary_image_url,
                 ]),
                 'payments' => $order->payments->map(fn (Payment $p) => [
                     'id' => $p->id,

@@ -215,6 +215,7 @@ class OrderAdjustmentReviewService
                     'tax_amount_reduction' => $lineTaxAmtReduction,
                     'line_total_reduction' => $lineTotalReduction,
                 ],
+                primaryImageUrl: $orderItem->primary_image_url,
             );
         }
 

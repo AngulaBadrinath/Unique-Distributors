@@ -279,6 +279,7 @@ class AdminOrderAdjustmentController extends Controller
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items.orderItem' => fn ($q) => $q->with([
                 'allocations' => fn ($allocQ) => $allocQ->orderBy('id', 'asc'),
+                'product.primaryImage',
             ]),
             'items.product:id,sku,name,status,minimum_allowed_price,mrp',
         ]);

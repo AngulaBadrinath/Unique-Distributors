@@ -101,6 +101,7 @@ export interface OrderItemDetail {
     product_id: number;
     product_name: string;
     sku: string;
+    primary_image_url?: string | null;
     unit: string;
     ordered_quantity: number;
     cancelled_quantity?: number;
@@ -448,6 +449,7 @@ export interface AdminOrderReviewItem {
     product_id: number;
     product_name: string;
     sku: string;
+    primary_image_url?: string | null;
     unit: string;
     ordered_quantity: number;
     cancelled_quantity: number;
@@ -472,6 +474,7 @@ export interface AdminOrderReviewItem {
         minimum_allowed_price: string;
         mrp: string;
         default_selling_price?: string;
+        primary_image_url?: string | null;
     } | null;
 }
 
@@ -579,6 +582,7 @@ export interface AdminOrderDetailItem {
     product_id: number;
     product_name: string;
     sku: string;
+    primary_image_url?: string | null;
     unit: string;
     ordered_quantity: number;
     cancelled_quantity: number;
@@ -609,6 +613,7 @@ export interface AdminOrderDetailItem {
         is_active: boolean;
         default_selling_price?: string;
         mrp?: string;
+        primary_image_url?: string | null;
     } | null;
     allocations?: OrderItemAllocationData[];
 }
@@ -847,6 +852,7 @@ export interface OrderAdjustmentItemReviewData {
     product_id: number;
     product_name: string;
     sku: string;
+    primary_image_url?: string | null;
     unit_price_snapshot: string;
     tax_rate_snapshot: string;
     ordered_quantity_snapshot: number;

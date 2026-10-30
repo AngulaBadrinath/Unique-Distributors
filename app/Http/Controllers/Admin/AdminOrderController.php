@@ -519,6 +519,7 @@ class AdminOrderController extends Controller
                         'taxable_amount' => (string) $item->taxable_amount,
                         'tax_amount' => (string) $item->tax_amount,
                         'line_total' => (string) $item->line_total,
+                        'primary_image_url' => $catalogProduct?->primary_image_url,
                         'catalog_product' => $catalogProduct ? [
                             'status' => $catalogProduct->status->value,
                             'is_active' => $catalogProduct->status === ProductStatus::ACTIVE,
@@ -818,6 +819,7 @@ class AdminOrderController extends Controller
                         'taxable_amount' => (string) $item->taxable_amount,
                         'tax_amount' => (string) $item->tax_amount,
                         'line_total' => (string) $item->line_total,
+                        'primary_image_url' => $catalogProduct?->primary_image_url,
                         'catalog_product' => $catalogProduct ? [
                             'name' => $catalogProduct->name,
                             'status' => $catalogProduct->status->value,
