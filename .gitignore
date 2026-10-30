@@ -34,7 +34,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/artifacts/browser
-/artifacts/browser-audit
+/artifacts
 /playwright-report
 /test-results
