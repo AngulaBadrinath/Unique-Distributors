@@ -103,50 +103,142 @@ export const ProductOrderCard: React.FC<ProductOrderCardProps> = ({
                 }`}
             >
                 <div className="flex flex-col h-full">
-                    {/* Product Image & Badges */}
-                    <div className="relative aspect-[16/10] bg-muted/40 flex items-center justify-center overflow-hidden border-b border-border/70">
-                        {product.primary_image_url ? (
-                            <img
-                                src={product.primary_image_url}
-                                alt={product.name}
-                                className="object-cover w-full h-full"
-                                loading="lazy"
-                            />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center text-muted-foreground/50">
-                                <Package className="h-8 w-8 stroke-[1.5]" />
-                                <span className="text-[10px] mt-1 font-mono uppercase tracking-wider">No Image</span>
+                    {/* MOBILE COMPACT VIEW (<640px) - Inspired by Reference A */}
+                    <div className="sm:hidden p-3 space-y-2.5">
+                        <div className="flex gap-3 items-center">
+                            {/* Product Thumbnail (Square, Uncropped) */}
+                            <div className="relative w-14 h-14 rounded-lg border border-border/80 bg-muted/20 flex items-center justify-center overflow-hidden shrink-0 p-1">
+                                {product.primary_image_url ? (
+                                    <img
+                                        src={product.primary_image_url}
+                                        alt={product.name}
+                                        className="object-contain w-full h-full drop-shadow-2xs"
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <Package className="h-6 w-6 text-muted-foreground/40 stroke-[1.5]" />
+                                )}
+                                {isInCart && (
+                                    <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-primary" />
+                                )}
                             </div>
-                        )}
-                        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                            <Badge variant="secondary" className="font-mono text-[10px] bg-background/90 backdrop-blur-xs shadow-2xs">
-                                {product.sku}
-                            </Badge>
-                            {product.category && (
-                                <Badge variant="outline" className="text-[10px] bg-background/80 backdrop-blur-xs shadow-2xs">
-                                    {product.category.name}
-                                </Badge>
+
+                            {/* Product Info & Barcode */}
+                            <div className="flex-1 min-w-0 space-y-0.5">
+                                <h3 className="font-semibold text-xs line-clamp-1 text-foreground" title={product.name}>
+                                    {product.name}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground font-mono">
+                                    <span>{product.sku}</span>
+                                    <span>•</span>
+                                    <span className="text-foreground/80 font-medium">UPC: {product.barcode || product.sku}</span>
+                                </div>
+                                <div className="flex items-baseline gap-1.5 font-mono">
+                                    <span className="text-xs font-bold text-foreground">
+                                        ${parseFloat(unitPrice || '0').toFixed(2)}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground line-through">
+                                        ${product.mrp.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Mobile Quantity Stepper & Cart Action */}
+                        <div className="flex items-center gap-2 pt-1 border-t border-border/40">
+                            <QuantityStepper
+                                value={quantity}
+                                min={1}
+                                max={999999}
+                                onChange={handleQuantityChange}
+                                size="sm"
+                                ariaLabel={`quantity for ${product.name}`}
+                                className="h-7 w-28 shrink-0"
+                            />
+                            {isInCart ? (
+                                <div className="flex gap-1 flex-1 min-w-0">
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        size="sm"
+                                        className="flex-1 text-[11px] h-7 px-2"
+                                        onClick={handleAddToCart}
+                                    >
+                                        Update ({cartItem?.quantity})
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive hover:bg-destructive/10 h-7 w-7 p-0 shrink-0"
+                                        onClick={() => onRemoveFromCart(product.id)}
+                                        aria-label={`Remove ${product.name} from cart`}
+                                    >
+                                        <Check className="h-3.5 w-3.5" />
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    className="flex-1 text-[11px] h-7 gap-1"
+                                    onClick={handleAddToCart}
+                                >
+                                    <Plus className="h-3 w-3" />
+                                    <span>Add</span>
+                                </Button>
                             )}
                         </div>
-                        {isInCart && (
-                            <div className="absolute top-2 right-2">
-                                <Badge className="bg-primary text-primary-foreground text-[10px] gap-1 shadow-2xs">
-                                    <Check className="h-3 w-3" /> In Cart ({cartItem.quantity})
-                                </Badge>
-                            </div>
-                        )}
                     </div>
 
-                    {/* Product Details */}
-                    <CardContent className="p-3.5 flex-1 flex flex-col justify-between space-y-3">
-                        <div>
-                            <h3 className="font-semibold text-xs line-clamp-2 text-foreground tracking-tight" title={product.name}>
-                                {product.name}
-                            </h3>
-                            <p className="text-[11px] text-muted-foreground mt-0.5 font-mono">
-                                Unit: <span className="font-sans font-medium text-foreground">{product.unit}</span>
-                            </p>
+                    {/* TABLET & DESKTOP GRID VIEW (>=640px) - Fixed Aspect Ratio & Containment */}
+                    <div className="hidden sm:flex flex-col h-full">
+                        {/* Product Image & Badges */}
+                        <div className="relative aspect-square bg-muted/20 flex items-center justify-center overflow-hidden border-b border-border/70 p-3">
+                            {product.primary_image_url ? (
+                                <img
+                                    src={product.primary_image_url}
+                                    alt={product.name}
+                                    className="object-contain max-h-full max-w-full drop-shadow-xs transition-transform duration-200 hover:scale-105"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center text-muted-foreground/50">
+                                    <Package className="h-10 w-10 stroke-[1.5]" />
+                                    <span className="text-[10px] mt-1 font-mono uppercase tracking-wider">No Image</span>
+                                </div>
+                            )}
+                            <div className="absolute top-2 left-2 flex flex-wrap gap-1 max-w-[80%]">
+                                <Badge variant="secondary" className="font-mono text-[10px] bg-background/90 backdrop-blur-xs shadow-2xs">
+                                    {product.sku}
+                                </Badge>
+                                {product.category && (
+                                    <Badge variant="outline" className="text-[10px] bg-background/80 backdrop-blur-xs shadow-2xs">
+                                        {product.category.name}
+                                    </Badge>
+                                )}
+                            </div>
+                            {isInCart && (
+                                <div className="absolute top-2 right-2">
+                                    <Badge className="bg-primary text-primary-foreground text-[10px] gap-1 shadow-2xs">
+                                        <Check className="h-3 w-3" /> In Cart ({cartItem.quantity})
+                                    </Badge>
+                                </div>
+                            )}
                         </div>
+
+                        {/* Product Details */}
+                        <CardContent className="p-3.5 flex-1 flex flex-col justify-between space-y-3">
+                            <div>
+                                <h3 className="font-semibold text-xs line-clamp-2 text-foreground tracking-tight" title={product.name}>
+                                    {product.name}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground mt-1 font-mono">
+                                    <span>Unit: <span className="font-sans font-medium text-foreground">{product.unit}</span></span>
+                                    <span>•</span>
+                                    <span className="text-foreground/80 font-medium">UPC: {product.barcode || product.sku}</span>
+                                </div>
+                            </div>
 
                         {/* Pricing Display & Boundary Indicator */}
                         <div className="space-y-1.5 pt-2 border-t border-border/60">
@@ -262,6 +354,7 @@ export const ProductOrderCard: React.FC<ProductOrderCardProps> = ({
                             )}
                         </div>
                     </CardContent>
+                    </div>
                 </div>
             </Card>
 

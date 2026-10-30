@@ -23,6 +23,7 @@ import {
     Clock,
     DollarSign,
     Check,
+    Package,
 } from 'lucide-react';
 import { QuantityStepper } from '@/Components/Salesman/QuantityStepper';
 import { OrderReviewLineCard } from '@/Components/Salesman/OrderReviewLineCard';
@@ -242,17 +243,39 @@ export const OrderReviewStep: React.FC<OrderReviewStepProps> = ({
                                         calculation.lines.map((line) => (
                                             <tr key={line.product.id} className="hover:bg-muted/30 transition-colors">
                                                 <td className="py-3 px-4">
-                                                    <div className="font-semibold text-foreground">{line.product.name}</div>
-                                                    <div className="text-[11px] font-mono text-muted-foreground flex flex-wrap items-center gap-1.5 mt-0.5">
-                                                        <span>SKU: {line.product.sku}</span>
-                                                        <span>•</span>
-                                                        <span>Unit: {line.product.unit}</span>
-                                                        {line.isCustomPrice && (
-                                                            <Badge variant="outline" className="text-[9px] py-0 px-1 h-3.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-0.5 font-sans">
-                                                                <Tag className="h-2 w-2" />
-                                                                <span>Custom</span>
-                                                            </Badge>
-                                                        )}
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 rounded-md border border-border/70 bg-muted/20 shrink-0 flex items-center justify-center overflow-hidden p-0.5">
+                                                            {line.product.primary_image_url ? (
+                                                                <img
+                                                                    src={line.product.primary_image_url}
+                                                                    alt={line.product.name}
+                                                                    className="object-contain w-full h-full drop-shadow-2xs"
+                                                                    loading="lazy"
+                                                                />
+                                                            ) : (
+                                                                <Package className="h-4 w-4 text-muted-foreground/40 stroke-[1.5]" />
+                                                            )}
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <div className="font-semibold text-foreground line-clamp-1">{line.product.name}</div>
+                                                            <div className="text-[11px] font-mono text-muted-foreground flex flex-wrap items-center gap-1.5 mt-0.5">
+                                                                <span>SKU: {line.product.sku}</span>
+                                                                {line.product.barcode && (
+                                                                    <>
+                                                                        <span>•</span>
+                                                                        <span>UPC: {line.product.barcode}</span>
+                                                                    </>
+                                                                )}
+                                                                <span>•</span>
+                                                                <span>Unit: {line.product.unit}</span>
+                                                                {line.isCustomPrice && (
+                                                                    <Badge variant="outline" className="text-[9px] py-0 px-1 h-3.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-0.5 font-sans">
+                                                                        <Tag className="h-2 w-2" />
+                                                                        <span>Custom</span>
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="py-3 px-3 text-right font-mono font-medium">

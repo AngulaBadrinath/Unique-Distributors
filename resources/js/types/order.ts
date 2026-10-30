@@ -85,6 +85,8 @@ export interface CatalogProduct {
         is_exempt?: boolean;
     } | null;
     primary_image_url: string | null;
+    barcode?: string | null;
+    barcode_type?: string | null;
 }
 
 export interface CartLineItem {

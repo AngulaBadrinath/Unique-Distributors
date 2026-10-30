@@ -66,6 +66,31 @@ class Product extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'primary_image_url',
+    ];
+
+    /**
+     * Get the primary image temporary URL when primaryImage relation is loaded.
+     */
+    public function getPrimaryImageUrlAttribute(): ?string
+    {
+        if ($this->relationLoaded('primaryImage') && $this->primaryImage) {
+            try {
+                return app(\App\Services\Product\ProductImageService::class)->getTemporaryUrl($this->primaryImage);
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get the category that this product belongs to.
      *
      * @return BelongsTo<Category, $this>

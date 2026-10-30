@@ -98,7 +98,7 @@ class WarehouseFulfillmentController extends Controller
 
         $order->load([
             'customer',
-            'items.product',
+            'items.product.primaryImage',
             'items.allocations',
             'latestDelivery.driver',
         ]);
@@ -120,6 +120,7 @@ class WarehouseFulfillmentController extends Controller
                 'allocation_status' => $alloc?->status?->value ?? 'UNALLOCATED',
                 'allocation_number' => $alloc?->allocation_number,
                 'warehouse_code' => $alloc?->warehouse_code ?? 'MAIN',
+                'primary_image_url' => $item->product?->primary_image_url,
             ];
         });
 

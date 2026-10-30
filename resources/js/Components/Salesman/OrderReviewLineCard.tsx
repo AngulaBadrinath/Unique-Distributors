@@ -3,7 +3,7 @@ import { LineFinancialPreview } from '@/types/order';
 import { QuantityStepper } from '@/Components/Salesman/QuantityStepper';
 import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
-import { Trash2, Tag, Percent } from 'lucide-react';
+import { Trash2, Tag, Percent, Package } from 'lucide-react';
 import { formatCurrency } from '@/lib/financial';
 
 interface OrderReviewLineCardProps {
@@ -21,22 +21,42 @@ export const OrderReviewLineCard: React.FC<OrderReviewLineCardProps> = ({
 }) => {
     return (
         <div className="rounded-lg border bg-card p-4 shadow-sm space-y-3 transition-colors">
-            {/* Header: Product Name, SKU, and Remove */}
-            <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1">
-                    <div className="font-semibold text-sm text-foreground leading-snug">
-                        {line.product.name}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-mono">
-                        <span>SKU: {line.product.sku}</span>
-                        <span>•</span>
-                        <span>Unit: {line.product.unit}</span>
-                        {line.isCustomPrice && (
-                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-1 font-sans">
-                                <Tag className="h-2.5 w-2.5" />
-                                <span>Custom Price</span>
-                            </Badge>
+            {/* Header: Product Thumbnail, Name, SKU, and Remove */}
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-md border border-border/70 bg-muted/20 shrink-0 flex items-center justify-center overflow-hidden p-1">
+                        {line.product.primary_image_url ? (
+                            <img
+                                src={line.product.primary_image_url}
+                                alt={line.product.name}
+                                className="object-contain w-full h-full drop-shadow-2xs"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <Package className="h-5 w-5 text-muted-foreground/40 stroke-[1.5]" />
                         )}
+                    </div>
+                    <div className="space-y-1 min-w-0">
+                        <div className="font-semibold text-sm text-foreground leading-snug line-clamp-2">
+                            {line.product.name}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-mono">
+                            <span>SKU: {line.product.sku}</span>
+                            {line.product.barcode && (
+                                <>
+                                    <span>•</span>
+                                    <span>UPC: {line.product.barcode}</span>
+                                </>
+                            )}
+                            <span>•</span>
+                            <span>Unit: {line.product.unit}</span>
+                            {line.isCustomPrice && (
+                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-1 font-sans">
+                                    <Tag className="h-2.5 w-2.5" />
+                                    <span>Custom Price</span>
+                                </Badge>
+                            )}
+                        </div>
                     </div>
                 </div>
 

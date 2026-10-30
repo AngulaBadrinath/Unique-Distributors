@@ -379,7 +379,7 @@ class AdminOrderController extends Controller
             'activeAdjustment.items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
             'items.allocations' => fn ($q) => $q->orderBy('id', 'asc'),
-            'items.product:id,sku,name,status,default_selling_price,mrp',
+            'items.product.primaryImage',
             'items.priceOverrideApprover:id,name',
             'payments.recordedBy:id,name',
             'payments.verifiedBy:id,name',
@@ -524,6 +524,7 @@ class AdminOrderController extends Controller
                             'is_active' => $catalogProduct->status === ProductStatus::ACTIVE,
                             'default_selling_price' => (string) $catalogProduct->default_selling_price,
                             'mrp' => (string) $catalogProduct->mrp,
+                            'primary_image_url' => $catalogProduct->primary_image_url,
                         ] : null,
                     ];
                 }),
@@ -709,7 +710,7 @@ class AdminOrderController extends Controller
             'approver:id,name',
             'canceller:id,name',
             'items' => fn ($q) => $q->orderBy('id', 'asc'),
-            'items.product:id,sku,name,status,minimum_allowed_price,mrp,default_selling_price',
+            'items.product.primaryImage',
             'items.priceOverrideApprover:id,name',
         ]);
 
@@ -824,6 +825,7 @@ class AdminOrderController extends Controller
                             'minimum_allowed_price' => (string) $catalogProduct->minimum_allowed_price,
                             'mrp' => (string) $catalogProduct->mrp,
                             'default_selling_price' => (string) $catalogProduct->default_selling_price,
+                            'primary_image_url' => $catalogProduct->primary_image_url,
                         ] : null,
                     ];
                 }),
