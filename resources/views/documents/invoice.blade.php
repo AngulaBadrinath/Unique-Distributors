@@ -685,7 +685,7 @@
                     <div style="font-weight: 700; font-size: 9px; text-transform: uppercase; color: #0f172a; margin-bottom: 2px;">Verified Payments Received</div>
                     @foreach($invoice->order->payments->where('status', \App\Enums\PaymentTransactionStatus::VERIFIED) as $payment)
                         <div style="font-size: 8.5px; margin-bottom: 1px;">
-                            &bull; <strong>{{ $payment->payment_number }}</strong>: {{ $payment->payment_method->label() }} &mdash; ${{ number_format($payment->amount, 2) }} ({{ $payment->payment_date ? $payment->payment_date->format('M d, Y') : 'Payment date unavailable' }})
+                            &bull; <strong>{{ $payment->payment_number }}</strong>: {{ $payment->payment_method?->label() ?? 'Payment' }} &mdash; ${{ number_format($payment->amount, 2) }} ({{ $payment->payment_date ? $payment->payment_date->format('M d, Y') : 'Payment date unavailable' }})
                         </div>
                     @endforeach
                 </div>
