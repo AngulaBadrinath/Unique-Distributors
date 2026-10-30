@@ -79,7 +79,7 @@ class RoleAssignmentController extends Controller
             ip: $request->ip()
         );
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => 'User role updated successfully.',
                 'user' => [

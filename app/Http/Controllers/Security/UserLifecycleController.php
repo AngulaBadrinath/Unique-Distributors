@@ -11,6 +11,7 @@ use App\Services\Auth\UserLifecycleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class UserLifecycleController extends Controller
@@ -40,7 +41,7 @@ class UserLifecycleController extends Controller
             ip: $request->ip()
         );
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => "User account status updated to {$newStatus->value}.",
                 'user' => [
@@ -60,6 +61,8 @@ class UserLifecycleController extends Controller
      */
     public function destroy(Request $request, User $user): RedirectResponse|JsonResponse
     {
+        Gate::authorize('delete', $user);
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'min:10', 'max:500'],
             'confirm' => ['required', 'boolean', 'accepted'],
@@ -75,7 +78,7 @@ class UserLifecycleController extends Controller
             ip: $request->ip()
         );
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json($result);
         }
 

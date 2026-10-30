@@ -106,7 +106,7 @@ class AdminInvoiceController extends Controller
 
         $invoice = $this->generatorService->generateForOrder($order, $request->user());
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => 'Invoice generated successfully.',
                 'invoice' => $invoice,
