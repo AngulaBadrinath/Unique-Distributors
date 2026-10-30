@@ -14,6 +14,7 @@ import {
     Info,
     ArrowDownRight,
 } from 'lucide-react';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface AdjustmentEligibleItem {
     id: number;
@@ -27,6 +28,8 @@ interface AdjustmentEligibleItem {
     unallocated_quantity?: number;
     unit_price: string;
     tax_rate: string;
+    primary_image_url?: string | null;
+    catalog_product?: { primary_image_url?: string | null } | null;
 }
 
 interface RequestAdjustmentModalProps {
@@ -326,11 +329,20 @@ export default function RequestAdjustmentModal({
                                                     }`}
                                                 >
                                                     <td className="py-2.5 px-3">
-                                                        <div className="font-medium text-foreground">
-                                                            {item.product_name}
-                                                        </div>
-                                                        <div className="text-[11px] text-muted-foreground font-mono">
-                                                            {item.sku} • ${item.unit_price} / {item.unit}
+                                                        <div className="flex items-center gap-2.5">
+                                                            <ProductThumbnail
+                                                                src={item.primary_image_url || item.catalog_product?.primary_image_url}
+                                                                alt={item.product_name}
+                                                                size="sm"
+                                                            />
+                                                            <div className="min-w-0">
+                                                                <div className="font-medium text-foreground truncate">
+                                                                    {item.product_name}
+                                                                </div>
+                                                                <div className="text-[11px] text-muted-foreground font-mono">
+                                                                    {item.sku} • ${item.unit_price} / {item.unit}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </td>
 

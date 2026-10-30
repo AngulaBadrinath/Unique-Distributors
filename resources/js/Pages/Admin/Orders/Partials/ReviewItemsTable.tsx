@@ -2,6 +2,7 @@ import React from 'react';
 import { Package, ShieldAlert, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Badge } from '@/Components/ui/badge';
 import { AdminOrderReviewItem } from '@/types/order';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface ReviewItemsTableProps {
     items: AdminOrderReviewItem[];
@@ -58,23 +59,30 @@ export default function ReviewItemsTable({ items, currency }: ReviewItemsTablePr
 
                                     {/* Product Name & SKU */}
                                     <td className="px-4 py-3">
-                                        <div className="space-y-0.5">
-                                            <div className="font-bold text-foreground">
-                                                {item.product_name}
-                                            </div>
-                                            <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-mono">
-                                                <span>SKU: {item.sku}</span>
-                                                <span>•</span>
-                                                <span className="capitalize">{item.unit}</span>
-                                            </div>
-                                            {isInactiveInCatalog && (
-                                                <div className="pt-1">
-                                                    <Badge variant="destructive" className="text-[9px] gap-1 px-1.5 py-0 h-4">
-                                                        <AlertTriangle className="h-2.5 w-2.5" />
-                                                        <span>Catalog Inactive</span>
-                                                    </Badge>
+                                        <div className="flex items-center gap-3">
+                                            <ProductThumbnail
+                                                src={item.primary_image_url || item.catalog_product?.primary_image_url}
+                                                alt={item.product_name}
+                                                size="md"
+                                            />
+                                            <div className="space-y-0.5 min-w-0">
+                                                <div className="font-bold text-foreground">
+                                                    {item.product_name}
                                                 </div>
-                                            )}
+                                                <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-mono">
+                                                    <span>SKU: {item.sku}</span>
+                                                    <span>•</span>
+                                                    <span className="capitalize">{item.unit}</span>
+                                                </div>
+                                                {isInactiveInCatalog && (
+                                                    <div className="pt-1">
+                                                        <Badge variant="destructive" className="text-[9px] gap-1 px-1.5 py-0 h-4">
+                                                            <AlertTriangle className="h-2.5 w-2.5" />
+                                                            <span>Catalog Inactive</span>
+                                                        </Badge>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </td>
 

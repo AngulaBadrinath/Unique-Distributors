@@ -33,6 +33,7 @@ import ApproveAdjustmentModal from './Partials/ApproveAdjustmentModal';
 import RejectAdjustmentModal from './Partials/RejectAdjustmentModal';
 import ApplyAdjustmentModal from './Partials/ApplyAdjustmentModal';
 import ReverseAdjustmentModal from './Partials/ReverseAdjustmentModal';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface AdjustmentReviewProps {
     adjustment: OrderAdjustmentReviewDetailData;
@@ -540,13 +541,20 @@ export default function AdjustmentReview({
                                 <div key={line.adjustment_item_id} className="p-5 space-y-4 hover:bg-muted/10 transition-colors">
                                     {/* Item Header */}
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-semibold text-sm text-foreground">{line.product_name}</span>
-                                                <span className="font-mono text-xs text-muted-foreground">SKU: {line.sku}</span>
-                                                <Badge variant="outline" className="text-[10px]">
-                                                    ${line.unit_price_snapshot} / unit &bull; Tax: {Number(line.tax_rate_snapshot) * 100}%
-                                                </Badge>
+                                        <div className="flex items-center gap-3">
+                                            <ProductThumbnail
+                                                src={line.primary_image_url}
+                                                alt={line.product_name}
+                                                size="md"
+                                            />
+                                            <div>
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <span className="font-semibold text-sm text-foreground">{line.product_name}</span>
+                                                    <span className="font-mono text-xs text-muted-foreground">SKU: {line.sku}</span>
+                                                    <Badge variant="outline" className="text-[10px]">
+                                                        ${line.unit_price_snapshot} / unit &bull; Tax: {Number(line.tax_rate_snapshot) * 100}%
+                                                    </Badge>
+                                                </div>
                                             </div>
                                         </div>
 

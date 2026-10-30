@@ -11,6 +11,7 @@ import PendingAdjustmentBanner from '@/Pages/Admin/Orders/Partials/PendingAdjust
 import RequestAdjustmentModal from '@/Pages/Admin/Orders/Partials/RequestAdjustmentModal';
 import RecordOrderPaymentModal from '@/Components/Order/RecordOrderPaymentModal';
 import { PaymentEvidencePreviewModal } from '@/Components/Payment/PaymentEvidencePreviewModal';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 import {
     CheckCircle2,
     Building,
@@ -367,13 +368,22 @@ export default function OrderShow({ order, backUrl = '/salesman/orders', backLab
                                 {order.items.map((item) => (
                                     <tr key={item.id} className="hover:bg-muted/20 transition-colors">
                                         <td className="py-3 px-4">
-                                            <div className="font-semibold text-foreground">
-                                                {item.product_name}
-                                            </div>
-                                            <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-2">
-                                                <span>SKU: {item.sku}</span>
-                                                <span>•</span>
-                                                <span>Unit: {item.unit}</span>
+                                            <div className="flex items-center gap-3">
+                                                <ProductThumbnail
+                                                    src={item.primary_image_url}
+                                                    alt={item.product_name}
+                                                    size="md"
+                                                />
+                                                <div className="min-w-0">
+                                                    <div className="font-semibold text-foreground">
+                                                        {item.product_name}
+                                                    </div>
+                                                    <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-2">
+                                                        <span>SKU: {item.sku}</span>
+                                                        <span>•</span>
+                                                        <span>Unit: {item.unit}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="py-3 px-4 text-right font-mono font-medium">

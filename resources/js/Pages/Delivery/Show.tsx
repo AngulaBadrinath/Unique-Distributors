@@ -24,6 +24,7 @@ import {
     Shield,
     AlertTriangle
 } from 'lucide-react';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface DeliveryItem {
     id: number;
@@ -33,11 +34,13 @@ interface DeliveryItem {
     returned_quantity: number;
     product_name_snapshot: string;
     sku_snapshot: string;
+    primary_image_url?: string | null;
     product?: {
         id: number;
         name: string;
         sku: string;
         unit?: string;
+        primary_image_url?: string | null;
     };
 }
 
@@ -283,16 +286,24 @@ export default function DeliveryShow({ delivery, capabilities }: DeliveryShowPro
 
                     <div className="divide-y divide-slate-800/80">
                         {delivery.items.map((item) => (
-                            <div key={item.id} className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-xs">
-                                <div>
-                                    <p className="font-semibold text-white">
-                                        {item.product_name_snapshot || item.product?.name}
-                                    </p>
-                                    <p className="text-slate-400 font-mono text-[11px]">
-                                        SKU: {item.sku_snapshot || item.product?.sku}
-                                    </p>
+                            <div key={item.id} className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-xs gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <ProductThumbnail
+                                        src={item.primary_image_url || item.product?.primary_image_url}
+                                        alt={item.product_name_snapshot || item.product?.name || 'Product'}
+                                        size="sm"
+                                        className="border-slate-700 bg-slate-800/60"
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-white truncate">
+                                            {item.product_name_snapshot || item.product?.name}
+                                        </p>
+                                        <p className="text-slate-400 font-mono text-[11px]">
+                                            SKU: {item.sku_snapshot || item.product?.sku}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right shrink-0">
                                     <span className="font-bold text-white text-sm">
                                         {item.deliverable_quantity}
                                     </span>

@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { AdminOrderDetailItem } from '@/types/order';
 import { Package, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface OrderDetailItemsCardsProps {
     items: AdminOrderDetailItem[];
@@ -25,19 +26,26 @@ export default function OrderDetailItemsCards({ items }: OrderDetailItemsCardsPr
                         <CardContent className="p-3.5 space-y-3 text-xs">
                             {/* Product Header */}
                             <div className="flex items-start justify-between gap-2">
-                                <div>
-                                    <div className="font-semibold text-foreground text-sm">
-                                        {item.product_name}
-                                    </div>
-                                    <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-muted-foreground font-mono text-[11px]">
-                                        <span>SKU: {item.sku}</span>
-                                        <span>•</span>
-                                        <Badge variant="outline" className="text-[10px] py-0 px-1 font-normal h-4 uppercase">
-                                            {item.unit}
-                                        </Badge>
+                                <div className="flex items-start gap-2.5 min-w-0">
+                                    <ProductThumbnail
+                                        src={item.primary_image_url || item.catalog_product?.primary_image_url}
+                                        alt={item.product_name}
+                                        size="md"
+                                    />
+                                    <div className="min-w-0">
+                                        <div className="font-semibold text-foreground text-sm line-clamp-2">
+                                            {item.product_name}
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-muted-foreground font-mono text-[11px]">
+                                            <span>SKU: {item.sku}</span>
+                                            <span>•</span>
+                                            <Badge variant="outline" className="text-[10px] py-0 px-1 font-normal h-4 uppercase">
+                                                {item.unit}
+                                            </Badge>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right shrink-0">
                                     <div className="text-sm font-bold font-mono text-foreground">
                                         ${item.line_total}
                                     </div>

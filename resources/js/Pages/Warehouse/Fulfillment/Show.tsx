@@ -24,6 +24,7 @@ import {
     X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ProductThumbnail } from '@/Components/Common/ProductThumbnail';
 
 interface FulfillmentItem {
     id: number;
@@ -39,6 +40,7 @@ interface FulfillmentItem {
     allocation_status: string;
     allocation_number?: string;
     warehouse_code: string;
+    primary_image_url?: string | null;
 }
 
 interface FulfillmentOrderDetails {
@@ -328,8 +330,17 @@ export default function WarehouseFulfillmentShow({
                                     {order.items.map((item) => (
                                         <tr key={item.id} className="hover:bg-brand-surface/60 transition-colors">
                                             <td className="py-3 px-4">
-                                                <div className="font-semibold text-foreground">{item.product_name}</div>
-                                                <div className="text-[11px] text-muted-foreground">SKU: {item.sku}</div>
+                                                <div className="flex items-center gap-3">
+                                                    <ProductThumbnail
+                                                        src={item.primary_image_url}
+                                                        alt={item.product_name}
+                                                        size="md"
+                                                    />
+                                                    <div className="min-w-0">
+                                                        <div className="font-semibold text-foreground">{item.product_name}</div>
+                                                        <div className="text-[11px] text-muted-foreground">SKU: {item.sku}</div>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="py-3 px-4 text-center">
                                                 <Badge variant="outline" className="text-[10px]">
