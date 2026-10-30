@@ -11,11 +11,58 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate-release:
+    name: Validate Release (Tests & Build Gate)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3, bcmath, intl, zip
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Frontend Static Analysis & Build
+        run: |
+          npm run type-check
+          npm run build
+
+      - name: Execute Automated Regression Test Suite
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          CACHE_STORE: array
+          SESSION_DRIVER: array
+          QUEUE_CONNECTION: sync
+        run: |
+          php artisan test --testsuite=Domain
+          php artisan test tests/Feature/Prompt2TargetedRemediationTest.php
+          php artisan test tests/Feature/Security/UserLifecyclePostgresConstraintTest.php
+          php artisan test tests/Feature/Auth/PermissionRegistryTest.php
+          php artisan test tests/Feature/Document/InvoiceGenerationTest.php
+          php artisan test tests/Feature/Adjustment/AdminAdjustmentApplicationTest.php
+
   deploy-production:
     name: Deploy to Production (AWS OIDC + SSM)
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 30
+    needs: [validate-release]
 
     permissions:
       contents: read
