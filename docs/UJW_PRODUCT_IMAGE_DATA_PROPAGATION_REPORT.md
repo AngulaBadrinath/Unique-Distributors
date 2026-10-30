@@ -212,3 +212,4 @@ export interface OrderAdjustmentItemReviewData {
 2. **RULE-DOC-001 (Invoice Document Isolation):**
    - Invoices generated via `InvoiceGeneratorService` and rendered via `InvoicePdfService` strictly exclude product images.
    - Tested and verified: zero `<img>` tags or thumbnail references in invoice HTML and PDF output.
+

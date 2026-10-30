@@ -93,3 +93,4 @@ This report assesses the visual and responsive integrity of the product image pr
 - **Alt Text:** Every `<ProductThumbnail />` passes `alt={product.name}` to ensure screen reader comprehension.
 - **Contrast:** Fallback icon uses `text-muted-foreground/40` on light/dark mode backgrounds; containers use `border-border/70` for clear visual delineation.
 - **Touch Targets:** Interactive remove buttons and steppers maintain >= 40px touch targets on mobile viewports.
+

@@ -126,3 +126,4 @@ This hotfix comprehensively resolves product image visibility across all operati
 2. Push `main` to trigger the GitHub Actions workflow `Production CD (AWS OIDC + SSM)`.
 3. Monitor SSM execution on target EC2 instance `i-04b5a0903d590e029`.
 4. Perform live visual verification on `https://uniquejerseywholesale.com`.
+
