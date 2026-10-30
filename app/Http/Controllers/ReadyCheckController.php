@@ -65,21 +65,30 @@ class ReadyCheckController extends Controller
                 $bucket = config('filesystems.disks.s3.bucket');
                 $isConfigured = ! empty($bucket);
 
-                $dependencies['storage'] = [
-                    'status' => $isConfigured ? 'ready' : 'degraded',
-                    'disk' => 's3',
-                ];
-
                 if (! $isConfigured) {
                     $status = 'not_ready';
+                    $dependencies['storage'] = [
+                        'status' => 'degraded',
+                        'disk' => 's3',
+                        'message' => 'S3 bucket not configured',
+                    ];
+                } else {
+                    // Perform lightweight live S3 connectivity test via IAM role
+                    Storage::disk('s3')->has('_healthcheck');
+
+                    $dependencies['storage'] = [
+                        'status' => 'ready',
+                        'disk' => 's3',
+                    ];
                 }
             } catch (Throwable $e) {
                 $status = 'not_ready';
                 $dependencies['storage'] = [
                     'status' => 'unavailable',
-                    'message' => 'Storage configuration error',
+                    'disk' => 's3',
+                    'message' => 'S3 storage connectivity probe failed: ' . $e->getMessage(),
                 ];
-                Log::warning('Readiness check: Storage check failed', ['error' => $e->getMessage()]);
+                Log::warning('Readiness check: S3 storage connectivity probe failed', ['error' => $e->getMessage()]);
             }
         } else {
             $dependencies['storage'] = [
