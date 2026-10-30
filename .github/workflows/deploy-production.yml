@@ -37,6 +37,11 @@ jobs:
       - name: Install NPM Dependencies
         run: npm ci
 
+      - name: Prepare Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
       - name: Frontend Static Analysis & Build
         run: |
           npm run type-check
@@ -44,6 +49,7 @@ jobs:
 
       - name: Execute Automated Regression Test Suite
         env:
+          APP_KEY: base64:2fl+Ktvkfl+Fuz4Qp/1SeEuLTUMgqG/4S5xKZe8v80o=
           DB_CONNECTION: sqlite
           DB_DATABASE: ':memory:'
           CACHE_STORE: array
